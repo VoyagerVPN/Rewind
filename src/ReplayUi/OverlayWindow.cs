@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,10 +27,26 @@ public partial class OverlayWindow : Window
     private nint _previousForeground;
     private OutsideClickWatcher? _outsideClicks;
     private bool _recentViewDismissed;
+    private readonly LanguagePreferencesFile _languagePreferencesFile;
+    private bool _languageReady;
 
     public OverlayWindow(Clip[] clips, string diagnostics, string? replayDirectory = null)
     {
+        _languagePreferencesFile = new LanguagePreferencesFile(Path.Combine(diagnostics, "language.json"));
+        string language;
+        string? languageError = null;
+        try { language = _languagePreferencesFile.Load(); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException)
+        {
+            language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "ru" : "en";
+            languageError = error.Message;
+        }
+        UiLanguage.Apply(language);
         InitializeComponent();
+        TestWindowActivation.Configure(this);
+        InterfaceLanguagePicker.SelectedIndex = language == "ru" ? 1 : 0;
+        _languageReady = true;
+        if (languageError is not null) SettingsMessageText.Text = Localization.Text("Settings.LanguageLoadFailed") + " " + languageError;
         Title = "Rewind · " + AppVersion.Display;
         _diagnostics = diagnostics;
         _showInstanceMessage = Native.RegisterWindowMessage("Rewind.Show." + AppLaunchOptions.InstanceId(diagnostics));
@@ -81,6 +99,51 @@ public partial class OverlayWindow : Window
         Closing += OnCaptureClosing;
     }
 
+    private void OnInterfaceLanguageChanged(object sender, SelectionChangedEventArgs args)
+    {
+        if (!_languageReady || InterfaceLanguagePicker.SelectedItem is not ComboBoxItem { Tag: string language } || language == Localization.Language) return;
+        try
+        {
+            _languagePreferencesFile.Save(language);
+            UiLanguage.Apply(language);
+            RefreshLanguagePresentation();
+            SettingsMessageText.Text = "";
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            _languageReady = false;
+            InterfaceLanguagePicker.SelectedIndex = Localization.Language == "ru" ? 1 : 0;
+            _languageReady = true;
+            SettingsMessageText.Text = Localization.Text("Settings.LanguageSaveFailed") + " " + error.Message;
+        }
+    }
+
+    private void RefreshLanguagePresentation()
+    {
+        SettingsLabel.Text = SettingsView.Visibility == Visibility.Visible || _libraryVisible ? Localization.Text("Message.Back") : Localization.Text("Ui.Settings");
+        VersionDisplay.ToolTip = AppVersion.Details;
+        foreach (HotkeyEditor editor in new[] { PanelHotkey, SaveHotkey, SaveAllHotkey, CaptureToggleHotkey, SettingsHotkey }
+                     .Concat(PlayerHotkeyEditors.Children.OfType<Grid>().SelectMany(row => row.Children.OfType<HotkeyEditor>())))
+            editor.RefreshLanguage();
+        RenderHotkeys();
+        RenderMarkerRows();
+        IntervalTimeline.Redraw();
+        MonitorSwitches.Children.Clear();
+        RenderMonitorLayout();
+        bool ready = _captureUiReady;
+        _captureUiReady = false;
+        try { RefreshAudioDevices(force: true); }
+        finally { _captureUiReady = ready; }
+        _lastOutputRefresh = DateTime.MinValue;
+        UpdateCaptureStatus();
+        if (_captureMessageProvider is not null) CaptureMessageText.Text = _captureMessageProvider();
+        RefreshLibraryLanguageOptions();
+        _lastGalleryLayout = null;
+        ApplyCatalogSnapshot();
+        _player?.RefreshLanguage();
+        _actionToasts?.RefreshLanguage();
+    }
+
     private async void OpenClip(Clip clip) => await OpenClipAsync(clip);
 
     public async Task OpenClipAsync(Clip clip)
@@ -106,9 +169,9 @@ public partial class OverlayWindow : Window
         DockToPrimaryMonitor();
         try { if (_libraryReady) clip = await _libraryIndex.PreparePlaybackAsync(clip, cancellation.Token); if (player == _player && version == _openClipVersion) await player.LoadClipAsync(clip); }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
-        catch (Exception error) { if (player == _player && version == _openClipVersion && !player.HasPlaybackError) player.ShowError("Не удалось открыть клип. Попробуй открыть его ещё раз."); _telemetry.Event("player-open-error", new { error.Message }); }
+        catch (Exception error) { if (player == _player && version == _openClipVersion && !player.HasPlaybackError) player.ShowError(Localization.Text("Message.CouldNotOpenTheClipTryOpeningItAgain")); _telemetry.Event("player-open-error", new { error.Message }); }
         finally { if (ReferenceEquals(_openClipCancellation, cancellation)) _openClipCancellation = null; }
-        if (!_closing && player == _player && version == _openClipVersion) player.Focus();
+        if (!_closing && player == _player && version == _openClipVersion && !TestWindowActivation.Enabled) player.Focus();
     }
 
     private async Task OnPlayerClipDeletedAsync(ReplayPlayerView origin, string file)
@@ -196,6 +259,7 @@ public partial class OverlayWindow : Window
 
     private void UpdateOutsideClickWatcher()
     {
+        if (TestWindowActivation.Enabled) return;
         if (_closing || !IsVisible || _player is not null)
         { _outsideClicks?.Dispose(); _outsideClicks = null; return; }
         nint handle = new WindowInteropHelper(this).Handle;

@@ -12,7 +12,7 @@ public sealed record StartupPreferences(bool AlwaysStartRecording = false, bool 
 public sealed class StartupPreferencesFile(string path)
 {
     public StartupPreferences Load() => !File.Exists(path) ? new() :
-        JsonSerializer.Deserialize<StartupPreferences>(File.ReadAllText(path)) ?? throw new InvalidDataException("Не удалось прочитать параметры запуска.");
+        JsonSerializer.Deserialize<StartupPreferences>(File.ReadAllText(path)) ?? throw new InvalidDataException(Localization.Text("Message.CouldNotReadStartupSettingsf84e6851"));
 
     public void Save(StartupPreferences preferences)
     {
@@ -34,7 +34,7 @@ public sealed record AppLaunchOptions(string Manifest, string DataDirectory, boo
         string[] positional = arguments.Where(argument => argument != "--background").ToArray();
         if (positional.Length != 0)
         {
-            if (positional.Length is not (2 or 3)) throw new ArgumentException("Некорректные параметры запуска Rewind.");
+            if (positional.Length is not (2 or 3)) throw new ArgumentException(Localization.Text("Message.InvalidRewindLaunchArguments"));
             return new(Path.GetFullPath(positional[0]), Path.GetFullPath(positional[1]), arguments.Contains("--background"), positional.ElementAtOrDefault(2));
         }
 

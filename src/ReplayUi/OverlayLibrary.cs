@@ -53,12 +53,7 @@ public partial class OverlayWindow
             Sort = Math.Clamp(_libraryPreferences.Sort, 0, 5), RecentSort = Math.Clamp(_libraryPreferences.RecentSort, 0, 5),
             RecentGrouping = Math.Clamp(_libraryPreferences.RecentGrouping, 0, 2) };
         GalleryZoom.Value = LibraryZoom.Value = _libraryPreferences.Zoom;
-        LibrarySort.ItemsSource = new[] { "Сначала новые", "Сначала старые", "Файл А–Я", "Сначала большие", "Файл Я–А", "Сначала маленькие" };
-        LibrarySort.SelectedIndex = _libraryPreferences.Sort;
-        RecentSortPicker.ItemsSource = LibrarySort.ItemsSource;
-        RecentSortPicker.SelectedIndex = _libraryPreferences.RecentSort;
-        RecentGroupingPicker.ItemsSource = new[] { "По дате", "По приложению", "По сессиям" };
-        RecentGroupingPicker.SelectedIndex = _libraryPreferences.RecentGrouping;
+        RefreshLibraryLanguageOptions();
         _librarySaveTimer = new DispatcherTimer(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(300) };
         _librarySaveTimer.Tick += (_, _) => SaveLibraryPreferences();
         _libraryReady = true;
@@ -70,11 +65,26 @@ public partial class OverlayWindow
         {
             if (_closing) return;
             LibraryCatalogProgress.Visibility = StorageCatalogProgress.Visibility = progress.Complete ? Visibility.Collapsed : Visibility.Visible;
-            string status = progress.Complete ? progress.Warning ?? "" : $"Обновление · {progress.Files:N0} файлов";
+            string status = progress.Complete ? progress.Warning ?? "" : Localization.Format("Format.CatalogProgress", progress.Files);
             LibraryMessage.Text = StorageUsageMessage.Text = status;
         });
         ApplyCatalogSnapshot();
         _catalogRefreshTimer.Start();
+    }
+
+    private void RefreshLibraryLanguageOptions()
+    {
+        _updatingLibrary = true;
+        try
+        {
+            LibrarySort.ItemsSource = new[] { Localization.Text("Message.NewestFirst"), Localization.Text("Message.OldestFirst"), Localization.Text("Message.FileAZ"), Localization.Text("Message.LargestFirst"), Localization.Text("Message.FileZA"), Localization.Text("Message.SmallestFirst") };
+            LibrarySort.SelectedIndex = _libraryPreferences.Sort;
+            RecentSortPicker.ItemsSource = LibrarySort.ItemsSource;
+            RecentSortPicker.SelectedIndex = _libraryPreferences.RecentSort;
+            RecentGroupingPicker.ItemsSource = new[] { Localization.Text("Message.ByDate"), Localization.Text("Message.ByApplication"), Localization.Text("Message.BySession") };
+            RecentGroupingPicker.SelectedIndex = _libraryPreferences.RecentGrouping;
+        }
+        finally { _updatingLibrary = false; }
     }
 
     private void SaveLibraryPreferences()
@@ -94,11 +104,11 @@ public partial class OverlayWindow
     public async Task OpenLibraryAsync()
     {
         _libraryVisible = true; HomeView.Visibility = SettingsView.Visibility = Visibility.Collapsed;
-        LibraryView.Visibility = Visibility.Visible; SettingsLabel.Text = "Назад"; SettingsGlyph.Symbol = Wpf.Ui.Controls.SymbolRegular.ArrowLeft24;
+        LibraryView.Visibility = Visibility.Visible; SettingsLabel.Text = Localization.Text("Message.Back"); SettingsGlyph.Symbol = Wpf.Ui.Controls.SymbolRegular.ArrowLeft24;
         _scanCancellation?.Cancel();
         using var cancellation = new CancellationTokenSource(); _scanCancellation = cancellation;
         ApplyCatalogSnapshot();
-        LibraryMessage.Text = "Обновление…"; LibraryCatalogProgress.Visibility = Visibility.Visible;
+        LibraryMessage.Text = Localization.Text("Message.Refreshing"); LibraryCatalogProgress.Visibility = Visibility.Visible;
         string[] roots = CatalogRoots();
         try
         {
@@ -107,39 +117,39 @@ public partial class OverlayWindow
             _libraryEntries = entries; _libraryPage = 0;
             _updatingLibrary = true;
             string? game = (LibraryGames.SelectedItem as LibraryChoice)?.Key;
-            LibraryGames.ItemsSource = new[] { new LibraryChoice(null, "Все игры и папки") }
+            LibraryGames.ItemsSource = new[] { new LibraryChoice(null, Localization.Text("Message.AllGamesAndFolders")) }
                 .Concat(entries.Select(entry => entry.Game).Distinct().Order().Select(name => new LibraryChoice(name, name))).ToArray();
             LibraryGames.SelectedItem = LibraryGames.Items.Cast<LibraryChoice>().FirstOrDefault(choice => choice.Key == game) ?? LibraryGames.Items[0];
-            LibraryFolders.ItemsSource = new[] { new LibraryChoice(null, "Все расположения") }
+            LibraryFolders.ItemsSource = new[] { new LibraryChoice(null, Localization.Text("Message.AllLocations")) }
                 .Concat(roots.Select(root => new LibraryChoice(root, root))).ToArray();
             LibraryFolders.SelectedIndex = 0; _updatingLibrary = false;
             string[] missing = roots.Where(root => !Directory.Exists(root)).ToArray();
-            LibraryMessage.Text = missing.Length > 0 ? "Недоступна папка: " + missing[0] : "";
+            LibraryMessage.Text = missing.Length > 0 ? Localization.Text("Message.FolderUnavailable") + missing[0] : "";
             _catalogApplyQueued = false;
             RenderGallery();
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
-        catch (Exception error) { _telemetry.Event("library-open-error", new { error.Message }); LibraryMessage.Text = "Не удалось прочитать библиотеку"; }
+        catch (Exception error) { _telemetry.Event("library-open-error", new { error.Message }); LibraryMessage.Text = Localization.Text("Message.CouldNotReadTheLibrary"); }
         finally { if (ReferenceEquals(_scanCancellation, cancellation)) { _scanCancellation = null; LibraryCatalogProgress.Visibility = Visibility.Collapsed; } }
     }
 
     public async Task AddLibraryFolderAsync(string folder)
     {
         string full = Path.GetFullPath(folder);
-        if (!Directory.Exists(full)) throw new DirectoryNotFoundException("Папка не найдена.");
+        if (!Directory.Exists(full)) throw new DirectoryNotFoundException(Localization.Text("Message.FolderNotFound"));
         _libraryPreferences = _libraryPreferences with { Folders = _libraryPreferences.Folders.Append(full).Distinct(StringComparer.OrdinalIgnoreCase).ToArray() };
         SaveLibraryPreferences(); await OpenLibraryAsync();
     }
 
     private async void OnAddLibraryFolder(object sender, RoutedEventArgs args)
     {
-        var dialog = new Microsoft.Win32.OpenFolderDialog { Title = "Добавить папку с повторами" };
+        var dialog = new Microsoft.Win32.OpenFolderDialog { Title = Localization.Text("Ui.AddAReplayFolder") };
         if (dialog.ShowDialog(this) != true) return;
         try { await AddLibraryFolderAsync(dialog.FolderName); }
         catch (Exception error) { LibraryMessage.Text = error.Message; }
     }
     private async void OnRefreshLibrary(object sender, RoutedEventArgs args)
-    { try { await _libraryIndex.ScanAsync(CatalogRoots(), _clips.ToArray(), CancellationToken.None, true); await OpenLibraryAsync(); } catch (Exception error) { LibraryMessage.Text = "Не удалось обновить библиотеку"; _telemetry.Event("library-refresh-error", new { error.Message }); } }
+    { try { await _libraryIndex.ScanAsync(CatalogRoots(), _clips.ToArray(), CancellationToken.None, true); await OpenLibraryAsync(); } catch (Exception error) { LibraryMessage.Text = Localization.Text("Message.CouldNotRefreshTheLibrary"); _telemetry.Event("library-refresh-error", new { error.Message }); } }
 
     private string[] CatalogRoots()
     {
@@ -155,9 +165,9 @@ public partial class OverlayWindow
         string? game = (LibraryGames.SelectedItem as LibraryChoice)?.Key;
         string? folder = (LibraryFolders.SelectedItem as LibraryChoice)?.Key;
         _updatingLibrary = true;
-        LibraryGames.ItemsSource = new[] { new LibraryChoice(null, "Все игры") }.Concat(_libraryEntries.Select(entry => entry.Game).Distinct().Order().Select(name => new LibraryChoice(name, name))).ToArray();
+        LibraryGames.ItemsSource = new[] { new LibraryChoice(null, Localization.Text("Message.AllGames")) }.Concat(_libraryEntries.Select(entry => entry.Game).Distinct().Order().Select(name => new LibraryChoice(name, name))).ToArray();
         LibraryGames.SelectedItem = LibraryGames.Items.Cast<LibraryChoice>().FirstOrDefault(choice => choice.Key == game) ?? LibraryGames.Items[0];
-        LibraryFolders.ItemsSource = new[] { new LibraryChoice(null, "Все расположения") }.Concat(CatalogRoots().Select(root => new LibraryChoice(root, root))).ToArray();
+        LibraryFolders.ItemsSource = new[] { new LibraryChoice(null, Localization.Text("Message.AllLocations")) }.Concat(CatalogRoots().Select(root => new LibraryChoice(root, root))).ToArray();
         LibraryFolders.SelectedItem = LibraryFolders.Items.Cast<LibraryChoice>().FirstOrDefault(choice => choice.Key == folder) ?? LibraryFolders.Items[0];
         _updatingLibrary = false;
         RenderGallery();
@@ -245,7 +255,7 @@ public partial class OverlayWindow
     private void CloseLibrary()
     {
         _libraryVisible = false; _scanCancellation?.Cancel(); LibraryView.Visibility = Visibility.Collapsed;
-        HomeView.Visibility = Visibility.Visible; SettingsLabel.Text = "Настройки"; SettingsGlyph.Symbol = Wpf.Ui.Controls.SymbolRegular.Settings24;
+        HomeView.Visibility = Visibility.Visible; SettingsLabel.Text = Localization.Text("Ui.Settings"); SettingsGlyph.Symbol = Wpf.Ui.Controls.SymbolRegular.Settings24;
         RenderClipCards();
     }
 
@@ -270,7 +280,7 @@ public partial class OverlayWindow
             LibraryEntry[] all = entries.ToArray();
             int pages = Math.Max(1, (int)Math.Ceiling(all.Length / (double)LibraryPageSize));
             _libraryPage = Math.Clamp(_libraryPage, 0, pages - 1);
-            LibraryCount.Text = all.Length + " " + (all.Length % 100 is >= 11 and <= 14 ? "повторов" : (all.Length % 10) switch { 1 => "повтор", >= 2 and <= 4 => "повтора", _ => "повторов" });
+            LibraryCount.Text = Localization.Count("Replay", all.Length);
             LibraryPageText.Text = $"{_libraryPage + 1} / {pages}";
             LibraryPrevious.IsEnabled = _libraryPage > 0; LibraryNext.IsEnabled = _libraryPage + 1 < pages;
             entries = all.Skip(_libraryPage * LibraryPageSize).Take(LibraryPageSize); destination = LibraryItems;
@@ -293,7 +303,7 @@ public partial class OverlayWindow
                 string key = (string)button.Tag;
                 string direction = key == "title" ? sort == 2 ? " ↑" : sort == 4 ? " ↓" : "" :
                     key == "size" ? sort == 3 ? " ↓" : sort == 5 ? " ↑" : "" : sort == 0 ? " ↓" : sort == 1 ? " ↑" : "";
-                button.Content = (key == "title" ? "Файл" : key == "size" ? "Размер" : "Дата") + direction;
+                button.Content = (key == "title" ? Localization.Text("Ui.File") : key == "size" ? Localization.Text("Ui.Size") : Localization.Text("Ui.Date")) + direction;
             }
         }
         LibraryEntry[] visibleEntries = entries.ToArray();
@@ -322,13 +332,13 @@ public partial class OverlayWindow
                     LibraryEntry[] members = session.Entries.Where(entry => visible.Contains(entry.Clip.Video)).ToArray();
                     if (members.Length == 0) continue;
                     var block = new StackPanel { Margin = new Thickness(0, 8, 0, 0) };
-                    System.Windows.Automation.AutomationProperties.SetName(block, "Сессия повторов");
+                    System.Windows.Automation.AutomationProperties.SetName(block, Localization.Text("Message.ReplaySession"));
                     block.Children.Add(new TextBlock { Text = session.Application, FontSize = 13, FontWeight = FontWeights.SemiBold, Margin = new Thickness(4, 0, 0, 5), TextTrimming = TextTrimming.CharacterEllipsis, ToolTip = session.Application });
-                    var culture = System.Globalization.CultureInfo.GetCultureInfo("ru-RU");
+                    var culture = Localization.Culture;
                     string timeFormat = session.StartedUtc.ToLocalTime().Year == DateTime.Now.Year && session.LastSavedUtc.ToLocalTime().Year == DateTime.Now.Year ? "d MMM, HH:mm" : "d MMM yyyy, HH:mm";
                     string details = (session.Estimated ? "≈ " : "") + session.StartedUtc.ToLocalTime().ToString(timeFormat, culture) + " — " + session.LastSavedUtc.ToLocalTime().ToString(timeFormat, culture);
                     block.Children.Add(new TextBlock { Text = details, FontSize = 11, Foreground = (Brush)FindResource("Muted"), Margin = new Thickness(4, 0, 0, 12), TextWrapping = TextWrapping.Wrap,
-                        ToolTip = session.Estimated ? "Приблизительная сессия: пауза между повторами до 90 минут" : "От запуска приложения до последнего сохранённого повтора" });
+                        ToolTip = session.Estimated ? Localization.Text("Message.ApproximateSessionGapsOfUpTo90MinutesBetweenReplays") : Localization.Text("Message.FromApplicationLaunchToTheLastSavedReplay") });
                     var cards = new WrapPanel();
                     foreach (LibraryEntry entry in SortGallery(members)) cards.Children.Add(LibraryCard(entry, width, _libraryPreferences.ListView, version, _previewCancellation.Token));
                     block.Children.Add(cards); destination.Children.Add(block);
@@ -340,7 +350,7 @@ public partial class OverlayWindow
                 foreach (var application in _libraryPreferences.RecentSort == 1 ? applications.OrderBy(group => group.Max(entry => entry.CreatedUtc)) : applications.OrderByDescending(group => group.Max(entry => entry.CreatedUtc)))
                 {
                     var title = new TextBlock { Text = application.Key, FontSize = 13, FontWeight = FontWeights.SemiBold, Margin = new Thickness(4, 8, 0, 12), TextTrimming = TextTrimming.CharacterEllipsis, ToolTip = application.Key };
-                    System.Windows.Automation.AutomationProperties.SetName(title, "Группа приложения"); destination.Children.Add(title);
+                    System.Windows.Automation.AutomationProperties.SetName(title, Localization.Text("Message.ApplicationGroup")); destination.Children.Add(title);
                     var cards = new WrapPanel();
                     foreach (LibraryEntry entry in application) cards.Children.Add(LibraryCard(entry, width, _libraryPreferences.ListView, version, _previewCancellation.Token));
                     destination.Children.Add(cards);
@@ -353,7 +363,7 @@ public partial class OverlayWindow
                 {
                     var heading = new TextBlock { Text = RecentDateTitle(day.Key), FontSize = 13, FontWeight = FontWeights.SemiBold,
                         Margin = new Thickness(4, destination.Children.Count == 0 ? 4 : 8, 0, 12) };
-                    System.Windows.Automation.AutomationProperties.SetName(heading, "Группа даты");
+                    System.Windows.Automation.AutomationProperties.SetName(heading, Localization.Text("Message.DateGroup"));
                     destination.Children.Add(heading);
                     var cards = new WrapPanel();
                     foreach (LibraryEntry entry in day) cards.Children.Add(LibraryCard(entry, width, _libraryPreferences.ListView, version, _previewCancellation.Token));
@@ -363,7 +373,7 @@ public partial class OverlayWindow
         }
         else foreach (LibraryEntry entry in entries) destination.Children.Add(LibraryCard(entry, width, _libraryPreferences.ListView, version, _previewCancellation.Token));
         if (destination.Children.Count == 0)
-            destination.Children.Add(new TextBlock { Text = _libraryVisible ? "Повторы не найдены" : "Сохранённые моменты появятся здесь", Foreground = (Brush)FindResource("Muted"), Margin = new Thickness(0, 16, 0, 0) });
+            destination.Children.Add(new TextBlock { Text = _libraryVisible ? Localization.Text("Message.NoReplaysFound") : Localization.Text("Message.SavedMomentsWillAppearHere"), Foreground = (Brush)FindResource("Muted"), Margin = new Thickness(0, 16, 0, 0) });
         GridViewButton.Background = LibraryGridButton.Background = (Brush)FindResource(!_libraryPreferences.ListView ? "Hover" : "Surface");
         ListViewButton.Background = LibraryListButton.Background = (Brush)FindResource(_libraryPreferences.ListView ? "Hover" : "Surface");
     }
@@ -371,17 +381,17 @@ public partial class OverlayWindow
     private static string RecentDateTitle(DateTime date)
     {
         DateTime today = DateTime.Now.Date;
-        return date == today ? "Сегодня" : date == today.AddDays(-1) ? "Вчера" :
-            date.ToString(date.Year == today.Year ? "d MMMM" : "d MMMM yyyy", System.Globalization.CultureInfo.GetCultureInfo("ru-RU"));
+        return date == today ? Localization.Text("Message.Today") : date == today.AddDays(-1) ? Localization.Text("Message.Yesterday") :
+            date.ToString(date.Year == today.Year ? "d MMMM" : "d MMMM yyyy", Localization.Culture);
     }
 
     private Button LibraryCard(LibraryEntry entry, double width, bool list, int version, CancellationToken cancellation)
     {
         Clip clip = entry.Clip;
-        var preview = new Grid { Background = (Brush)FindResource("Raised"), ClipToBounds = true, ToolTip = "Загрузка превью…" };
+        var preview = new Grid { Background = (Brush)FindResource("Raised"), ClipToBounds = true, ToolTip = Localization.Text("Message.LoadingPreview") };
         var placeholder = new Wpf.Ui.Controls.SymbolIcon { Symbol = Wpf.Ui.Controls.SymbolRegular.Video24, FontSize = 22,
             Foreground = (Brush)FindResource("Muted"), Opacity = .55, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-        System.Windows.Automation.AutomationProperties.SetName(placeholder, "Загрузка превью");
+        System.Windows.Automation.AutomationProperties.SetName(placeholder, Localization.Text("Message.LoadingPreview29f3bdf5"));
         preview.Children.Add(placeholder);
         var image = new Image { Stretch = Stretch.Uniform };
         preview.Children.Add(image);
@@ -395,18 +405,18 @@ public partial class OverlayWindow
         if (_galleryPreviews.TryGetValue(clip.Video, out GalleryPreview? cached) && cached.Bytes == entry.Bytes && cached.Modified == entry.ModifiedUtc)
             ShowPreview(cached.Image);
         var duration = new TextBlock { Text = clip.Duration > 0 ? MediaDuration(clip.Duration) : "…", Foreground = Brushes.White, FontSize = 12 };
-        System.Windows.Automation.AutomationProperties.SetName(duration, "Длительность повтора");
+        System.Windows.Automation.AutomationProperties.SetName(duration, Localization.Text("Message.ReplayDuration"));
         var warning = new Wpf.Ui.Controls.SymbolIcon { Symbol = Wpf.Ui.Controls.SymbolRegular.Warning24, FontSize = 12,
             Foreground = new SolidColorBrush(Color.FromRgb(229, 181, 74)), VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 4, 0), Visibility = Visibility.Collapsed, ToolTip = "В этой записи встречались ошибки воспроизведения" };
-        System.Windows.Automation.AutomationProperties.SetName(warning, "В записи обнаружены ошибки");
+            Margin = new Thickness(0, 0, 4, 0), Visibility = Visibility.Collapsed, ToolTip = Localization.Text("Message.PlaybackErrorsHaveOccurredInThisRecording") };
+        System.Windows.Automation.AutomationProperties.SetName(warning, Localization.Text("Ui.ErrorsFoundInTheRecording"));
         _healthBadges.RemoveAll(badge => !badge.Icon.TryGetTarget(out _));
         _healthBadges.Add(((clip.Screens ?? [clip]).Select(screen => screen.Video).ToArray(), new(warning)));
         var durationBadge = new StackPanel { Orientation = Orientation.Horizontal };
         durationBadge.Children.Add(warning); durationBadge.Children.Add(duration);
         preview.Children.Add(new Border { Child = durationBadge, Background = new SolidColorBrush(Color.FromArgb(225, 20, 20, 20)),
             HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Padding = new Thickness(5, 2, 5, 2), Margin = new Thickness(5) });
-        if (clip.Screens is { Length: > 1 }) preview.Children.Add(new Border { Child = new TextBlock { Text = clip.Screens.Length + " экрана", FontSize = 11 },
+        if (clip.Screens is { Length: > 1 }) preview.Children.Add(new Border { Child = new TextBlock { Text = Localization.Count("Screen", clip.Screens.Length), FontSize = 11 },
             Background = (Brush)FindResource("Raised"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Padding = new Thickness(5, 2, 5, 2), Margin = new Thickness(5) });
         var frame = new SixteenNineFrame { Child = preview, Width = list ? 72 : width - 8, VerticalAlignment = VerticalAlignment.Center };
         var labels = new StackPanel { Margin = list ? new Thickness(0, 0, 8, 0) : new Thickness(0, 9, 0, 0), VerticalAlignment = VerticalAlignment.Center };
@@ -425,11 +435,11 @@ public partial class OverlayWindow
         else { content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); Grid.SetRow(labels, 1); }
         content.Children.Add(frame); content.Children.Add(labels);
         var button = new Button { Content = content, Width = width, Padding = new Thickness(4), Margin = new Thickness(0, 0, 12, 14), HorizontalContentAlignment = HorizontalAlignment.Stretch, ToolTip = clip.Video };
-        System.Windows.Automation.AutomationProperties.SetName(button, "Открыть повтор " + clip.Title);
+        System.Windows.Automation.AutomationProperties.SetName(button, Localization.Text("Message.OpenReplay") + Path.GetFileName(clip.Video));
         button.Click += async (_, _) =>
         {
             try { await OpenClipAsync(clip); }
-            catch (Exception error) { _telemetry.Event("library-play-error", new { error.Message }); if (_libraryVisible) LibraryMessage.Text = "Не удалось открыть файл"; else CaptureMessageText.Text = "Не удалось открыть файл"; }
+            catch (Exception error) { _telemetry.Event("library-play-error", new { error.Message }); if (_libraryVisible) LibraryMessage.Text = Localization.Text("Message.CouldNotOpenFile"); else SetCaptureMessage(() => Localization.Text("Message.CouldNotOpenFile")); }
         };
         async Task PreparePreviewAsync()
         {
@@ -467,8 +477,8 @@ public partial class OverlayWindow
         {
             if (image.Source is not null) return;
             placeholder.Symbol = Wpf.Ui.Controls.SymbolRegular.VideoOff24;
-            preview.ToolTip = "Превью недоступно";
-            System.Windows.Automation.AutomationProperties.SetName(placeholder, "Превью недоступно");
+            preview.ToolTip = Localization.Text("Message.PreviewUnavailable");
+            System.Windows.Automation.AutomationProperties.SetName(placeholder, Localization.Text("Message.PreviewUnavailable"));
         }
         async Task RefreshHealthAsync()
         {
@@ -514,5 +524,5 @@ public partial class OverlayWindow
 
     private static string MediaDuration(double seconds) => TimeSpan.FromSeconds(Math.Max(0, seconds)).ToString(seconds >= 3600 ? @"h\:mm\:ss" : @"m\:ss");
     private static string GalleryTitle(LibraryEntry entry) => Path.GetFileName(entry.Clip.Video);
-    internal static string FormatBytes(long bytes) => bytes >= 1L << 30 ? $"{bytes / (double)(1L << 30):F1} ГБ" : bytes >= 1L << 20 ? $"{bytes / (double)(1L << 20):F1} МБ" : $"{Math.Ceiling(bytes / 1024d):F0} КБ";
+    internal static string FormatBytes(long bytes) => bytes >= 1L << 30 ? Localization.Format("Format.SizeGb", bytes / (double)(1L << 30)) : bytes >= 1L << 20 ? Localization.Format("Format.SizeMb", bytes / (double)(1L << 20)) : Localization.Format("Format.SizeKb", Math.Ceiling(bytes / 1024d));
 }

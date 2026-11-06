@@ -35,7 +35,7 @@ internal sealed partial class ReplayLibraryIndex : IDisposable
             CatalogSnapshot? snapshot = JsonSerializer.Deserialize<CatalogSnapshot>(File.ReadAllText(file));
             if (snapshot?.Version == 1)
             {
-                if (snapshot.Files is null) throw new JsonException("В снимке каталога отсутствует список файлов.");
+                if (snapshot.Files is null) throw new JsonException(Localization.Text("Message.TheCatalogSnapshotIsMissingItsFileList"));
                 int skipped = 0;
                 foreach (LibraryEntry entry in snapshot.Files)
                 {
@@ -144,7 +144,7 @@ internal sealed partial class ReplayLibraryIndex : IDisposable
                             next[file.FullName] = FileEntry(clip, root, file); files++;
                         }
                         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or ArgumentException)
-                        { warning = "Часть файлов недоступна"; if (old.TryGetValue(file.FullName, out LibraryEntry? previous)) next[file.FullName] = previous; }
+                        { warning = Localization.Text("Message.SomeFilesAreUnavailable"); if (old.TryGetValue(file.FullName, out LibraryEntry? previous)) next[file.FullName] = previous; }
                     }
                     folders++;
                     if (timer.ElapsedMilliseconds - reported >= 200)
@@ -165,7 +165,7 @@ internal sealed partial class ReplayLibraryIndex : IDisposable
                 }
                 catch (Exception error) when (error is IOException or UnauthorizedAccessException)
                 {
-                    warning = "Часть папок недоступна; показан сохранённый снимок";
+                    warning = Localization.Text("Message.SomeFoldersAreUnavailableShowingTheSavedSnapshot");
                     foreach (var pair in old.Where(pair => Inside(pair.Key, folder))) next.TryAdd(pair.Key, pair.Value);
                     telemetry.Event("catalog-folder-unavailable", new { folder, error.Message });
                 }

@@ -100,10 +100,10 @@ internal sealed class ReplayAudioStreams : IDisposable
                 if (_pump.IsFaulted) await _pump;
                 if (_pump.IsCompleted || decoder.HasExited)
                 {
-                    if (decoder.HasExited && decoder.ExitCode != 0) throw new InvalidOperationException("Не удалось прочитать звук клипа: " + await _errors);
+                    if (decoder.HasExited && decoder.ExitCode != 0) throw new InvalidOperationException(Localization.Text("Message.CouldNotReadClipAudio") + await _errors);
                     break;
                 }
-                if (timer.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException("Звук клипа не ответил.");
+                if (timer.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException(Localization.Text("Message.ClipAudioDidNotRespond"));
                 await Task.Delay(5, request.Token);
             }
             if (generation == _generation && resume) Resume();

@@ -27,6 +27,13 @@ public partial class OverlayWindow
     private string? _captureFailure;
     private bool _recordingInterrupted, _captureBlinkActive, _captureBlinkLit;
     private int? _saveSecondsOverride;
+    private Func<string>? _captureMessageProvider;
+
+    private void SetCaptureMessage(Func<string>? text)
+    {
+        _captureMessageProvider = text;
+        CaptureMessageText.Text = text?.Invoke() ?? "";
+    }
 
     private bool _draftVideoEnabled = true;
     private string? _lastMonitorLayoutState;
@@ -40,7 +47,7 @@ public partial class OverlayWindow
         StorageInput.Text = replayDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos, Environment.SpecialFolderOption.DoNotVerify), "Rewind");
         try { _captureSettings = _settingsFile.Load(); }
         catch (Exception error) when (error is IOException or JsonException or ArgumentException)
-        { SettingsMessageText.Text = "Настройки не загружены: " + error.Message; }
+        { SettingsMessageText.Text = Localization.Text("Message.CouldNotLoadSettings") + error.Message; }
         _draftVideoEnabled = _captureSettings?.CaptureVideo ?? true;
         if (_captureSettings is not null)
             foreach (MonitorRecordingProfile profile in _captureSettings.ResolveMonitorProfiles()) _monitorProfiles[ProfileKey(profile)] = profile;
@@ -80,7 +87,7 @@ public partial class OverlayWindow
             RefreshMonitorProfiles();
             RenderMonitorLayout();
         }
-        catch (Exception error) { SettingsMessageText.Text = "Не удалось получить мониторы: " + error.Message; }
+        catch (Exception error) { SettingsMessageText.Text = Localization.Text("Message.CouldNotGetMonitors") + error.Message; }
     }
 
     private void RenderMonitorLayout()
@@ -108,7 +115,7 @@ public partial class OverlayWindow
                 content.Children.Add(new TextBlock { Text = $"{outputWidth} × {outputHeight}", FontSize = 13, HorizontalAlignment = HorizontalAlignment.Center });
                 content.Children.Add(new TextBlock { Text = $"{profile.Fps} FPS", FontSize = 13, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 2, 0, 2) });
             }
-            string role = capturing ? "Записывается" : enabled ? "Повтор остановлен" : "Не записывать";
+            string role = capturing ? Localization.Text("Message.Recording") : enabled ? Localization.Text("Message.ReplayStopped") : Localization.Text("Message.DoNotRecord");
             var symbols = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 3, 0, 0) };
             symbols.Children.Add(new Wpf.Ui.Controls.SymbolIcon { Symbol = capturing ? Wpf.Ui.Controls.SymbolRegular.Video24 : enabled ? Wpf.Ui.Controls.SymbolRegular.Pause24 : Wpf.Ui.Controls.SymbolRegular.VideoOff24,
                 FontSize = 17, Foreground = capturing ? green : (Brush)FindResource(enabled ? "Ink" : "Muted"), Opacity = enabled ? 1 : .5, ToolTip = role });
@@ -122,7 +129,7 @@ public partial class OverlayWindow
                 ToolTip = monitor.Label + "\n" + role + "\n" + monitor.Details
             };
             content.VerticalAlignment = VerticalAlignment.Center;
-            System.Windows.Automation.AutomationProperties.SetName(frame, "Экран " + MonitorNumber(monitor.DeviceName));
+            System.Windows.Automation.AutomationProperties.SetName(frame, Localization.Text("Message.Screen") + MonitorNumber(monitor.DeviceName));
             Canvas.SetLeft(frame, (monitor.Left - left) * scale + 5);
             Canvas.SetTop(frame, (monitor.Top - top) * scale + 5);
             MonitorLayout.Children.Add(frame);
@@ -136,7 +143,7 @@ public partial class OverlayWindow
         bool opening = SettingsView.Visibility != Visibility.Visible;
         HomeView.Visibility = opening ? Visibility.Collapsed : Visibility.Visible;
         SettingsView.Visibility = opening ? Visibility.Visible : Visibility.Collapsed;
-        SettingsLabel.Text = opening ? "Назад" : "Настройки";
+        SettingsLabel.Text = opening ? Localization.Text("Message.Back") : Localization.Text("Ui.Settings");
         SettingsGlyph.Symbol = opening ? Wpf.Ui.Controls.SymbolRegular.ArrowLeft24 : Wpf.Ui.Controls.SymbolRegular.Settings24;
         if (opening) { RefreshMonitors(); RefreshAudioDevices(); }
         else RenderClipCards();
@@ -178,7 +185,7 @@ public partial class OverlayWindow
 
     private CaptureSettings ReadCaptureSettings()
     {
-        if (_monitors.Count == 0) throw new ArgumentException("Нет подключённых экранов.");
+        if (_monitors.Count == 0) throw new ArgumentException(Localization.Text("Message.NoScreensAreConnected"));
         int history = (int)Math.Round(HistorySlider.Value);
         _intervals.Resize(history);
         MonitorRecordingProfile[] profiles = _monitorProfiles.Values.OrderBy(profile => profile.DeviceName).ToArray();
@@ -191,7 +198,7 @@ public partial class OverlayWindow
             ShadowPlayDirectory = ShadowPlayEnabled.IsChecked == true ? ShadowPlayPath.Text.Trim() : null,
         };
         if (settings.CaptureMicrophone && MicrophonePicker.SelectedItem is not AudioDeviceChoice)
-            throw new ArgumentException("Микрофон для записи не выбран.");
+            throw new ArgumentException(Localization.Text("Message.NoRecordingMicrophoneIsSelected"));
         settings.Validate();
         return settings;
     }
@@ -222,7 +229,7 @@ public partial class OverlayWindow
         if (_captureBusy) return;
         _captureBusy = true;
         CaptureToggle.IsEnabled = false;
-        CaptureMessageText.Text = "";
+        SetCaptureMessage(null);
         try
         {
             await StopAudioMonitoringAsync();
@@ -230,18 +237,18 @@ public partial class OverlayWindow
             {
                 CancelReplayDurationSelection();
                 await previous.StopAsync();
-                if (previous.Status.Error is string error) CaptureMessageText.Text = error;
+                if (previous.Status.Error is string error) SetCaptureMessage(() => error);
                 await previous.DisposeAsync();
                 _capture = null;
                 RememberRecordingState(false);
                 _captureStartNoticePending = false;
-                ShowActionToast("capture", "Запись выключена", "", Wpf.Ui.Controls.SymbolRegular.VideoOff24);
+                ShowLocalizedActionToast("capture", "Message.RecordingIsOff", () => "", Wpf.Ui.Controls.SymbolRegular.VideoOff24);
             }
             else
             {
                 if (_captureFailure is not null) RefreshMonitors();
                 CaptureSettings settings = ReadCaptureSettings();
-                if (!settings.CaptureVideo) throw new InvalidOperationException("Запись экрана отключена в настройках.");
+                if (!settings.CaptureVideo) throw new InvalidOperationException(Localization.Text("Message.ScreenRecordingIsDisabledInSettings"));
                 IReadOnlyList<CaptureMonitor> monitors = MonitorCatalog.Read();
                 _settingsFile.Save(settings);
                 _captureSettings = settings;
@@ -251,14 +258,14 @@ public partial class OverlayWindow
                 RememberRecordingState(true);
                 _captureStartNoticePending = true; _captureFailureNotified = false;
                 _telemetry.Event("capture-started", new { settings, monitors });
-                CaptureMessageText.Text = "";
+                SetCaptureMessage(null);
             }
         }
         catch (Exception error)
         {
-            CaptureMessageText.Text = error.Message;
+            SetCaptureMessage(() => error.Message);
             _captureStartNoticePending = false;
-            ShowActionToast("capture", "Не удалось переключить запись", error.Message, Wpf.Ui.Controls.SymbolRegular.ErrorCircle24, error: true);
+            ShowLocalizedActionToast("capture", "Message.CouldNotChangeRecordingState", () => error.Message, Wpf.Ui.Controls.SymbolRegular.ErrorCircle24, error: true);
             _telemetry.Event("capture-error", new { error.Message });
         }
         finally { _captureBusy = false; CaptureToggle.IsEnabled = true; UpdateCaptureStatus(); }
@@ -269,7 +276,7 @@ public partial class OverlayWindow
 
     public void SelectReplayDuration(int seconds)
     {
-        if (!_intervals.ActiveMarkers.Contains(seconds)) throw new ArgumentException("Этот интервал недоступен для сохранения.");
+        if (!_intervals.ActiveMarkers.Contains(seconds)) throw new ArgumentException(Localization.Text("Message.ThisIntervalIsUnavailableForSaving"));
         _saveSecondsOverride = seconds;
         UpdateCaptureStatus();
     }
@@ -285,7 +292,7 @@ public partial class OverlayWindow
             {
                 var option = new RadioButton { Content = ReplayIntervals.Format(seconds), Tag = seconds,
                     GroupName = "SaveReplayDuration", Style = (Style)FindResource("ReplayDurationOption") };
-                System.Windows.Automation.AutomationProperties.SetName(option, "Длительность " + ReplayIntervals.Format(seconds));
+                System.Windows.Automation.AutomationProperties.SetName(option, Localization.Text("Message.Duration") + ReplayIntervals.Format(seconds));
                 option.Checked += (_, _) => { if (seconds != (_saveSecondsOverride ?? _intervals.DefaultSeconds)) SelectReplayDuration(seconds); };
                 ReplayDurationOptions.Children.Add(option);
             }
@@ -294,8 +301,9 @@ public partial class OverlayWindow
         foreach (RadioButton option in ReplayDurationOptions.Children.OfType<RadioButton>())
         {
             int seconds = (int)option.Tag;
+            System.Windows.Automation.AutomationProperties.SetName(option, Localization.Text("Message.Duration") + ReplayIntervals.Format(seconds));
             option.IsChecked = seconds == selectedSeconds;
-            option.ToolTip = seconds == _intervals.DefaultSeconds ? "Основной интервал горячей клавиши" : "Выбрать " + ReplayIntervals.Format(seconds);
+            option.ToolTip = seconds == _intervals.DefaultSeconds ? Localization.Text("Message.DefaultHotkeyInterval") : Localization.Text("Message.Select") + ReplayIntervals.Format(seconds);
         }
     }
 
@@ -305,13 +313,13 @@ public partial class OverlayWindow
         string noticeKey = "save-" + Guid.NewGuid().ToString("N");
         try
         {
-            if (_capture is null) throw new InvalidOperationException("Запись сейчас выключена.");
-            CaptureMessageText.Text = "Сохранение повтора…";
+            if (_capture is null) throw new InvalidOperationException(Localization.Text("Message.RecordingIsCurrentlyOff"));
+            SetCaptureMessage(() => Localization.Text("Message.SavingReplay"));
             if (!allScreens && selected is null)
             {
                 if (!Native.GetCursorPos(out Native.Point cursor)) throw new Win32Exception();
                 CaptureMonitor? monitor = _monitors.FirstOrDefault(monitor => cursor.X >= monitor.Left && cursor.X < monitor.Left + monitor.Width && cursor.Y >= monitor.Top && cursor.Y < monitor.Top + monitor.Height);
-                if (monitor is null) throw new InvalidOperationException("Не удалось определить экран под курсором.");
+                if (monitor is null) throw new InvalidOperationException(Localization.Text("Message.CouldNotIdentifyTheScreenUnderThePointer"));
                 selected = [monitor.DeviceName];
             }
             nint foreground = foregroundWindow ?? Native.GetForegroundWindow();
@@ -319,16 +327,16 @@ public partial class OverlayWindow
             long contextStamp = Stopwatch.GetTimestamp();
             ApplicationCaptureContext application = CaptureApplication.Read(foreground);
             double contextMs = Stopwatch.GetElapsedTime(contextStamp).TotalMilliseconds;
-            ShowActionToast(noticeKey, "Сохранение повтора…", "Подготовка видео", Wpf.Ui.Controls.SymbolRegular.Save24, persistent: true);
+            ShowLocalizedActionToast(noticeKey, "Message.SavingReplay", () => Localization.Text("Message.PreparingVideo"), Wpf.Ui.Controls.SymbolRegular.Save24, persistent: true);
             long requestStamp = Stopwatch.GetTimestamp();
             Task<SavedReplay[]> saving = _capture.SaveScreensAsync(seconds, selected, application.Name, application.SessionId, application.SessionStartedUtc, endTimestamp);
             _telemetry.Event("save-request-stages", new { contextMs, requestMs = Stopwatch.GetElapsedTime(requestStamp).TotalMilliseconds });
             SavedReplay[] savedScreens = await saving;
             SavedReplay saved = savedScreens[0];
-            string detail = ReplayNotificationText.SavedDetail((int)saved.Duration, savedScreens.Sum(screen => screen.Bytes), savedScreens.Select(screen => screen.File).ToArray());
+            string Detail() => ReplayNotificationText.SavedDetail((int)saved.Duration, savedScreens.Sum(screen => screen.Bytes), savedScreens.Select(screen => screen.File).ToArray());
             nint[] monitors = savedScreens.Length > 1 ? _monitors.Where(monitor =>
                 savedScreens.Any(screen => screen.MonitorDeviceName == monitor.DeviceName)).Select(monitor => (nint)monitor.Handle).ToArray() : [];
-            ShowActionToast(noticeKey, "Повтор сохранён", detail,
+            ShowLocalizedActionToast(noticeKey, "Message.ReplaySaved", Detail,
                 Wpf.Ui.Controls.SymbolRegular.CheckmarkCircle24, file: saved.File, recordingMonitors: monitors);
             _telemetry.Event("replay-saved", saved);
             // Ошибка обновления библиотеки не отменяет успешно записанный видеофайл.
@@ -340,11 +348,11 @@ public partial class OverlayWindow
                 _ = RefreshCatalogAsync();
                 if (_clips.Count > 20) _clips.RemoveRange(20, _clips.Count - 20);
                 RenderClipCards();
-                CaptureMessageText.Text = $"Сохранено · {ReplayIntervals.Format((int)saved.Duration)} · {savedScreens.Sum(screen => screen.Bytes) / 1048576.0:F0} МБ";
+                SetCaptureMessage(() => Localization.Format("Format.SavedSummary", ReplayIntervals.Format((int)saved.Duration), savedScreens.Sum(screen => screen.Bytes) / 1048576.0));
             }
             catch (Exception libraryError)
             {
-                CaptureMessageText.Text = "Повтор сохранён, но библиотеку не удалось обновить.";
+                SetCaptureMessage(() => Localization.Text("Message.ReplaySavedButTheLibraryCouldNotBeRefreshed"));
                 _telemetry.Event("saved-clip-ui-error", new { libraryError.Message });
             }
         }
@@ -356,8 +364,8 @@ public partial class OverlayWindow
 
     private void ReportReplaySaveError(Exception error, string noticeKey, bool allScreens, int? seconds, string[]? selected)
     {
-        CaptureMessageText.Text = error.Message;
-        ShowActionToast(noticeKey, "Повтор не сохранён", error.Message, Wpf.Ui.Controls.SymbolRegular.ErrorCircle24, error: true);
+        SetCaptureMessage(() => error.Message);
+        ShowLocalizedActionToast(noticeKey, "Message.ReplayWasNotSaved", () => error.Message, Wpf.Ui.Controls.SymbolRegular.ErrorCircle24, error: true);
         _telemetry.Event("save-error", new { error.Message, exception = error.ToString(), allScreens, requestedSeconds = seconds,
             requestedMonitors = selected,
             recordingMonitors = _captureSettings?.ResolveMonitorProfiles().Where(profile => profile.Enabled).Select(profile => profile.DeviceName).ToArray() });
@@ -377,7 +385,7 @@ public partial class OverlayWindow
         HistoryProgress.Value = running ? Math.Clamp(status!.AvailableSeconds / (_captureSettings?.HistorySeconds ?? 120), 0, 1) : 0;
         HistoryProgress.Visibility = running ? Visibility.Visible : Visibility.Collapsed;
         UpdateAudioStatus();
-        CaptureToggleText.Text = _capture is null ? "Включить" : "Остановить";
+        CaptureToggleText.Text = _capture is null ? Localization.Text("Ui.Start") : Localization.Text("Message.Stop");
         CaptureToggle.ToolTip = CaptureToggleText.Text + (_hotkeys.CaptureToggle is null ? "" : " · " + _hotkeys.CaptureToggle.Label);
         System.Windows.Automation.AutomationProperties.SetName(CaptureToggle, CaptureToggleText.Text);
         CaptureToggle.Style = (Style)FindResource(_capture is null ? "PrimaryButton" : typeof(Button));
@@ -393,7 +401,7 @@ public partial class OverlayWindow
         HistoryValueText.Text = running ? $"{ReplayIntervals.Format((int)status!.AvailableSeconds)} / {ReplayIntervals.Format(_intervals.MaximumSeconds)}" : ReplayIntervals.Format(_intervals.MaximumSeconds);
         ScreensValueText.Text = (_captureSettings?.ResolveMonitorProfiles().Count(profile => profile.Enabled) ?? 0).ToString();
         ReplaySizeText.Text = running && status!.LatestSeconds > 2
-            ? $"≈ {status.BufferBytes / Math.Min(status.LatestSeconds, _captureSettings!.HistorySeconds + 10) * saveSeconds / 1048576.0:F0} МБ" : "—";
+            ? Localization.Format("Format.EstimatedMb", status.BufferBytes / Math.Min(status.LatestSeconds, _captureSettings!.HistorySeconds + 10) * saveSeconds / 1048576.0) : "—";
         RefreshSettingsPresentation();
         if (!_captureBusy && !_closing && _capture is DesktopReplaySession failed && status is { Running: false, Error: not null })
             _ = FinishFailedCaptureAsync(failed);
@@ -416,11 +424,11 @@ public partial class OverlayWindow
 
         bool interrupted = _recordingInterrupted || recovering && status!.EncodedFrames > 0;
         string state;
-        if (recovering) state = interrupted ? "Запись прервалась · восстановление…" : "Восстановление видеозахвата…";
-        else if (running && _captureFailure is null) state = audioWarning ? "Запись идёт · есть проблема со звуком" : "Запись идёт";
-        else if (running) state = "Запись запускается…";
-        else if (interrupted) state = "Запись прервалась";
-        else state = _captureFailure is null ? "Запись выключена" : "Запись не запустилась";
+        if (recovering) state = interrupted ? Localization.Text("Message.RecordingInterruptedRecovering") : Localization.Text("Message.RecoveringVideoCapture");
+        else if (running && _captureFailure is null) state = audioWarning ? Localization.Text("Message.RecordingAudioProblemDetected") : Localization.Text("Message.Recording9d0a624f");
+        else if (running) state = Localization.Text("Message.StartingRecording");
+        else if (interrupted) state = Localization.Text("Message.RecordingInterrupted");
+        else state = _captureFailure is null ? Localization.Text("Message.RecordingIsOff") : Localization.Text("Message.RecordingDidNotStart");
 
         if (!interrupted) _captureBlinkLit = false;
         else if (!_captureBlinkActive) _captureBlinkLit = true;
@@ -472,7 +480,7 @@ public partial class OverlayWindow
         _closing = true;
         CancelReplayDurationSelection();
         CaptureToggle.IsEnabled = false;
-        CaptureMessageText.Text = "Завершаю захват и сохранения…";
+        SetCaptureMessage(() => Localization.Text("Message.StoppingCaptureAndFinishingSaves"));
         while (_captureBusy) await Task.Delay(50);
         await StopAudioMonitoringAsync();
         try { if (_capture is not null) await _capture.DisposeAsync(); }

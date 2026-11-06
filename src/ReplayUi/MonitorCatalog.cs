@@ -8,7 +8,7 @@ public sealed record CaptureMonitor(string DeviceName, string Name, int AdapterI
     int Left, int Top, int Width, int Height, int ScalePercent, bool Primary, long Handle, string Identity)
 {
     public string Label => $"{DeviceName.Replace("\\\\.\\", "")} · {Name}";
-    public string Details => $"{Width} × {Height} · масштаб {ScalePercent}%" + (Primary ? " · основной" : "");
+    public string Details => Localization.Format("Format.MonitorDetails", Width, Height, ScalePercent) + (Primary ? Localization.Text("Message.Primary") : "");
     public override string ToString() => Label;
 }
 

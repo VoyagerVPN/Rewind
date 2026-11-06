@@ -37,7 +37,10 @@ function buildSetup(compiler, payload, output, product = 'Rewind') {
     const relative = nsisText(file.path.replaceAll('/', '\\'));
     const directory = path.win32.dirname(relative);
     const destination = directory === '.' ? '$INSTDIR' : '$INSTDIR\\' + directory;
-    if (directory === '.') bootstrap.push('File "' + nsisText(path.join(payload, file.path)) + '"', 'IfErrors uiFailed');
+    if (directory === '.' || file.path === 'ru/Rewind.resources.dll') {
+      const bootstrapDirectory = directory === '.' ? '$PLUGINSDIR\\ui' : '$PLUGINSDIR\\ui\\' + directory;
+      bootstrap.push('SetOutPath "' + bootstrapDirectory + '"', 'File "' + nsisText(path.join(payload, file.path)) + '"', 'IfErrors uiFailed');
+    }
     copy.push('SetOutPath "' + destination + '"', 'File "' + nsisText(path.join(payload, file.path)) + '"', 'IfErrors failed');
     remove.push('Delete "$INSTDIR\\' + relative + '"');
     for (let current = directory; current !== '.'; current = path.win32.dirname(current)) folders.add(current);

@@ -6,9 +6,9 @@ namespace Rewind.Preview;
 public partial class OverlayWindow
 {
     private DateTime _lastOutputRefresh;
-    private void RefreshAudioDevices()
+    private void RefreshAudioDevices(bool force = false)
     {
-        if (_capture is not null) return;
+        if (_capture is not null && !force) return;
         string? selected = MicrophonePicker.SelectedItem is AudioDeviceChoice choice ? choice.Id : _captureSettings?.MicrophoneDeviceId;
         try
         {
@@ -17,12 +17,12 @@ public partial class OverlayWindow
             MicrophonePicker.SelectedItem = devices.FirstOrDefault(device => device.Id == selected);
             if (MicrophonePicker.SelectedItem is null)
             {
-                var missing = new AudioDeviceChoice(selected, "Выбранный микрофон недоступен · переподключи устройство");
+                var missing = new AudioDeviceChoice(selected, Localization.Text("Message.TheSelectedMicrophoneIsUnavailableReconnectTheDevice"));
                 MicrophonePicker.ItemsSource = devices.Append(missing).ToArray();
                 MicrophonePicker.SelectedItem = missing;
             }
         }
-        catch (Exception error) { SettingsMessageText.Text = "Не удалось получить устройства звука: " + error.Message; }
+        catch (Exception error) { SettingsMessageText.Text = Localization.Text("Message.CouldNotGetAudioDevices") + error.Message; }
     }
 
     private void OnRefreshAudio(object sender, RoutedEventArgs args) => RefreshAudioDevices();
@@ -37,15 +37,15 @@ public partial class OverlayWindow
     {
         if ((DateTime.UtcNow - _lastOutputRefresh).TotalSeconds >= 2)
         {
-            try { WindowsSoundButton.ToolTip = "Звук Windows\nТекущий выход: " + AudioDeviceCatalog.DefaultOutput(); }
-            catch (Exception) { WindowsSoundButton.ToolTip = "Звук Windows\nВыход недоступен; захват приложений не привязан к устройству."; }
+            try { WindowsSoundButton.ToolTip = Localization.Format("Format.WindowsAudioOutput", AudioDeviceCatalog.DefaultOutput()); }
+            catch (Exception) { WindowsSoundButton.ToolTip = Localization.Text("Format.WindowsAudioUnavailable"); }
             _lastOutputRefresh = DateTime.UtcNow;
         }
         bool recording = _capture?.Status is { Running: true, Recovering: false };
         AudioSourceStatus[] sources = recording ? _capture!.AudioStatus : _audioPreview?.Status ?? [];
         string[] names = ["system", "discord", "microphone"];
         System.Windows.Controls.TextBlock[] texts = [SystemSourceText, DiscordSourceText, MicrophoneSourceText];
-        SystemAudioEnabled.ToolTip = DiscordAudioEnabled.IsChecked == true ? "Все приложения и выходы Windows, кроме Discord" : "Все приложения и выходы Windows, включая Discord";
+        SystemAudioEnabled.ToolTip = DiscordAudioEnabled.IsChecked == true ? Localization.Text("Ui.AllWindowsApplicationsAndOutputsExceptDiscord") : Localization.Text("Message.AllWindowsApplicationsAndOutputsIncludingDiscord");
         MicrophonePicker.IsEnabled = _capture is null && !_captureBusy && MicrophoneEnabled.IsChecked == true;
         for (int index = 0; index < names.Length; index++)
         {
@@ -72,7 +72,7 @@ public partial class OverlayWindow
             levels[index].Peak = source?.Peak ?? 0;
             levels[index].Visibility = enabled[index] ? Visibility.Visible : Visibility.Collapsed;
             string decibels = source is { Peak: > 0 } ? $"{20 * Math.Log10(source.Peak):F0} dBFS" : "−∞ dBFS";
-            levels[index].ToolTip = (source?.Device ?? "Источник выключен") + " · " + decibels;
+            levels[index].ToolTip = (source?.Device ?? Localization.Text("Message.SourceIsOff")) + " · " + decibels;
         }
     }
 }

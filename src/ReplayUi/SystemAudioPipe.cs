@@ -15,8 +15,8 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
         public readonly AudioTimelineBuffer Buffer = new();
         public readonly string Name = name;
         public WasapiRecorder? Recorder;
-        public string Device = "Подключение…";
-        public string? Warning, Failure;
+        public Func<string> Device = () => Localization.Text("Message.Connecting");
+        public Func<string>? Warning, Failure;
         public readonly AudioLevelEnvelope Level = new();
         public long Packets, SignalPackets;
         public long Discontinuities, Attachments;
@@ -44,10 +44,10 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
     public string[] Sources { get; }
     public AudioSourceStatus[] Status => _sources.Where(source => Sources.Contains(source.Name)).Select(source =>
     {
-        lock (source.Gate) return new AudioSourceStatus(source.Name, source.Device,
-            source.Level.Read(ClockNow()), source.Warning ?? source.Failure ??
+        lock (source.Gate) return new AudioSourceStatus(source.Name, source.Device(),
+            source.Level.Read(ClockNow()), source.Warning?.Invoke() ?? source.Failure?.Invoke() ??
                 (source.LastLoss != 0 && Stopwatch.GetElapsedTime(source.LastLoss).TotalSeconds < 5
-                    ? "Краткий пропуск звука · запись продолжается" : null),
+                    ? Localization.Text("Message.BriefAudioGapRecordingContinues") : null),
             source.Recorder is not null && source.Failure is null, source.Packets, source.SignalPackets,
             source.Buffer.Metrics, source.Discontinuities, Math.Max(0, source.Attachments - 1),
             new(source.PacketAge, source.MaxPacketAge, source.ClockOffset, Interlocked.Read(ref source.EmptyCallbacks), source.TimestampFallbacks, source.ClockCorrections));
@@ -95,7 +95,7 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
         try { await _connected.Task.WaitAsync(_cancel.Token); }
         catch (OperationCanceledException) { return; }
         if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 20348))
-        { _error = "Разделение звука требует Windows build 20348 или новее."; return; }
+        { _error = Localization.Text("Message.SeparatingAudioRequiresWindowsBuild20348OrLater"); return; }
         uint? activeProcess = null;
         bool processReady = false;
         string? activeMicrophone = null;
@@ -121,19 +121,19 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
                         {
                             uint excluded = discord ?? (uint)_silentAnchor!.Id;
                             var system = await Builder().WithProcessLoopback(excluded, ProcessLoopbackMode.ExcludeTargetProcessTree).BuildAsync();
-                            Attach(_sources[0], system, discord is null ? "Все выходы Windows" : "Все выходы Windows · без Discord");
+                            Attach(_sources[0], system, () => Localization.Text(discord is null ? "Message.AllWindowsOutputs" : "Message.AllWindowsOutputsExcludingDiscord"));
                         }
                         if (discord is uint pid)
-                            Attach(_sources[1], await Builder().WithProcessLoopback(pid, ProcessLoopbackMode.IncludeTargetProcessTree).BuildAsync(), $"Discord · PID {pid}");
-                        else lock (_sources[1].Gate) { _sources[1].Device = "Discord не запущен"; _sources[1].Warning = null; }
+                            Attach(_sources[1], await Builder().WithProcessLoopback(pid, ProcessLoopbackMode.IncludeTargetProcessTree).BuildAsync(), () => $"Discord · PID {pid}");
+                        else lock (_sources[1].Gate) { _sources[1].Device = () => Localization.Text("Message.DiscordIsNotRunning"); _sources[1].Warning = null; }
                         activeProcess = discord; processReady = true;
                     }
                 }
                 catch (Exception error)
                 {
                     await ReleaseAsync(_sources[0]); await ReleaseAsync(_sources[1]);
-                    lock (_sources[0].Gate) _sources[0].Warning = "Нет системного звука: " + error.Message;
-                    lock (_sources[1].Gate) _sources[1].Warning = "Discord не подключён: " + error.Message;
+                    lock (_sources[0].Gate) _sources[0].Warning = () => Localization.Text("Message.NoSystemAudio") + error.Message;
+                    lock (_sources[1].Gate) _sources[1].Warning = () => Localization.Text("Message.DiscordIsNotConnected") + error.Message;
                     processReady = false;
                 }
             }
@@ -148,14 +148,14 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
                         await ReleaseAsync(source);
                         using var enumerator = new MMDeviceEnumerator();
                         using MMDevice endpoint = enumerator.GetDevice(device.Id);
-                        Attach(source, await Builder().WithDevice(endpoint).BuildAsync(), device.Name);
+                        Attach(source, await Builder().WithDevice(endpoint).BuildAsync(), () => device.Name);
                         activeMicrophone = device.Id;
                     }
                 }
                 catch (Exception error)
                 {
                     await ReleaseAsync(source);
-                    lock (source.Gate) { source.Device = "Микрофон недоступен"; source.Warning = error.Message; }
+                    lock (source.Gate) { source.Device = () => Localization.Text("Message.MicrophoneUnavailable"); source.Warning = () => error.Message; }
                     activeMicrophone = null;
                 }
             }
@@ -165,7 +165,7 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
         foreach (Source source in _sources) await ReleaseAsync(source);
     }
 
-    private void Attach(Source source, WasapiRecorder recorder, string device)
+    private void Attach(Source source, WasapiRecorder recorder, Func<string> device)
     {
         lock (source.Gate) { source.Recorder = recorder; source.Device = device; source.Warning = null; source.Failure = null; source.Buffer.Clear(); source.Attachments++; }
         var timeline = new AudioPacketTimeline(_epochQpc100ns);
@@ -204,12 +204,12 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
                     source.Level.Observe(peak, ClockNow()); source.Packets++;
                     if (peak > 0) source.SignalPackets++;
                 }
-                catch (Exception error) { source.Failure = "Буфер звука: " + error.Message; }
+                catch (Exception error) { source.Failure = () => Localization.Text("Message.AudioBuffer") + error.Message; }
             }
         };
         recorder.RecordingStopped += (_, args) =>
         {
-            lock (source.Gate) if (ReferenceEquals(source.Recorder, recorder)) source.Failure = args.Exception?.Message ?? "Источник остановлен";
+            lock (source.Gate) if (ReferenceEquals(source.Recorder, recorder)) source.Failure = () => args.Exception?.Message ?? Localization.Text("Message.SourceStopped");
         };
         recorder.StartRecording();
     }
@@ -276,7 +276,7 @@ internal sealed class SystemAudioPipe : IAsyncDisposable
             }
         }
         catch (Exception error) when (_cancel.IsCancellationRequested && error is OperationCanceledException or IOException or ObjectDisposedException) { }
-        catch (Exception error) { Interlocked.CompareExchange(ref _error, "Ошибка передачи звука: " + error.Message, null); }
+        catch (Exception error) { Interlocked.CompareExchange(ref _error, Localization.Text("Message.AudioTransportError") + error.Message, null); }
         finally { lock (_metricsGate) _writeStarted = 0; }
     }
 

@@ -1,5 +1,83 @@
 using Rewind.Preview;
 
+Localization.SetLanguage("en");
+if (Localization.Text("Setup.Install") != "Install")
+    throw new InvalidOperationException("The English interface must load English resources.");
+Localization.SetLanguage("ru");
+if (Localization.Text("Setup.Install") != "Установить")
+    throw new InvalidOperationException("Switching language must load Russian resources without restarting.");
+if (!Localization.All().Any(entry => entry.Key == "Setup.Install" && entry.Value == "Установить"))
+    throw new InvalidOperationException("The WPF resource dictionary must receive the selected language.");
+Console.WriteLine("PASS localized_resources_change_with_the_selected_language");
+
+var resources = new System.Resources.ResourceManager("Rewind.Preview.Languages.Strings", typeof(Localization).Assembly);
+var englishResources = resources.GetResourceSet(System.Globalization.CultureInfo.InvariantCulture, true, false)
+    ?? throw new InvalidOperationException("The neutral English resource set is missing.");
+var russianResources = resources.GetResourceSet(System.Globalization.CultureInfo.GetCultureInfo("ru"), true, false)
+    ?? throw new InvalidOperationException("The Russian satellite resource set is missing.");
+var englishKeys = englishResources.Cast<System.Collections.DictionaryEntry>().Select(entry => (string)entry.Key).Order().ToArray();
+var russianKeys = russianResources.Cast<System.Collections.DictionaryEntry>().Select(entry => (string)entry.Key).Order().ToArray();
+if (!englishKeys.SequenceEqual(russianKeys)) throw new InvalidOperationException("Both languages must define exactly the same resource keys.");
+foreach (string key in englishKeys)
+{
+    string en = englishResources.GetString(key) ?? throw new InvalidOperationException("Missing English value: " + key);
+    string ru = russianResources.GetString(key) ?? throw new InvalidOperationException("Missing Russian value: " + key);
+    string[] Placeholders(string value) => System.Text.RegularExpressions.Regex.Matches(value, @"(?<!\{)\{(\d+)(?:[^}]*)\}")
+        .Select(match => match.Groups[1].Value).Order().ToArray();
+    if (!Placeholders(en).SequenceEqual(Placeholders(ru))) throw new InvalidOperationException("Mismatched format arguments: " + key);
+}
+string uiSource = Path.GetFullPath(Path.Combine("src", "ReplayUi"));
+int referencesChecked = 0;
+foreach (string file in Directory.EnumerateFiles(uiSource, "*", SearchOption.TopDirectoryOnly).Where(file => file.EndsWith(".xaml") || file.EndsWith(".cs")))
+{
+    string source = File.ReadAllText(file);
+    var resourceReferences = System.Text.RegularExpressions.Regex.Matches(source,
+        @"\{DynamicResource\s+((?:Ui|Setup|Settings)\.[^}\s]+)\}|(?:Localization|UiLanguage)\.(?:Text|Format)\(""([^""]+)""");
+    foreach (System.Text.RegularExpressions.Match reference in resourceReferences)
+    {
+        referencesChecked++;
+        string key = reference.Groups[1].Success ? reference.Groups[1].Value : reference.Groups[2].Value;
+        if (englishResources.GetString(key) is null || russianResources.GetString(key) is null)
+            throw new InvalidOperationException($"Missing localized resource {key} in {Path.GetFileName(file)}.");
+    }
+}
+if (referencesChecked < 100) throw new InvalidOperationException("The localization reference audit did not cover the interface.");
+Console.WriteLine("PASS resource_sets_and_format_arguments_match");
+
+Localization.SetLanguage("en");
+if (ReplayNotificationText.SavedDetail(300, 1048576, ["first.mp4"]) != "5:00 · 1.0 MB · 1 screen\nfirst.mp4" ||
+    ReplayNotificationText.ScreenCount(2) != "2 screens" || ReplayNotificationText.ScreenCount(0) != "0 screens")
+    throw new InvalidOperationException("English replay notifications must use English numbers, units and plurals.");
+Localization.SetLanguage("ru");
+
+string languageDirectory = Path.Combine(Path.GetTempPath(), "rewind-language-" + Guid.NewGuid().ToString("N"));
+try
+{
+    var language = new LanguagePreferencesFile(Path.Combine(languageDirectory, "language.json"));
+    if (language.Load("ru-RU") != "ru" || language.Load("en-US") != "en" || language.Load("fr-FR") != "en")
+        throw new InvalidOperationException("A new installation must use a supported system language and otherwise English.");
+    language.SetInitialLanguage("ru");
+    if (language.Load("en-US") != "ru")
+        throw new InvalidOperationException("The setup language must be used by the application on first launch.");
+    language.Save("en");
+    if (new LanguagePreferencesFile(Path.Combine(languageDirectory, "language.json")).Load("ru-RU") != "en")
+        throw new InvalidOperationException("The explicitly selected language must survive restart and a different system language.");
+    language.SetInitialLanguage("ru");
+    if (language.Load("ru-RU") != "en")
+        throw new InvalidOperationException("Setup must preserve the explicitly selected language during an update.");
+    string savedPath = Path.Combine(languageDirectory, "language.json");
+    bool rejected = false;
+    using (new FileStream(savedPath, FileMode.Open, FileAccess.Read, FileShare.None))
+    {
+        try { language.Save("ru"); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException) { rejected = true; }
+    }
+    if (!rejected || language.Load("ru-RU") != "en" || Directory.GetFiles(languageDirectory, "*.new").Length != 0)
+        throw new InvalidOperationException("A failed language save must retain the prior setting and clean up temporary files.");
+    Console.WriteLine("PASS language_selection_survives_restart_and_defaults_to_supported_system_language");
+}
+finally { if (Directory.Exists(languageDirectory)) Directory.Delete(languageDirectory, true); }
+
 string ffmpegRoot = Path.Combine(Path.GetTempPath(), "rewind-ffmpeg-" + Guid.NewGuid().ToString("N"));
 try
 {

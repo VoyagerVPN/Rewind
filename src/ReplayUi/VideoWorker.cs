@@ -35,12 +35,15 @@ internal static class VideoWorker
         {
             while (await reader.ReadLineAsync() is string line)
             {
-                VideoCommand command = JsonSerializer.Deserialize<VideoCommand>(line) ?? throw new IOException("Пустая команда.");
+                VideoCommand command = JsonSerializer.Deserialize<VideoCommand>(line) ?? throw new IOException(Localization.Text("Message.EmptyCommand"));
                 if (traceWriter is not null) await traceWriter.WriteLineAsync(JsonSerializer.Serialize(new { utc = DateTime.UtcNow, stage = "issued", command.Kind, command.Id, command.Time, command.Paused }));
                 switch (command.Kind)
                 {
+                    case "language":
+                        if (command.Language is "en" or "ru") Localization.SetLanguage(command.Language);
+                        break;
                     case "open":
-                        if (!command.Headless && command.Handle == 0) throw new InvalidOperationException("Не удалось подготовить область видео.");
+                        if (!command.Headless && command.Handle == 0) throw new InvalidOperationException(Localization.Text("Message.CouldNotPrepareTheVideoSurface"));
                         long openStamp = Stopwatch.GetTimestamp();
                         VideoFileIdentity? before = command.AllowDamaged ? null : VideoProbeCache.ReadIdentity(command.File!);
                         bool probeCached = !command.AllowDamaged && VideoProbeCache.Matches(command.Validation, command.File!, command.Time / 1000d, before);
@@ -56,7 +59,11 @@ internal static class VideoWorker
                                 bool ended = false;
                                 while (!cancellation.IsCancellationRequested)
                                 {
-                                    if (active.Fault is string fault) { messages.Writer.TryWrite(new("error", Error: fault)); return; }
+                                    if (active.Fault is string fault)
+                                    {
+                                        messages.Writer.TryWrite(new("error", Error: Localization.Text("Message.TheVideoPlayerCouldNotCompleteTheActionTryAnotherPositionOrRestar"), Details: fault));
+                                        return;
+                                    }
                                     long time = (long)(active.PositionSeconds * 1000);
                                     // mpv не предоставляет честных суммарных decoded/displayed counters.
                                     long? dropped = active.Counters.Dropped;
@@ -106,7 +113,7 @@ internal static class VideoWorker
         }
         catch (Exception error)
         {
-            messages.Writer.TryWrite(new("error", Error: error is InvalidDataException or FileNotFoundException ? error.Message : "Видеоплеер не смог завершить действие. Попробуй другое место или перезапусти просмотр.",
+            messages.Writer.TryWrite(new("error", Error: error is InvalidDataException or FileNotFoundException ? error.Message : Localization.Text("Message.TheVideoPlayerCouldNotCompleteTheActionTryAnotherPositionOrRestar"),
                 Details: error.ToString(), DamageConfirmed: error is InvalidDataException));
         }
         finally

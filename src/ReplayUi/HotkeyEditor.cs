@@ -23,7 +23,7 @@ public sealed class HotkeyEditor : Button
         SetResourceReference(StyleProperty, typeof(Button));
         MinHeight = 42; MinWidth = 188;
         HorizontalContentAlignment = HorizontalAlignment.Center;
-        ToolTip = "Нажми и введи сочетание · Esc — отмена · Backspace — убрать";
+        ToolTip = Localization.Text("Message.ClickAndEnterAShortcutEscToCancelBackspaceToClear");
         Click += (_, _) => { if (_listening) return; _listening = true; Focus(); CaptureStarted?.Invoke(this, EventArgs.Empty); RefreshLabel(); };
         LostKeyboardFocus += (_, _) => CancelCapture();
         PreviewKeyDown += OnCaptureKey;
@@ -38,9 +38,15 @@ public sealed class HotkeyEditor : Button
 
     private void RefreshLabel()
     {
-        Content = _listening ? "Нажми клавиши…" : Chord?.Label ?? "Не назначено";
+        Content = _listening ? Localization.Text("Message.PressKeys") : Chord?.Label ?? Localization.Text("Message.NotAssigned");
         SetResourceReference(BackgroundProperty, _listening ? "Hover" : "Raised");
         SetResourceReference(BorderBrushProperty, _listening ? "Accent" : "Line");
+    }
+
+    internal void RefreshLanguage()
+    {
+        ToolTip = Localization.Text("Message.ClickAndEnterAShortcutEscToCancelBackspaceToClear");
+        RefreshLabel();
     }
 
     private void OnCaptureKey(object sender, KeyEventArgs args)
@@ -54,13 +60,13 @@ public sealed class HotkeyEditor : Button
         if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin) return;
         ModifierKeys modifiers = Keyboard.Modifiers;
         if (key == Key.Back && modifiers == ModifierKeys.None) { Chord = null; CancelCapture(); return; }
-        if ((modifiers & ModifierKeys.Windows) != 0) { Content = "Без клавиши Win"; return; }
+        if ((modifiers & ModifierKeys.Windows) != 0) { Content = Localization.Text("Message.DoNotUseTheWindowsKey"); return; }
         uint mask = ((modifiers & ModifierKeys.Control) != 0 ? 2u : 0) | ((modifiers & ModifierKeys.Alt) != 0 ? 1u : 0) | ((modifiers & ModifierKeys.Shift) != 0 ? 4u : 0);
         uint? heldKey = null;
         if (AllowHeldKey && mask == 0)
         {
             if (key is >= Key.A and <= Key.Z or >= Key.D0 and <= Key.D9)
-            { Content = "Удерживай клавишу и нажми F-клавишу…"; return; }
+            { Content = Localization.Text("Message.HoldAKeyAndPressAnFKey"); return; }
             if (key is >= Key.F1 and <= Key.F24)
                 heldKey = Enumerable.Range(0x30, 0x5b - 0x30)
                     .Where(value => value is <= 0x39 or >= 0x41)

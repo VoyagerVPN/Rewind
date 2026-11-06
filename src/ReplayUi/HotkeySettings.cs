@@ -40,11 +40,11 @@ public sealed record HotkeyChord(uint Modifiers, uint Key, uint? HeldKey = null)
 
     public void Validate(bool requireModifiers = true)
     {
-        if (Modifiers > 7 || requireModifiers && Modifiers == 0 && HeldKey is null) throw new ArgumentException("Добавь Ctrl, Alt, Shift или удерживаемую букву.");
+        if (Modifiers > 7 || requireModifiers && Modifiers == 0 && HeldKey is null) throw new ArgumentException(Localization.Text("Message.AddCtrlAltShiftOrAHeldLetter"));
         if (HeldKey is uint held && (held is not (>= 0x30 and <= 0x39 or >= 0x41 and <= 0x5a) || Key is not (>= 0x70 and <= 0x87)))
-            throw new ArgumentException("Удерживай букву или цифру и нажми F-клавишу.");
+            throw new ArgumentException(Localization.Text("Message.HoldALetterOrNumberAndPressAnFKey"));
         if (Key is not (>= 0x30 and <= 0x39 or >= 0x41 and <= 0x5a or >= 0x70 and <= 0x87 or 0x20 or 0xbc or 0xbe or >= 0x21 and <= 0x28 or >= 0x2c and <= 0x2e))
-            throw new ArgumentException("Выбери букву, цифру, F-клавишу или клавишу навигации.");
+            throw new ArgumentException(Localization.Text("Message.ChooseALetterNumberFKeyOrNavigationKey"));
     }
 }
 
@@ -66,9 +66,9 @@ public sealed record HotkeySettings(HotkeyChord? Panel, HotkeyChord? Save, Hotke
         foreach (HotkeyChord chord in local) chord.Validate(requireModifiers: false);
         Settings?.Validate(requireModifiers: false);
         if (Settings?.HeldKey is not null || local.Any(chord => chord.HeldKey is not null))
-            throw new ArgumentException("Удерживаемая буква поддерживается только для глобальных действий.");
+            throw new ArgumentException(Localization.Text("Message.AHeldLetterIsSupportedOnlyForGlobalActions"));
         HotkeyChord[] all = chords.Concat(local).Concat(new[] { Settings }.OfType<HotkeyChord>()).ToArray();
-        if (all.Distinct().Count() != all.Length) throw new ArgumentException("Это сочетание уже назначено другому действию Rewind.");
+        if (all.Distinct().Count() != all.Length) throw new ArgumentException(Localization.Text("Message.ThisShortcutIsAlreadyAssignedToAnotherRewindAction"));
     }
 }
 
@@ -91,7 +91,7 @@ public sealed class HotkeySettingsFile(string path)
     {
         if (!File.Exists(path)) return HotkeySettings.Default;
         using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path));
-        var settings = document.RootElement.Deserialize<HotkeySettings>() ?? throw new InvalidDataException("Не удалось прочитать горячие клавиши.");
+        var settings = document.RootElement.Deserialize<HotkeySettings>() ?? throw new InvalidDataException(Localization.Text("Message.CouldNotReadHotkeys"));
         bool Conflicts(HotkeyChord? chord) => chord is not null && Enum.GetValues<HotkeyAction>().Select(settings.Get)
             .Concat(Enum.GetValues<PlayerHotkeyAction>().Select(settings.PlayerBindings.Get)).Append(settings.Settings).Count(binding => binding == chord) > 1;
         // Новые значения по умолчанию не отбирают уже назначенные пользователем клавиши.

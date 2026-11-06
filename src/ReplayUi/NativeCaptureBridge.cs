@@ -58,7 +58,7 @@ internal sealed class NativeCaptureBridge : IAsyncDisposable
                         {
                             if (remaining > TimeSpan.Zero) await Task.Delay(remaining, _cancel.Token);
                             if (_stopping) break;
-                            throw new IOException("Не удалось восстановить видеозахват " + monitor.Label + ". Подробности: " + log);
+                            throw new IOException(Localization.Text("Message.CouldNotRecoverVideoCaptureFor") + monitor.Label + Localization.Text("Message.Details") + log);
                         }
                         await Task.Delay(delay, _cancel.Token);
                         if (_stopping) break;
@@ -104,7 +104,7 @@ internal sealed class NativeCaptureBridge : IAsyncDisposable
                 }
             }
             catch (Exception error) when (_stopping && error is OperationCanceledException or IOException or ObjectDisposedException) { }
-            catch (Exception error) { Volatile.Write(ref _error, "Ошибка видеозахвата: " + error.Message); }
+            catch (Exception error) { Volatile.Write(ref _error, Localization.Text("Message.VideoCaptureError") + error.Message); }
             finally { _pipe.Dispose(); }
         });
     }
@@ -154,7 +154,7 @@ internal sealed class NativeCaptureBridge : IAsyncDisposable
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            string warning = "Не удалось записать диагностику видеозахвата: " + log + ": " + error.Message;
+            string warning = Localization.Text("Message.CouldNotWriteVideoCaptureDiagnostics") + log + ": " + error.Message;
             if (Interlocked.CompareExchange(ref _logWarning, warning, null) is null)
                 try { _diagnosticWarning?.Invoke(warning); }
                 catch (Exception) { /* Ошибка уведомления тоже не должна останавливать видеопоток. */ }

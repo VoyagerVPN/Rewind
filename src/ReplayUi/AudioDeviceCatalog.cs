@@ -14,10 +14,10 @@ internal static class AudioDeviceCatalog
     {
         using var enumerator = new MMDeviceEnumerator();
         using var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-        var result = new List<AudioDeviceChoice> { new(null, "По умолчанию Windows · автоматически") };
+        var result = new List<AudioDeviceChoice> { new(null, Localization.Text("Message.WindowsDefaultAutomatic")) };
         foreach (MMDevice device in devices) using (device) result.Add(new(device.ID, device.FriendlyName));
-        try { result[0] = new(null, "По умолчанию Windows · " + ResolveMicrophone(null).Name); }
-        catch (Exception) { result[0] = new(null, "По умолчанию Windows · устройство недоступно"); }
+        try { result[0] = new(null, Localization.Text("Message.WindowsDefault") + ResolveMicrophone(null).Name); }
+        catch (Exception) { result[0] = new(null, Localization.Text("Message.WindowsDefaultDeviceUnavailable")); }
         return result.ToArray();
     }
 
@@ -33,7 +33,7 @@ internal static class AudioDeviceCatalog
         using var enumerator = new MMDeviceEnumerator();
         using MMDevice device = id is null
             ? enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia) : enumerator.GetDevice(id);
-        if (device.State != DeviceState.Active) throw new InvalidOperationException("Выбранный микрофон отключён.");
+        if (device.State != DeviceState.Active) throw new InvalidOperationException(Localization.Text("Message.TheSelectedMicrophoneIsDisconnected"));
         return (device.ID, device.FriendlyName);
     }
 
@@ -53,7 +53,7 @@ internal static class AudioDeviceCatalog
                     matches[entry.ProcessId] = entry.ParentProcessId;
             } while (Process32NextW(snapshot, ref entry));
         uint[] roots = matches.Where(pair => !matches.ContainsKey(pair.Value)).Select(pair => pair.Key).ToArray();
-        if (roots.Length > 1) throw new InvalidOperationException("Запущено несколько экземпляров Discord. Оставь один для разделения звука.");
+        if (roots.Length > 1) throw new InvalidOperationException(Localization.Text("Message.MultipleDiscordInstancesAreRunningLeaveOneRunningToSeparateItsAud"));
         return roots.Length == 1 ? roots[0] : null;
     }
 

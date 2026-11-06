@@ -10,7 +10,8 @@ public partial class OverlayWindow
     private bool _captureFailureNotified;
 
     internal void ShowActionToast(string key, string title, string detail, SymbolRegular symbol, string? file = null,
-        bool error = false, bool persistent = false, IReadOnlyList<nint>? recordingMonitors = null)
+        bool error = false, bool persistent = false, IReadOnlyList<nint>? recordingMonitors = null,
+        Func<string>? titleProvider = null, Func<string>? detailProvider = null)
     {
         if (_closing) return;
         try
@@ -18,10 +19,17 @@ public partial class OverlayWindow
             _actionToasts ??= new ActionToastPresenter(OpenToastFile);
             nint[] monitors = recordingMonitors is { Count: > 1 } ? recordingMonitors.Where(IsConnectedMonitor).Distinct().ToArray() : [];
             if (monitors.Length == 0) monitors = [Native.PrimaryMonitor()];
-            _actionToasts.Show(key, title, detail, symbol, monitors, file, error, persistent);
+            _actionToasts.Show(key, title, detail, symbol, monitors, file, error, persistent, titleProvider, detailProvider);
             _telemetry.Event("action-toast", new { key, title, error, persistent });
         }
         catch (Exception failure) { _telemetry.Event("action-toast-error", new { failure.Message }); }
+    }
+
+    private void ShowLocalizedActionToast(string key, string titleKey, Func<string> detail, SymbolRegular symbol, string? file = null,
+        bool error = false, bool persistent = false, IReadOnlyList<nint>? recordingMonitors = null)
+    {
+        string Title() => Localization.Text(titleKey);
+        ShowActionToast(key, Title(), detail(), symbol, file, error, persistent, recordingMonitors, Title, detail);
     }
 
     private static bool IsConnectedMonitor(nint monitor)
@@ -35,8 +43,8 @@ public partial class OverlayWindow
         try { ExplorerSelection.SelectFile(file); HideOverlay(restoreFocus: false); }
         catch (Exception error)
         {
-            CaptureMessageText.Text = "Не удалось показать повтор: " + error.Message;
-            ShowActionToast("file-error", "Не удалось показать повтор", error.Message, SymbolRegular.ErrorCircle24, error: true);
+            SetCaptureMessage(() => Localization.Text("Message.CouldNotShowReplay") + error.Message);
+            ShowLocalizedActionToast("file-error", "Message.CouldNotShowReplaycde3da3b", () => error.Message, SymbolRegular.ErrorCircle24, error: true);
             _telemetry.Event("notification-open-error", new { error.Message });
         }
     }
@@ -47,12 +55,12 @@ public partial class OverlayWindow
         if (_captureStartNoticePending && status is { Running: true, Recovering: false, EncodedFrames: > 0 })
         {
             _captureStartNoticePending = false;
-            ShowActionToast("capture", "Запись включена", "", SymbolRegular.Video24);
+            ShowLocalizedActionToast("capture", "Message.RecordingStarted", () => "", SymbolRegular.Video24);
         }
         if (status is { Running: false, Error: string error } && !_captureFailureNotified)
         {
             _captureStartNoticePending = false; _captureFailureNotified = true;
-            ShowActionToast("capture", status.EncodedFrames > 0 ? "Запись прервалась" : "Запись не запустилась", error,
+            ShowLocalizedActionToast("capture", status.EncodedFrames > 0 ? "Message.RecordingInterrupted" : "Message.RecordingDidNotStart", () => error,
                 SymbolRegular.ErrorCircle24, error: true);
         }
     }

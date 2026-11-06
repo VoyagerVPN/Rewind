@@ -14,7 +14,7 @@ public sealed record AudioCaptureDiagnostics(AudioTransportMetrics Transport, Au
 {
     public static string SourceName(string source) => source switch
     {
-        "system" => "Система", "discord" => "Discord", "microphone" => "Микрофон", _ => source
+        "system" => Localization.Text("Ui.System"), "discord" => "Discord", "microphone" => Localization.Text("Ui.Microphone"), _ => source
     };
 
     public string Describe()

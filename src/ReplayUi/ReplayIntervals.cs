@@ -13,45 +13,45 @@ public sealed class ReplayIntervals
 
     public ReplayIntervals(int maximumSeconds, IEnumerable<int> markers, int defaultSeconds)
     {
-        if (maximumSeconds is < 4 or > 900) throw new ArgumentException("История должна быть от 0:04 до 15:00.");
+        if (maximumSeconds is < 4 or > 900) throw new ArgumentException(Localization.Text("Message.HistoryMustBeBetween004And1500"));
         MaximumSeconds = maximumSeconds;
         _markers = new SortedSet<int>(markers);
-        if (_markers.Any(value => value < 1 || value > 900) || defaultSeconds is < 1 or > 900) throw new ArgumentException("Отметка должна быть от 0:01 до 15:00.");
+        if (_markers.Any(value => value < 1 || value > 900) || defaultSeconds is < 1 or > 900) throw new ArgumentException(Localization.Text("Message.TheMarkerMustBeBetween001And1500"));
         _markers.Add(defaultSeconds);
         PreferredDefaultSeconds = defaultSeconds;
     }
 
     public void SetDefault(int seconds)
     {
-        if (!_markers.Contains(seconds) || seconds < 1 || seconds > MaximumSeconds) throw new ArgumentException("Отметка не найдена на шкале.");
+        if (!_markers.Contains(seconds) || seconds < 1 || seconds > MaximumSeconds) throw new ArgumentException(Localization.Text("Message.TheMarkerWasNotFoundOnTheTimeline"));
         PreferredDefaultSeconds = seconds;
     }
 
     public void Add(int seconds)
     {
-        if (seconds < 1 || seconds > MaximumSeconds) throw new ArgumentException("Отметка должна помещаться в историю.");
+        if (seconds < 1 || seconds > MaximumSeconds) throw new ArgumentException(Localization.Text("Message.TheMarkerMustFitWithinTheHistory"));
         _markers.Add(seconds);
     }
 
     public void Resize(int maximumSeconds)
     {
-        if (maximumSeconds is < 4 or > 900) throw new ArgumentException("История должна быть от 0:04 до 15:00.");
+        if (maximumSeconds is < 4 or > 900) throw new ArgumentException(Localization.Text("Message.HistoryMustBeBetween004And1500"));
         MaximumSeconds = maximumSeconds;
     }
 
     public void Remove(int seconds)
     {
-        if (_markers.Count == 1) throw new ArgumentException("Оставь хотя бы одну отметку.");
+        if (_markers.Count == 1) throw new ArgumentException(Localization.Text("Message.KeepAtLeastOneMarker"));
         _markers.Remove(seconds);
         if (!_markers.Contains(PreferredDefaultSeconds)) PreferredDefaultSeconds = ActiveMarkers.LastOrDefault(_markers.Max);
     }
 
     public void Move(int fromSeconds, int toSeconds)
     {
-        if (!_markers.Contains(fromSeconds)) throw new ArgumentException("Отметка не найдена.");
+        if (!_markers.Contains(fromSeconds)) throw new ArgumentException(Localization.Text("Message.MarkerNotFound"));
         if (fromSeconds == toSeconds) return;
-        if (toSeconds < 1 || toSeconds > MaximumSeconds) throw new ArgumentException("Отметка должна помещаться в историю.");
-        if (_markers.Contains(toSeconds)) throw new ArgumentException("Такая отметка уже есть.");
+        if (toSeconds < 1 || toSeconds > MaximumSeconds) throw new ArgumentException(Localization.Text("Message.TheMarkerMustFitWithinTheHistory"));
+        if (_markers.Contains(toSeconds)) throw new ArgumentException(Localization.Text("Message.ThisMarkerAlreadyExistsd5b52575"));
         _markers.Remove(fromSeconds);
         _markers.Add(toSeconds);
         if (PreferredDefaultSeconds == fromSeconds) PreferredDefaultSeconds = toSeconds;
@@ -69,7 +69,7 @@ public sealed class ReplayIntervals
         if (parts.Length == 2 && int.TryParse(parts[0], NumberStyles.None, CultureInfo.InvariantCulture, out int minutes) &&
             int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out int seconds) && seconds < 60 && minutes <= 15)
             return checked(minutes * 60 + seconds);
-        throw new ArgumentException("Введи время в формате м:сс, например 1:30.");
+        throw new ArgumentException(Localization.Text("Message.EnterATimeInMSsFormatForExample130"));
     }
 }
 

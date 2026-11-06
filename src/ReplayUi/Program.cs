@@ -15,19 +15,19 @@ internal static class Program
         var recovering = recording with { Recovering = true };
         panel.RenderCaptureIndicator(recovering, true, color);
         if (panel.HeaderCaptureErrorDot.Visibility != Visibility.Visible || panel.HeaderCaptureErrorDot.Opacity != 1 ||
-            panel.CaptureStatusText.Text != "Запись прервалась · восстановление…")
+            panel.CaptureStatusText.Text != Localization.Text("Message.RecordingInterruptedRecovering"))
             throw new InvalidOperationException("При восстановлении панель должна показать обрыв записи вместо предупреждения о звуке.");
         panel.RenderCaptureIndicator(recovering, true, color, advanceBlink: true);
         if (panel.HeaderCaptureErrorDot.Opacity != 0)
             throw new InvalidOperationException("На следующем такте точка должна погаснуть.");
         panel.RenderCaptureIndicator(recording with { Running = false, Error = "Сбой видеозахвата" }, false, color);
         panel.RenderCaptureIndicator(null, false, color, advanceBlink: true);
-        if (panel.HeaderCaptureErrorDot.Opacity != 1 || panel.CaptureStatusText.Text != "Запись прервалась" ||
+        if (panel.HeaderCaptureErrorDot.Opacity != 1 || panel.CaptureStatusText.Text != Localization.Text("Message.RecordingInterrupted") ||
             panel.CaptureFailureText.Text != "Сбой видеозахвата")
             throw new InvalidOperationException("После завершения оборванного сеанса должны остаться индикатор и причина сбоя.");
         panel.RenderCaptureIndicator(recording, false, color);
         if (panel.HeaderCaptureErrorDot.Visibility != Visibility.Collapsed || panel.CaptureFailureText.Visibility != Visibility.Collapsed ||
-            panel.CaptureStatusText.Text != "Запись идёт")
+            panel.CaptureStatusText.Text != Localization.Text("Message.Recording9d0a624f"))
             throw new InvalidOperationException("Возобновившаяся запись должна очистить индикатор и сообщение о сбое.");
     }
 
@@ -162,6 +162,8 @@ internal static class Program
         }
         if (args.Length == 3 && args[0] == "--video-worker")
         {
+            string? workerLanguage = Environment.GetEnvironmentVariable("REWIND_UI_LANGUAGE");
+            if (workerLanguage is "en" or "ru") Localization.SetLanguage(workerLanguage);
             try { VideoWorker.RunAsync(args[1], int.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture)).GetAwaiter().GetResult(); }
             catch { Environment.ExitCode = 1; }
             return;

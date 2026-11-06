@@ -25,16 +25,16 @@ public partial class OverlayWindow
     {
         _usageCancellation?.Cancel(); using var cancellation = new CancellationTokenSource(); _usageCancellation = cancellation;
         ApplyStorageSnapshot([]);
-        StorageUsageMessage.Text = "Обновление…"; StorageCatalogProgress.Visibility = Visibility.Visible;
+        StorageUsageMessage.Text = Localization.Text("Message.Refreshing"); StorageCatalogProgress.Visibility = Visibility.Visible;
         try
         {
             await _libraryIndex.ScanAsync(CatalogRoots(), _clips.ToArray(), cancellation.Token, force);
             if (_closing || cancellation.IsCancellationRequested) return;
-            ApplyStorageSnapshot([]); StorageUsageMessage.Text = _libraryIndex.Warning ?? (_usageSnapshot?.Events == 0 ? "Клипы не найдены" : "");
+            ApplyStorageSnapshot([]); StorageUsageMessage.Text = _libraryIndex.Warning ?? (_usageSnapshot?.Events == 0 ? Localization.Text("Message.NoClipsFound") : "");
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)
-        { StorageUsageMessage.Text = "Не удалось обновить библиотеку"; _telemetry.Event("storage-usage-error", new { error.Message }); }
+        { StorageUsageMessage.Text = Localization.Text("Message.CouldNotRefreshTheLibrary"); _telemetry.Event("storage-usage-error", new { error.Message }); }
         finally { if (ReferenceEquals(_usageCancellation, cancellation)) { _usageCancellation = null; StorageCatalogProgress.Visibility = Visibility.Collapsed; } }
     }
 
@@ -55,7 +55,7 @@ public partial class OverlayWindow
         _usageSnapshot = new(entries.Sum(entry => entry.Bytes), entries.Length, buckets);
         StorageVolumeText.Text = "";
         StorageUsageTotal.Text = entries.Length == 0 ? "—" : FormatBytes(_usageSnapshot.Total);
-        StorageUsageTotal.ToolTip = $"Файлов: {entries.Length}";
+        StorageUsageTotal.ToolTip = Localization.Format("Format.FileCount", entries.Length);
         StorageChart.Visibility = entries.Length == 0 ? Visibility.Hidden : Visibility.Visible;
         StorageChart.SetSlices(buckets.Select(bucket => new StorageSlice(bucket.Name, bucket.Node.Bytes, bucket.Color)).ToArray(), _usageSnapshot.Total, entries.Length);
         StorageBuckets.Children.Clear();
@@ -88,7 +88,7 @@ public partial class OverlayWindow
     private FrameworkElement StorageIcon(string name, Color color, double size)
     {
         var background = new Border { Width = size, Height = size, CornerRadius = new CornerRadius(7), Background = new SolidColorBrush(Color.FromArgb(55, color.R, color.G, color.B)), HorizontalAlignment = HorizontalAlignment.Left };
-        System.Windows.Automation.AutomationProperties.SetName(background, "Значок " + name);
+        System.Windows.Automation.AutomationProperties.SetName(background, Localization.Text("Message.IconFor") + name);
         if (_storageBranding.TryGetValue(name, out var brand)) background.Child = new Image { Source = brand.Icon, Width = size - 8, Height = size - 8, Stretch = Stretch.Uniform };
         else background.Child = new Wpf.Ui.Controls.SymbolIcon { Symbol = Wpf.Ui.Controls.SymbolRegular.Video24, FontSize = size * .48, Foreground = new SolidColorBrush(color), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
         return background;
@@ -111,7 +111,7 @@ public partial class OverlayWindow
         StorageAllButton.Background = (Brush)FindResource(selected is null ? "Hover" : "Surface");
         foreach (Button button in StorageBuckets.Children.OfType<Button>()) button.Background = (Brush)FindResource(System.Windows.Automation.AutomationProperties.GetName(button) == _usageGame ? "Hover" : "Surface");
         UsageNode[] files = selected?.Node.Children ?? _usageSnapshot.Buckets.SelectMany(bucket => bucket.Node.Children).ToArray();
-        StorageDetailsTitle.Text = selected?.Name ?? "Все повторы"; StorageDetailsTotal.Text = FormatBytes(files.Sum(file => file.Bytes));
+        StorageDetailsTitle.Text = selected?.Name ?? Localization.Text("Ui.AllReplays"); StorageDetailsTotal.Text = FormatBytes(files.Sum(file => file.Bytes));
         StorageDetailsPath.Text = ""; StorageDetails.Children.Clear();
         IEnumerable<UsageNode> sorted = _usageSort switch
         {
@@ -121,8 +121,8 @@ public partial class OverlayWindow
         };
         foreach (Button header in StorageTableHeader.Children.OfType<Button>())
         {
-            string label = (string)header.Tag switch { "file" => "Имя", "date" => "Дата", _ => "Размер" };
-            header.ToolTip = "Сортировать: " + label + ((string)header.Tag == _usageSort ? _usageAscending ? " ↑" : " ↓" : "");
+            string label = (string)header.Tag switch { "file" => Localization.Text("Message.Name"), "date" => Localization.Text("Ui.Date"), _ => Localization.Text("Ui.Size") };
+            header.ToolTip = Localization.Text("Message.SortBy") + label + ((string)header.Tag == _usageSort ? _usageAscending ? " ↑" : " ↓" : "");
             System.Windows.Automation.AutomationProperties.SetName(header, header.ToolTip.ToString());
             header.Foreground = (Brush)FindResource((string)header.Tag == _usageSort ? "Ink" : "Muted");
         }
@@ -140,11 +140,11 @@ public partial class OverlayWindow
             button.Click += async (_, _) =>
             {
                 try { if (file.Path is string path) { LibraryEntry? entry = _libraryIndex.ReadSnapshot(CatalogRoots(), [], false).FirstOrDefault(entry => entry.Clip.Video == path); if (entry is not null) await OpenClipAsync(entry.Clip); } }
-                catch (Exception error) { StorageUsageMessage.Text = "Не удалось открыть файл"; _telemetry.Event("storage-play-error", new { error.Message }); }
+                catch (Exception error) { StorageUsageMessage.Text = Localization.Text("Message.CouldNotOpenFile"); _telemetry.Event("storage-play-error", new { error.Message }); }
             };
             StorageDetails.Children.Add(button);
         }
         if (files.Length > visible)
-        { var more = new Button { Content = $"Ещё {Math.Min(100, files.Length - visible)}" }; more.Click += (_, _) => ShowStorageFiles(visible + 100); StorageDetails.Children.Add(more); }
+        { var more = new Button { Content = Localization.Format("Format.ShowMore", Math.Min(100, files.Length - visible)) }; more.Click += (_, _) => ShowStorageFiles(visible + 100); StorageDetails.Children.Add(more); }
     }
 }

@@ -11,18 +11,37 @@ const fixture = fs.mkdtempSync(path.join(cache, 'test-'));
 const payload = path.join(fixture, 'payload');
 const target = path.join(fixture, 'installed');
 const setup = path.join(fixture, 'Rewind-QA-Setup.exe');
+const uninstall = path.join(target, 'Uninstall.exe');
 const product = 'Rewind NSIS QA ' + path.basename(fixture);
 const run = (exe, args) => spawnSync(exe, args, {
   cwd: fixture, shell: false, windowsHide: true, windowsVerbatimArguments: true, timeout: 30_000,
   env: { ...process.env, TEMP: fixture, TMP: fixture },
 });
+process.on('exit', () => { if (fs.existsSync(uninstall)) run(uninstall, ['/S']); });
 const dataDirectory = path.join(fixture, 'Данные Rewind');
 const replayDirectory = path.join(fixture, 'Мои повторы');
 const install = () => run(setup, ['/S', '/DATA="' + dataDirectory + '"', '/REPLAYS="' + replayDirectory + '"', '/D=' + target]);
 fs.mkdirSync(path.join(payload, 'capture'), { recursive: true });
-fs.writeFileSync(path.join(payload, 'Rewind.exe'), 'fixture app');
+const compiler = path.resolve(process.argv[2]);
+const probe = path.join(fixture, 'probe.nsi');
+fs.mkdirSync(path.join(payload, 'ru'), { recursive: true });
+fs.writeFileSync(path.join(payload, 'ru', 'Rewind.resources.dll'), 'fixture translation');
+// Тестовый Rewind проверяет распакованный перевод при запуске внешнего установщика.
+fs.writeFileSync(probe, [
+  'Unicode true', 'SilentInstall silent', 'RequestExecutionLevel user',
+  'OutFile "' + path.join(payload, 'Rewind.exe') + '"',
+  'Section',
+  '  IfFileExists "$EXEDIR\\ru\\Rewind.resources.dll" found',
+  '  SetErrorLevel 3', '  Goto done',
+  'found:', '  SetErrorLevel 0',
+  'done:', 'SectionEnd',
+].join('\n'));
+const compiled = run(compiler, ['/V2', '/WX', 'probe.nsi']);
+assert.equal(compiled.status, 0, compiled.error?.message ?? compiled.stdout?.toString());
 fs.writeFileSync(path.join(payload, 'capture', 'worker.exe'), 'fixture worker');
-buildSetup(process.argv[2], payload, setup, product);
+buildSetup(compiler, payload, setup, product);
+const bootstrap = run(setup, []);
+assert.equal(bootstrap.status, 0, bootstrap.error?.message ?? 'Setup must extract the Russian resource to the bootstrap directory');
 
 fs.mkdirSync(target);
 const foreign = path.join(target, 'keep.txt');
@@ -34,9 +53,12 @@ assert.equal(fs.existsSync(path.join(target, 'Rewind.exe')), false);
 fs.unlinkSync(foreign);
 
 const options = path.join(fixture, 'Выбранные папки.txt');
-fs.writeFileSync(options, '\uFEFF' + [target, dataDirectory, replayDirectory, '0', ''].join('\r\n'), 'utf16le');
+fs.writeFileSync(options, '\uFEFF' + [target, dataDirectory, replayDirectory, '0', 'ru', ''].join('\r\n'), 'utf16le');
 const installed = run(setup, ['/S', '/OPTIONS="' + options + '"']);
 assert.equal(installed.status, 0, installed.error?.message);
+const language = run(path.join(process.env.SystemRoot, 'System32', 'reg.exe'), ['query', '"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\' + product + '"', '/v', 'InstallLanguage']);
+assert.equal(language.status, 0, 'Setup must retain its language for the uninstaller');
+assert.match(language.stdout.toString(), /0x419\b/i, 'Russian setup must select the Russian uninstaller');
 assert.equal(fs.readFileSync(path.join(target, 'capture', 'worker.exe'), 'utf8'), 'fixture worker');
 assert.equal(install().status, 1, 'Повторная установка должна сохранить текущую копию');
 
@@ -47,7 +69,6 @@ fs.mkdirSync(replayDirectory);
 fs.writeFileSync(clip, 'clip to preserve');
 fs.mkdirSync(path.dirname(settings));
 fs.writeFileSync(settings, '{"test":true}');
-const uninstall = path.join(target, 'Uninstall.exe');
 assert.equal(run(uninstall, ['/S']).status, 0);
 const timer = new Int32Array(new SharedArrayBuffer(4));
 for (let attempt = 0; attempt < 100 && fs.existsSync(uninstall); attempt++) {
@@ -59,4 +80,14 @@ assert.equal(fs.existsSync(path.join(target, 'capture')), false);
 assert.equal(fs.readFileSync(settings, 'utf8'), '{"test":true}');
 assert.equal(fs.readFileSync(clip, 'utf8'), 'clip to preserve');
 assert.equal(fs.existsSync(path.join(target, 'install-paths.txt')), false);
+fs.writeFileSync(options, '\uFEFF' + [target, dataDirectory, replayDirectory, '0', 'en', ''].join('\r\n'), 'utf16le');
+assert.equal(run(setup, ['/S', '/OPTIONS="' + options + '"']).status, 0, 'Reinstallation must succeed with preserved data');
+const englishLanguage = run(path.join(process.env.SystemRoot, 'System32', 'reg.exe'), ['query', '"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\' + product + '"', '/v', 'InstallLanguage']);
+assert.equal(englishLanguage.status, 0);
+assert.match(englishLanguage.stdout.toString(), /0x409\b/i, 'English setup must select the English uninstaller');
+assert.equal(run(uninstall, ['/S']).status, 0);
+for (let attempt = 0; attempt < 100 && fs.existsSync(uninstall); attempt++) Atomics.wait(timer, 0, 0, 100);
+assert.equal(fs.existsSync(uninstall), false);
+assert.equal(fs.readFileSync(settings, 'utf8'), '{"test":true}');
+assert.equal(fs.readFileSync(clip, 'utf8'), 'clip to preserve');
 console.log('PASS NSIS: отказ для занятой папки, установка, повторный запуск, удаление с сохранением Data');

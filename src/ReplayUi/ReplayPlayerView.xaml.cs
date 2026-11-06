@@ -69,7 +69,7 @@ public partial class ReplayPlayerView : UserControl
     public int? VideoProcessId => _video.ProcessId;
     public VideoPlaybackStatistics? PlaybackStatistics => _video.Statistics;
     public bool HasPlaybackError => PlaybackErrorPanel.Visibility == Visibility.Visible;
-    private sealed record MonitorClipChoice(Clip Clip) { public override string ToString() => "Экран " + (Clip.MonitorName?.Replace(@"\\.\DISPLAY", "") ?? "?"); }
+    private sealed record MonitorClipChoice(Clip Clip) { public override string ToString() => Localization.Text("Message.Screen") + (Clip.MonitorName?.Replace(@"\\.\DISPLAY", "") ?? "?"); }
 
     public ReplayPlayerView(UiTelemetry telemetry, string diagnostics, bool headless = false) : this(telemetry, diagnostics, null, headless) { }
 
@@ -117,17 +117,34 @@ public partial class ReplayPlayerView : UserControl
     public void SetHotkeys(PlayerHotkeySettings settings)
     {
         _hotkeys = settings;
-        PlayButton.ToolTip = "Пауза / продолжить" + (settings.Pause is null ? "" : " · " + settings.Pause.Label);
-        PreviousFrameButton.ToolTip = "Предыдущий кадр" + (settings.PreviousFrame is null ? "" : " · " + settings.PreviousFrame.Label);
-        NextFrameButton.ToolTip = "Следующий кадр" + (settings.NextFrame is null ? "" : " · " + settings.NextFrame.Label);
-        GoToStartButton.ToolTip = "К началу видео" + (settings.GoToStart is null ? "" : " · " + settings.GoToStart.Label);
-        DeleteClipButton.ToolTip = "Удалить клип" + (settings.Delete is null ? "" : " · " + settings.Delete.Label);
+        PlayButton.ToolTip = Localization.Text("Ui.PauseResume") + (settings.Pause is null ? "" : " · " + settings.Pause.Label);
+        PreviousFrameButton.ToolTip = Localization.Text("Ui.PreviousFrame03cf5e3a") + (settings.PreviousFrame is null ? "" : " · " + settings.PreviousFrame.Label);
+        NextFrameButton.ToolTip = Localization.Text("Ui.NextFrame3382400f") + (settings.NextFrame is null ? "" : " · " + settings.NextFrame.Label);
+        GoToStartButton.ToolTip = Localization.Text("Ui.GoToStartOfVideo") + (settings.GoToStart is null ? "" : " · " + settings.GoToStart.Label);
+        DeleteClipButton.ToolTip = Localization.Text("Ui.DeleteClip") + (settings.Delete is null ? "" : " · " + settings.Delete.Label);
         UpdateSeekButtons();
+    }
+
+    internal void RefreshLanguage()
+    {
+        _video.SetLanguage(Localization.Language);
+        SetHotkeys(_hotkeys);
+        UpdateAppearance();
+        RenderHealth();
+        if (_riskRequest is RiskRequest risk)
+        {
+            RiskTargetText.Text = Localization.Text("Message.SeekingTo") + Time(risk.Target);
+            SafePartLabel.Text = _currentHealth?.RecoveredStartSeconds is double safe ? Localization.Text("Message.AvailableSegment") + Time(safe) : Localization.Text("Ui.GoToAvailableSegment");
+        }
+        if (_deleteClip is not null) DeleteScopeText.Text = _deleteClip.Screens is { Length: > 1 } ? Localization.Text("Message.TheOtherScreensWillRemain") : "";
+        _updatingMonitorClip = true;
+        try { MonitorClipPicker.Items.Refresh(); }
+        finally { _updatingMonitorClip = false; }
     }
     private void UpdateSeekButtons()
     {
         SeekBackwardSeconds.Text = SeekForwardSeconds.Text = _seekStepSeconds.ToString(CultureInfo.InvariantCulture);
-        string backward = $"Назад на {_seekStepSeconds} с", forward = $"Вперёд на {_seekStepSeconds} с";
+        string backward = Localization.Format("Format.SeekBackward", _seekStepSeconds), forward = Localization.Format("Format.SeekForward", _seekStepSeconds);
         SeekBackwardButton.ToolTip = backward + (_hotkeys.Backward is null ? "" : " · " + _hotkeys.Backward.Label);
         SeekForwardButton.ToolTip = forward + (_hotkeys.Forward is null ? "" : " · " + _hotkeys.Forward.Label);
         System.Windows.Automation.AutomationProperties.SetName(SeekBackwardButton, backward);
@@ -152,7 +169,7 @@ public partial class ReplayPlayerView : UserControl
         ActionsPopup.IsOpen = MixerPopup.IsOpen = PlayerSettingsPopup.IsOpen = false;
         _loading = true; _nativeStarted = false; _audioReady = false; _atEnd = false;
         Video.Visibility = Visibility.Hidden; LoadingOverlay.Visibility = Visibility.Visible;
-        LoadingLabel.Text = "Загрузка…"; PlaybackErrorPanel.Visibility = Visibility.Collapsed;
+        LoadingLabel.SetResourceReference(TextBlock.TextProperty, "Ui.Loading"); PlaybackErrorPanel.Visibility = Visibility.Collapsed;
         ClipTitleText.Text = Path.GetFileName(clip.Video); Poster.Source = null;
         try
         {
@@ -201,7 +218,7 @@ public partial class ReplayPlayerView : UserControl
             Queue(() =>
             {
                 _telemetry.Event("player-video-failure", new { processId, error, details });
-                HandleNativeFailure(error ?? "Не удалось воспроизвести видео.", rememberPosition);
+                HandleNativeFailure(error ?? Localization.Text("Message.CouldNotPlayTheVideo"), rememberPosition);
             });
         };
         _video.Playing += _onPlaying; _video.TimeChanged += _onTime; _video.EndReached += _onEnded; _video.EncounteredError += _onError;
@@ -221,7 +238,7 @@ public partial class ReplayPlayerView : UserControl
         double previewStart = startMilliseconds / 1000d;
         if (preferKnownStart && startMilliseconds == 0 && _clip?.Video == clip.Video && _currentHealth?.RecoveredStartSeconds is double cachedStart) previewStart = cachedStart;
         ShowLoadingCore(clip, previewStart); _loadOperationActive = true; bool entered = false;
-        if (isAutomaticRecovery) LoadingLabel.Text = "Восстанавливаем просмотр…";
+        if (isAutomaticRecovery) LoadingLabel.SetResourceReference(TextBlock.TextProperty, "Message.RecoveringPlayback");
         try
         {
             await _videoGate.WaitAsync(cancellation.Token); entered = true;
@@ -291,7 +308,7 @@ public partial class ReplayPlayerView : UserControl
             await Task.WhenAll(videoReady, audioReady);
             await _video.WaitUntilReadyAsync(cancellation.Token);
             cancellation.Token.ThrowIfCancellationRequested();
-            if (HasPlaybackError) throw new InvalidOperationException(_video.Error ?? "Видеоплеер завершился с ошибкой.");
+            if (HasPlaybackError) throw new InvalidOperationException(_video.Error ?? Localization.Text("Message.TheVideoPlayerStoppedWithAnError"));
             double actualVideo = _video.Time / 1000d;
             if (_position > .01 && Math.Abs(actualVideo - _position) > .08)
             {
@@ -318,7 +335,7 @@ public partial class ReplayPlayerView : UserControl
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
             if (generation == _generation && HasPlaybackError && !_closingNative)
-                throw new InvalidOperationException(_video.Error ?? "Не удалось воспроизвести повтор.");
+                throw new InvalidOperationException(_video.Error ?? Localization.Text("Message.CouldNotPlayTheReplay"));
         }
         catch (Exception error)
         {
@@ -346,12 +363,12 @@ public partial class ReplayPlayerView : UserControl
                 // Открытие до первого показа не должно незаметно включать vo=null.
                 await ready.Task.WaitAsync(TimeSpan.FromSeconds(3), cancellation);
             }
-            catch (TimeoutException error) { throw new InvalidOperationException("Не удалось дождаться готовности области видео.", error); }
+            catch (TimeoutException error) { throw new InvalidOperationException(Localization.Text("Message.TheVideoSurfaceDidNotBecomeReadyInTime"), error); }
             finally { Loaded -= loaded; }
         }
         await Dispatcher.InvokeAsync(UpdateLayout, DispatcherPriority.Loaded, cancellation);
         cancellation.ThrowIfCancellationRequested();
-        if (Video.SurfaceHandle == 0) throw new InvalidOperationException("Не удалось подготовить область видео.");
+        if (Video.SurfaceHandle == 0) throw new InvalidOperationException(Localization.Text("Message.CouldNotPrepareTheVideoSurface"));
     }
 
     private async Task StopMediaAsync()
@@ -447,13 +464,13 @@ public partial class ReplayPlayerView : UserControl
         bool resume = _playing; PausePlayback(); _recoveryCancellation?.Cancel();
         _seekTimer.Stop(); _seekQueued = _seekPending = false;
         _riskRequest = new(clip, target, resume, _generation);
-        RiskTargetText.Text = "Переход к " + Time(target);
+        RiskTargetText.Text = Localization.Text("Message.SeekingTo") + Time(target);
         GoToSafePartButton.Visibility = _currentHealth?.RecoveredStartSeconds is double ? Visibility.Visible : Visibility.Collapsed;
-        SafePartLabel.Text = _currentHealth?.RecoveredStartSeconds is double safe ? "К доступному · " + Time(safe) : "К доступному фрагменту";
+        SafePartLabel.Text = _currentHealth?.RecoveredStartSeconds is double safe ? Localization.Text("Message.AvailableSegment") + Time(safe) : Localization.Text("Ui.GoToAvailableSegment");
 
         Video.Visibility = Visibility.Hidden; RiskConfirmation.Visibility = Visibility.Visible;
         _updatingPosition = true; PositionSlider.Value = _position; _updatingPosition = false;
-        UpdateAppearance(); CancelRiskButton.Focus();
+        UpdateAppearance(); if (!TestWindowActivation.Enabled) CancelRiskButton.Focus();
     }
     private RiskRequest? DismissRisk()
     {
@@ -519,7 +536,7 @@ public partial class ReplayPlayerView : UserControl
             _loading = false; _loadOperationActive = false; LoadingOverlay.Visibility = Visibility.Collapsed; Video.Visibility = Visibility.Visible;
             _telemetry.Event("player-first-frame", new { milliseconds = Stopwatch.GetElapsedTime(_loadStamp).TotalMilliseconds }); UpdateAppearance();
         }
-        if (_loading && _loadOperationActive && Stopwatch.GetElapsedTime(_loadStamp).TotalSeconds > 15) { HandleNativeFailure("Плеер не завершил загрузку видео.", rememberPosition: false); return; }
+        if (_loading && _loadOperationActive && Stopwatch.GetElapsedTime(_loadStamp).TotalSeconds > 15) { HandleNativeFailure(Localization.Text("Message.ThePlayerDidNotFinishLoadingTheVideo"), rememberPosition: false); return; }
         if (_loading) return;
         if (_atEnd)
         {
@@ -538,7 +555,7 @@ public partial class ReplayPlayerView : UserControl
             _position = Math.Clamp(Math.Max(_position, corrected), 0, _clip.Duration);
         }
         if (_seekPending && Stopwatch.GetElapsedTime(_seekStamp).TotalSeconds > 4)
-        { _seekPending = false; _seekQueued = false; HandleNativeFailure("Плеер не завершил переход к выбранному месту.", rememberPosition: false); }
+        { _seekPending = false; _seekQueued = false; HandleNativeFailure(Localization.Text("Message.ThePlayerDidNotFinishSeekingToTheSelectedPosition"), rememberPosition: false); }
         RenderPosition();
     }
     private void OnPositionRendering(object? sender, EventArgs args)
@@ -572,17 +589,17 @@ public partial class ReplayPlayerView : UserControl
         if (PlayerStateText is null) return;
         RecoveryNotice.Visibility = _recoveredAutomatically ? Visibility.Visible : Visibility.Collapsed;
         PlayGlyph.Symbol = HasPlaybackError || _atEnd ? Wpf.Ui.Controls.SymbolRegular.ArrowClockwise24 : _playing ? Wpf.Ui.Controls.SymbolRegular.Pause24 : Wpf.Ui.Controls.SymbolRegular.Play24;
-        string playbackAction = HasPlaybackError ? "Повторить" : _atEnd ? "Сначала" : _playing ? "Пауза" : "Играть";
+        string playbackAction = HasPlaybackError ? Localization.Text("Message.Retry") : _atEnd ? Localization.Text("Message.FromStart") : _playing ? Localization.Text("Ui.Pause") : Localization.Text("Message.Play");
         PlayButton.ToolTip = playbackAction + (_hotkeys.Pause is null ? "" : " · " + _hotkeys.Pause.Label);
         System.Windows.Automation.AutomationProperties.SetName(PlayButton, playbackAction);
-        PlayerStateText.Text = _restartingNative ? "Восстановление…" : _finding ? "Поиск фрагмента…" : _loading ? "Загрузка…" : HasPlaybackError ? "Участок недоступен" : _atEnd ? "Конец" : _seekQueued || _seekPending || _synchronizingAudio ? "Перемотка…" : _playing ? "Воспроизведение" : "Пауза";
+        PlayerStateText.Text = _restartingNative ? Localization.Text("Message.Recovering") : _finding ? Localization.Text("Message.FindingASegment") : _loading ? Localization.Text("Ui.Loading") : HasPlaybackError ? Localization.Text("Message.SegmentUnavailable") : _atEnd ? Localization.Text("Message.End") : _seekQueued || _seekPending || _synchronizingAudio ? Localization.Text("Message.Seeking") : _playing ? Localization.Text("Message.Playing") : Localization.Text("Ui.Pause");
         PlayButton.IsEnabled = !_loading && !_deleteBusy && _riskRequest is null && _clip is { Duration: > 0 };
         PositionSlider.IsEnabled = !_loading && !_deleteBusy && _riskRequest is null && _clip is { Duration: > 0 };
         FindAvailablePartButton.IsEnabled = !_finding && _clip is { Duration: > 0 };
         RestartPlayerButton.IsEnabled = !_restartingNative && !_loading && _clip is not null;
         GoToStartButton.IsEnabled = PlayButton.IsEnabled;
         SeekBackwardButton.IsEnabled = SeekForwardButton.IsEnabled = PlayButton.IsEnabled;
-        GoToStartButton.ToolTip = PlaybackStart > 0 ? "К началу доступного фрагмента" : "К началу видео";
+        GoToStartButton.ToolTip = PlaybackStart > 0 ? Localization.Text("Message.GoToStartOfAvailableSegment") : Localization.Text("Ui.GoToStartOfVideo");
         ActionsButton.IsEnabled = DeleteClipButton.IsEnabled = ShowClipInExplorerButton.IsEnabled = !_loading && !_deleteBusy && _clip is not null;
     }
     private void OnSeek(object sender, RoutedPropertyChangedEventArgs<double> args) { if (!_updatingPosition) SeekTo(args.NewValue, allowUnavailableStart: _timelineGestureActive); }
@@ -658,7 +675,7 @@ public partial class ReplayPlayerView : UserControl
         ActionsPopup.IsOpen = false;
         _deleteClip = _clip; _resumeAfterCancel = _playing; PausePlayback();
         DeleteFilenameText.Text = Path.GetFileName(_clip.Video);
-        DeleteScopeText.Text = _clip.Screens is { Length: > 1 } ? "Остальные экраны останутся." : "";
+        DeleteScopeText.Text = _clip.Screens is { Length: > 1 } ? Localization.Text("Message.TheOtherScreensWillRemain") : "";
         DeleteConfirmation.Visibility = Visibility.Visible;
         DeletePopup.IsOpen = true;
     }
@@ -743,7 +760,7 @@ public partial class ReplayPlayerView : UserControl
         if (_disposed || _closingNative) return;
         _riskRequest = null; RiskConfirmation.Visibility = Visibility.Collapsed;
         _resumeAfterCancel = false; DeletePopup.IsOpen = false; DeleteConfirmation.Visibility = Visibility.Collapsed;
-        PlaybackErrorTitle.Text = "Воспроизведение остановлено";
+        PlaybackErrorTitle.SetResourceReference(TextBlock.TextProperty, "Ui.PlaybackStopped");
         _recoveredAutomatically = false;
         if (rememberFailure) _ = RememberHealthAsync(_currentHealth, [_position]);
         _loadCancellation?.Cancel();
@@ -761,11 +778,11 @@ public partial class ReplayPlayerView : UserControl
         double safe = _currentHealth?.RecoveredStartSeconds ?? _lastGoodPosition;
         // Сбой декодера не доказывает, что ранее проверенная точка файла стала нечитаемой.
         if (rememberPosition) _ = RememberHealthAsync(_currentHealth, [_position], failureKind: "decoder-failed", invalidateKnownStart: false);
-        ShowError(message, rememberFailure: false); PlaybackErrorTitle.Text = "Сбой видеоплеера";
+        ShowError(message, rememberFailure: false); PlaybackErrorTitle.SetResourceReference(TextBlock.TextProperty, "Message.VideoPlayerError");
         if (_automaticRecoveryUsed || clip is null)
-        { PlaybackError.Text = "Плеер снова остановился. Можно перезапустить его вручную или найти другой фрагмент. Rewind продолжает работать."; return; }
+        { PlaybackError.SetResourceReference(TextBlock.TextProperty, "Message.ThePlayerStoppedAgainRestartItManuallyOrFindAnotherSegmentRewindI"); return; }
         _automaticRecoveryUsed = true; _restartingNative = true;
-        PlaybackError.Text = "Перезапускаем видеоплеер с доступного места. Rewind продолжает работать."; UpdateAppearance();
+        PlaybackError.SetResourceReference(TextBlock.TextProperty, "Message.RestartingThePlayerFromAnAvailablePositionRewindIsStillRunning"); UpdateAppearance();
         _nativeRecoveryTask = RestoreNativeAsync(clip, safe, resume, generation);
     }
     private async Task RestoreNativeAsync(Clip clip, double seconds, bool resume, int generation)
@@ -784,7 +801,7 @@ public partial class ReplayPlayerView : UserControl
         catch (Exception error)
         {
             if (!_closingNative && recoveryGeneration == _generation && _clip?.Video == clip.Video)
-            { ShowError("Автоматически восстановить просмотр не удалось. Перезапусти плеер или выбери другой участок.", rememberFailure: false); PlaybackErrorTitle.Text = "Нужен другой участок записи"; }
+            { ShowError(Localization.Text("Message.CouldNotRecoverPlaybackAutomaticallyRestartThePlayerOrChooseAnoth"), rememberFailure: false); PlaybackError.SetResourceReference(TextBlock.TextProperty, "Message.CouldNotRecoverPlaybackAutomaticallyRestartThePlayerOrChooseAnoth"); PlaybackErrorTitle.SetResourceReference(TextBlock.TextProperty, "Message.ChooseAnotherSegment"); }
             _telemetry.Event("player-auto-recovery-error", new { error.Message });
         }
         finally { _restartingNative = false; if (!_closingNative && !_disposed) UpdateAppearance(); }
@@ -808,7 +825,7 @@ public partial class ReplayPlayerView : UserControl
             double? found = await VideoRecovery.FindNextAsync(clip.Video, _position, clip.Duration, new Progress<double>(seconds =>
             {
                 if (generation == _generation && !cancellation.IsCancellationRequested)
-                    PlaybackError.Text = $"Ищем доступный фрагмент… {Time(seconds)} из {Time(clip.Duration)}";
+                    PlaybackError.Text = Localization.Format("Format.SearchProgress", Time(seconds), Time(clip.Duration));
             }), failedProbes.Add, cancellation.Token);
             if (generation != _generation || cancellation.IsCancellationRequested || _closingNative) return;
             if (found is double seconds)
@@ -816,12 +833,12 @@ public partial class ReplayPlayerView : UserControl
                 _telemetry.Event("player-part-found", new { clip.Video, seconds });
                 await LoadClipAsync(clip, (long)(seconds * 1000));
             }
-            else PlaybackError.Text = "Поиск не нашёл доступный фрагмент. Можно выбрать другое место по шкале — часть записи всё ещё может читаться.";
+            else PlaybackError.Text = Localization.Text("Message.NoAvailableSegmentWasFoundChooseAnotherPositionOnTheTimelinePartO");
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
-        { if (generation == _generation && !_closingNative) PlaybackError.Text = "Поиск остановлен. Можно выбрать другое место по шкале."; }
+        { if (generation == _generation && !_closingNative) PlaybackError.Text = Localization.Text("Message.SearchStoppedYouCanChooseAnotherPositionOnTheTimeline"); }
         catch (Exception error)
-        { if (generation == _generation && !_closingNative) ShowError("Не удалось найти фрагмент. Можно выбрать другое место по шкале.", rememberFailure: false); _telemetry.Event("player-recovery-error", new { error.Message }); }
+        { if (generation == _generation && !_closingNative) ShowError(Localization.Text("Message.CouldNotFindASegmentYouCanChooseAnotherPositionOnTheTimeline"), rememberFailure: false); _telemetry.Event("player-recovery-error", new { error.Message }); }
         finally
         {
             if (failedProbes.Count > 0) await RememberHealthAsync(health, failedProbes);

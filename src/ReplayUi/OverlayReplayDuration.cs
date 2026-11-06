@@ -24,12 +24,12 @@ public partial class OverlayWindow
         var selection = new ReplayDurationSelection(_intervals);
         try
         {
-            DesktopReplaySession capture = _capture ?? throw new InvalidOperationException("Запись сейчас выключена.");
+            DesktopReplaySession capture = _capture ?? throw new InvalidOperationException(Localization.Text("Message.RecordingIsCurrentlyOff"));
             if (!allScreens)
             {
                 CaptureMonitor? monitor = _monitors.FirstOrDefault(candidate => candidate.Handle == primary) ??
                     MonitorCatalog.Read().FirstOrDefault(candidate => candidate.Handle == primary);
-                if (monitor is null) throw new InvalidOperationException("Не удалось определить основной экран Windows.");
+                if (monitor is null) throw new InvalidOperationException(Localization.Text("Message.CouldNotIdentifyThePrimaryWindowsScreen"));
                 screens = [monitor.DeviceName];
             }
             if ((chord.Modifiers & 1) == 0 || !LowLevelKeyboardHook.Down(0x12))

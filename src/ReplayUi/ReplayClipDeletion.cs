@@ -19,11 +19,11 @@ internal static class ReplayClipDeletion
     public static Task RecycleAsync(string file) => Task.Run(() =>
     {
         string path = Path.GetFullPath(file);
-        if (!File.Exists(path) || (File.GetAttributes(path) & (FileAttributes.Directory | FileAttributes.ReparsePoint)) != 0) throw new IOException("Файл больше недоступен.");
+        if (!File.Exists(path) || (File.GetAttributes(path) & (FileAttributes.Directory | FileAttributes.ReparsePoint)) != 0) throw new IOException(Localization.Text("Message.TheFileIsNoLongerAvailable"));
         // Только один подтверждённый файл, без связанных папок и дополнительных диалогов Shell.
         var operation = new FileOperation { Operation = 3, From = path + '\0' + '\0', Flags = 0x0040 | 0x0010 | 0x0004 | 0x0400 | 0x2000 };
         int result = SHFileOperationW(ref operation);
-        if (result != 0 || operation.Aborted || File.Exists(path)) throw new Win32Exception(result, "Не удалось удалить клип. Файл мог быть занят другим приложением.");
+        if (result != 0 || operation.Aborted || File.Exists(path)) throw new Win32Exception(result, Localization.Text("Message.CouldNotDeleteTheClipTheFileMayBeInUseByAnotherApplication"));
     });
 }
 

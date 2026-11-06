@@ -10,7 +10,7 @@ public partial class OverlayWindow
     private DispatcherTimer? _settingsSaveTimer;
     private CaptureSettings? _pendingAutoSettings;
     private CaptureSettings? _failedAutoSettings;
-    private string? _settingsSaveError;
+    private Func<string>? _settingsSaveError;
 
     private void InitializeAutomaticSettings()
     {
@@ -55,7 +55,7 @@ public partial class OverlayWindow
         catch (Exception error)
         {
             _failedAutoSettings = settings; _pendingAutoSettings = null;
-            _settingsSaveError = "Не удалось сохранить настройки: " + error.Message;
+            _settingsSaveError = () => Localization.Text("Message.CouldNotSaveSettings") + error.Message;
             _telemetry.Event("settings-save-error", new { error.Message });
         }
         UpdateCaptureStatus();

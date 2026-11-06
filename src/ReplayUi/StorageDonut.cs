@@ -50,6 +50,6 @@ public sealed class StorageDonut : FrameworkElement
         { var formatted = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), size, brush, VisualTreeHelper.GetDpi(this).PixelsPerDip); dc.DrawText(formatted, new Point(center.X - formatted.Width / 2, center.Y + y)); }
         StorageSlice? selected = _selected >= 0 && _selected < _slices.Count ? _slices[_selected] : null;
         Text(OverlayWindow.FormatBytes(selected?.Bytes ?? _total), 21, -22, Brushes.Gainsboro);
-        Text(selected is not null && _total > 0 ? $"{100d * selected.Bytes / _total:F1}% объёма" : $"Клипов: {_clips}", 11, 12, Brushes.Gray);
+        Text(selected is not null && _total > 0 ? Localization.Format("Format.StoragePercent", 100d * selected.Bytes / _total) : Localization.Format("Format.ClipCount", _clips), 11, 12, Brushes.Gray);
     }
 }

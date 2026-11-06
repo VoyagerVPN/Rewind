@@ -67,7 +67,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
         Directory.CreateDirectory(_sessionRoot);
         Directory.CreateDirectory(Path.Combine(settings.StorageRoot, "Clips"));
         long free = new DriveInfo(Path.GetPathRoot(_sessionRoot)!).AvailableFreeSpace;
-        if (free < 1024L * 1024 * 1024) throw new IOException("Для записи доступно менее 1 ГиБ свободного места на диске.");
+        if (free < 1024L * 1024 * 1024) throw new IOException(Localization.Text("Message.LessThan1GibOfDiskSpaceIsAvailableForRecording"));
         _maximumBufferBytes = Math.Min(16L * 1024 * 1024 * 1024, free - 512L * 1024 * 1024);
         _tracks = settings.ResolveMonitorProfiles().Where(profile => profile.Enabled).Select((profile, index) =>
         {
@@ -122,9 +122,9 @@ public sealed class DesktopReplaySession : IAsyncDisposable
     public static DesktopReplaySession Start(CaptureSettings settings, CaptureMonitor monitor, uint? applicationProcessId = null, Action<string>? diagnosticWarning = null)
     {
         settings.Validate();
-        if (!settings.CaptureVideo) throw new ArgumentException("Запись экрана отключена в настройках.");
+        if (!settings.CaptureVideo) throw new ArgumentException(Localization.Text("Message.ScreenRecordingIsDisabledInSettings"));
         if (monitor.DeviceName != settings.MonitorDeviceName || settings.MonitorIdentity is string identity && monitor.Identity != identity)
-            throw new ArgumentException("Выбранный монитор больше не подключён.");
+            throw new ArgumentException(Localization.Text("Message.TheSelectedMonitorIsNoLongerConnected"));
         return Start(settings, new[] { monitor }, applicationProcessId, diagnosticWarning);
     }
 
@@ -136,11 +136,11 @@ public sealed class DesktopReplaySession : IAsyncDisposable
     {
         settings.Validate();
         MonitorRecordingProfile[] profiles = settings.ResolveMonitorProfiles().Where(profile => profile.Enabled).ToArray();
-        if (profiles.Length == 0) throw new ArgumentException("Нет экранов с включённой записью.");
+        if (profiles.Length == 0) throw new ArgumentException(Localization.Text("Message.NoScreensHaveRecordingEnabled"));
         CaptureMonitor[] selected = profiles.Select(profile => monitors.SingleOrDefault(monitor => profile.Identity is null ? monitor.DeviceName == profile.DeviceName : monitor.Identity == profile.Identity)
-            ?? throw new ArgumentException("Монитор недоступен: " + profile.DeviceName)).ToArray();
+            ?? throw new ArgumentException(Localization.Text("Message.MonitorUnavailable") + profile.DeviceName)).ToArray();
         if (selected.Select(monitor => monitor.AdapterIndex).Distinct().Count() != 1)
-            throw new ArgumentException("Пока поддерживаются мониторы, подключённые к одной видеокарте.");
+            throw new ArgumentException(Localization.Text("Message.CurrentlyOnlyMonitorsConnectedToTheSameGraphicsCardAreSupported"));
         return new DesktopReplaySession(settings, selected, applicationProcessId, diagnosticWarning, readMonitors);
     }
 
@@ -171,7 +171,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
             _audioMetricsError = null;
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
-        { _audioMetricsError = "Не записана диагностика звука: " + error.Message; }
+        { _audioMetricsError = Localization.Text("Message.CouldNotWriteAudioDiagnostics") + error.Message; }
         _lastAudioMetricsUtc = now; _lastAudioMetricEvents = events;
     }
 
@@ -203,17 +203,17 @@ public sealed class DesktopReplaySession : IAsyncDisposable
     {
         lock (_gate)
         {
-            if (_stopRequested || _error is not null) throw new InvalidOperationException(_error ?? "Захват остановлен.");
-            if (_native.Any(native => native.Recovering)) throw new InvalidOperationException("Сохранение будет доступно после восстановления видеозахвата.");
+            if (_stopRequested || _error is not null) throw new InvalidOperationException(_error ?? Localization.Text("Message.CaptureStopped"));
+            if (_native.Any(native => native.Recovering)) throw new InvalidOperationException(Localization.Text("Message.SavingWillBeAvailableAfterVideoCaptureRecovers"));
             _saves.RemoveAll(task => task.IsCompleted);
-            if (_saves.Count >= 2) throw new InvalidOperationException("Уже сохраняются два повтора.");
+            if (_saves.Count >= 2) throw new InvalidOperationException(Localization.Text("Message.TwoReplaysAreAlreadyBeingSaved"));
             double end = ReplayEnd(endTimestamp ?? Stopwatch.GetTimestamp());
             int requested = seconds ?? _settings.ReplaySeconds;
-            if (requested < 1 || requested > _settings.HistorySeconds) throw new ArgumentException("Повтор должен помещаться в историю.");
+            if (requested < 1 || requested > _settings.HistorySeconds) throw new ArgumentException(Localization.Text("Message.TheReplayMustFitWithinTheHistory"));
             // Конец фиксируется сейчас. Ожидание закрытия сегмента не двигает момент события.
             Track[] tracks = SelectReplayTracks(monitorNames);
             double duration = Math.Min(requested, end - RecordingStartSeconds(tracks));
-            if (duration < 1) throw new InvalidOperationException("Пока недостаточно видео для повтора.");
+            if (duration < 1) throw new InvalidOperationException(Localization.Text("Message.ThereIsNotEnoughVideoForAReplayYet"));
             // Момент события фиксируется под блокировкой, упаковка и файловые операции идут вне UI.
             string application = ReplayFileName.ApplicationFolder(applicationName);
             DateTime requestedAt = DateTime.Now;
@@ -227,12 +227,12 @@ public sealed class DesktopReplaySession : IAsyncDisposable
     {
         lock (_gate)
         {
-            if (_stopRequested || _error is not null) throw new InvalidOperationException(_error ?? "Захват остановлен.");
-            if (_native.Any(native => native.Recovering)) throw new InvalidOperationException("Сохранение будет доступно после восстановления видеозахвата.");
+            if (_stopRequested || _error is not null) throw new InvalidOperationException(_error ?? Localization.Text("Message.CaptureStopped"));
+            if (_native.Any(native => native.Recovering)) throw new InvalidOperationException(Localization.Text("Message.SavingWillBeAvailableAfterVideoCaptureRecovers"));
             Track[] tracks = SelectReplayTracks(monitorNames);
             double end = ReplayEnd(endTimestamp);
             double start = Math.Max(RecordingStartSeconds(tracks), end - seconds);
-            if (end - start < 1) throw new InvalidOperationException("Пока недостаточно видео для повтора.");
+            if (end - start < 1) throw new InvalidOperationException(Localization.Text("Message.ThereIsNotEnoughVideoForAReplayYet"));
             return tracks.Select(track => track.Buffer.HoldRange(TimeSpan.FromSeconds(start), TimeSpan.FromSeconds(end))).ToArray();
         }
     }
@@ -243,7 +243,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
     {
         Track[] tracks = _tracks.Where(track => monitorNames is null || monitorNames.Contains(track.Profile.DeviceName)).ToArray();
         if (tracks.Length == 0 || monitorNames is not null && tracks.Length != monitorNames.Distinct().Count())
-            throw new ArgumentException("Выбранный экран не записывается.");
+            throw new ArgumentException(Localization.Text("Message.TheSelectedScreenIsNotBeingRecorded"));
         return tracks;
     }
 
@@ -271,7 +271,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
             lock (_gate) { closed = track.ClosedEnd; error = _error; }
             if (closed >= end) break;
             if (error is not null) throw new IOException(error);
-            if (timer.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException("Не получен завершённый фрагмент повтора.");
+            if (timer.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException(Localization.Text("Message.ACompletedReplaySegmentWasNotReceived"));
             await Task.Delay(50);
         }
         using ReplayLease lease = track.Buffer.Reserve(TimeSpan.FromSeconds(end), TimeSpan.FromSeconds(duration));
@@ -296,7 +296,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
             using JsonDocument probe = JsonDocument.Parse(json);
             JsonElement video = probe.RootElement.GetProperty("streams").EnumerateArray().Single(stream => stream.GetProperty("codec_type").GetString() == "video");
             int audioCount = probe.RootElement.GetProperty("streams").EnumerateArray().Count(stream => stream.GetProperty("codec_type").GetString() == "audio");
-            if (audioCount != (_audio?.Sources.Length ?? 0)) throw new InvalidDataException("В сохранённом повторе отсутствуют ожидаемые звуковые дорожки.");
+            if (audioCount != (_audio?.Sources.Length ?? 0)) throw new InvalidDataException(Localization.Text("Message.TheSavedReplayIsMissingExpectedAudioTracks"));
             double seconds = double.Parse(probe.RootElement.GetProperty("format").GetProperty("duration").GetString()!, CultureInfo.InvariantCulture);
             // r_frame_rate — оценка общей сетки временных меток, а не число кадров в секунду.
             // После миллисекундных MKV-сегментов 30 FPS иногда определяется как 120/1.
@@ -305,9 +305,9 @@ public sealed class DesktopReplaySession : IAsyncDisposable
             // Просадка частоты не должна уничтожать пригодный повтор. Приёмка 120 FPS
             // отдельно проверяет номера кадров; здесь проверяется читаемость файла.
             if (!double.IsFinite(measuredFps) || measuredFps <= 0 || measuredFps > track.Profile.Fps * 1.1)
-                throw new InvalidDataException("Некорректная частота сохранённого файла.");
+                throw new InvalidDataException(Localization.Text("Message.TheSavedFileHasAnInvalidFrameRate"));
             double fps = measuredFps;
-            if (seconds < duration - 0.1 || Math.Abs(seconds - (duration + leading)) > .25) throw new InvalidDataException("Длительность сохранённого повтора не совпала с запросом.");
+            if (seconds < duration - 0.1 || Math.Abs(seconds - (duration + leading)) > .25) throw new InvalidDataException(Localization.Text("Message.TheSavedReplayDurationDoesNotMatchTheRequestedDuration"));
             // Имя с размером формируется после экспорта; метаданные MP4 не содержат путь файла.
             long bytes = new FileInfo(partial).Length;
             string final = ReplayFileName.Reserve(destination, _settings.EffectiveFileNameFormat, application, requestedAt, duration, screen, multiple, bytes);
@@ -370,9 +370,9 @@ public sealed class DesktopReplaySession : IAsyncDisposable
                 RegisterClosedSegments();
                 long bytes = MeasureBufferBytes();
                 lock (_gate) _bufferBytes = bytes;
-                if (bytes > _maximumBufferBytes) throw new IOException("Достигнут защитный предел дискового буфера. Захват остановлен.");
+                if (bytes > _maximumBufferBytes) throw new IOException(Localization.Text("Message.TheDiskBufferSafetyLimitWasReachedCaptureStopped"));
                 if (new DriveInfo(Path.GetPathRoot(_sessionRoot)!).AvailableFreeSpace < 512L * 1024 * 1024)
-                    throw new IOException("На диске осталось менее 512 МиБ. Захват остановлен; сохранённые клипы не удалялись.");
+                    throw new IOException(Localization.Text("Message.LessThan512MibRemainsOnDiskCaptureStoppedSavedClipsWereNotDeleted"));
                 if (_capture.HasExited) break;
                 await Task.Delay(250);
             } while (true);
@@ -382,7 +382,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
             if (!_stopRequested && _native.FirstOrDefault(native => native.Error is not null)?.Error is string finalVideoError)
                 throw new IOException(finalVideoError);
             if (!_stopRequested || _capture.ExitCode != 0)
-                throw new IOException("Захват завершился: " + string.Join("\n", _errors));
+                throw new IOException(Localization.Text("Message.CaptureEnded") + string.Join("\n", _errors));
         }
         catch (Exception error)
         {
@@ -416,9 +416,9 @@ public sealed class DesktopReplaySession : IAsyncDisposable
             string name = values[0].Trim('"');
             if (Path.GetFileName(name) != name || !name.StartsWith("part", StringComparison.Ordinal) ||
                 !int.TryParse(Path.GetFileNameWithoutExtension(name).AsSpan(4), out int sequence))
-                throw new InvalidDataException("Некорректный список фрагментов.");
+                throw new InvalidDataException(Localization.Text("Message.InvalidSegmentList"));
             if (sequence <= track.LastSequence) continue;
-            if (sequence != track.LastSequence + 1) throw new InvalidDataException("В истории отсутствует файл фрагмента.");
+            if (sequence != track.LastSequence + 1) throw new InvalidDataException(Localization.Text("Message.ASegmentFileIsMissingFromTheHistory"));
             double start = double.Parse(values[1], CultureInfo.InvariantCulture);
             double end = double.Parse(values[2], CultureInfo.InvariantCulture);
             if (sequence == 0)
@@ -467,7 +467,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
                 foreach (string file in Directory.EnumerateFiles(track.Root, "part*." + ReplayExport.Extension))
                 {
                     string relative = Path.GetRelativePath(track.Root, Path.GetFullPath(file));
-                    if (Path.GetFileName(relative) != relative) throw new IOException("Путь вышел за пределы сеанса.");
+                    if (Path.GetFileName(relative) != relative) throw new IOException(Localization.Text("Message.ThePathIsOutsideTheSessionDirectory"));
                     try { File.Delete(file); }
                     catch (IOException) { }
                 }

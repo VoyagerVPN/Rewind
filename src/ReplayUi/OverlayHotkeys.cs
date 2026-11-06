@@ -14,7 +14,7 @@ public partial class OverlayWindow
     private HotkeySettings _hotkeys = HotkeySettings.Default;
     private HotkeySettingsFile _hotkeyFile = null!;
     private readonly Dictionary<HotkeyAction, (int Id, HotkeyChord Chord, HeldKeyHotkey? Watcher)> _activeHotkeys = [];
-    private readonly Dictionary<HotkeyAction, string> _hotkeyIssues = [];
+    private readonly Dictionary<HotkeyAction, Func<string>> _hotkeyIssues = [];
     private nint _hotkeyHandle;
     private bool _syncingHotkeys;
     private bool _capturingHotkey;
@@ -24,7 +24,7 @@ public partial class OverlayWindow
         _hotkeyFile = new HotkeySettingsFile(Path.Combine(_diagnostics, "hotkeys.json"));
         try { _hotkeys = _hotkeyFile.Load(); }
         catch (Exception error) when (error is IOException or JsonException or ArgumentException or UnauthorizedAccessException)
-        { HotkeysMessage.Text = "Не удалось загрузить сочетания: " + error.Message; }
+        { HotkeysMessage.Text = Localization.Text("Message.CouldNotLoadShortcuts") + error.Message; }
         foreach (HotkeyAction action in Enum.GetValues<HotkeyAction>())
         {
             EditorFor(action).CaptureStarted += (_, _) => SuspendHotkeysForInput();
@@ -89,9 +89,9 @@ public partial class OverlayWindow
 
     private void SetHotkeyError(HotkeyAction action, Win32Exception error, HotkeyChord? attempted = null)
     {
-        _hotkeyIssues[action] = error.NativeErrorCode == 1409
-            ? "Сочетание уже зарегистрировано в Windows (1409). Выбери другое или повтори попытку."
-            : $"Windows не зарегистрировала сочетание ({error.NativeErrorCode}): {error.Message}";
+        _hotkeyIssues[action] = () => error.NativeErrorCode == 1409
+            ? Localization.Text("Message.ThisShortcutIsAlreadyRegisteredInWindows1409ChooseAnotherOrTryAga")
+            : Localization.Format("Format.HotkeyError", error.NativeErrorCode, error.Message);
         _telemetry.Event("hotkey-register-error", new { action = action.ToString(), combination = (attempted ?? _hotkeys.Get(action))?.Label,
             code = error.NativeErrorCode, error.Message });
     }
@@ -110,14 +110,14 @@ public partial class OverlayWindow
             {
                 EditorFor(action).Chord = _hotkeys.Get(action);
                 TextBlock status = StatusFor(action);
-                status.Text = _hotkeyIssues.GetValueOrDefault(action) ?? "";
+                status.Text = _hotkeyIssues.GetValueOrDefault(action)?.Invoke() ?? "";
                 status.Visibility = status.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             }
-            SaveReplayButton.ToolTip = "Экран под курсором";
-            SaveAllScreensButton.ToolTip = "Все записываемые экраны" + (_hotkeys.SaveAll is null ? "" : " · " + _hotkeys.SaveAll.Label);
-            HidePanelButton.ToolTip = "Скрыть панель" + (_hotkeys.Panel is null ? "" : " · " + _hotkeys.Panel.Label);
+            SaveReplayButton.ToolTip = Localization.Text("Message.ScreenUnderThePointer");
+            SaveAllScreensButton.ToolTip = Localization.Text("Message.AllRecordedScreens") + (_hotkeys.SaveAll is null ? "" : " · " + _hotkeys.SaveAll.Label);
+            HidePanelButton.ToolTip = Localization.Text("Ui.HidePanel") + (_hotkeys.Panel is null ? "" : " · " + _hotkeys.Panel.Label);
             SettingsHotkey.Chord = _hotkeys.Settings;
-            SettingsButton.ToolTip = "Настройки" + (_hotkeys.Settings is null ? "" : " · " + _hotkeys.Settings.Label);
+            SettingsButton.ToolTip = Localization.Text("Ui.Settings") + (_hotkeys.Settings is null ? "" : " · " + _hotkeys.Settings.Label);
             CaptureToggle.ToolTip = CaptureToggleText.Text + (_hotkeys.CaptureToggle is null ? "" : " · " + _hotkeys.CaptureToggle.Label);
             HotkeysMessage.Visibility = string.IsNullOrEmpty(HotkeysMessage.Text) ? Visibility.Collapsed : Visibility.Visible;
             foreach (HotkeyEditor editor in PlayerHotkeyEditors.Children.OfType<Grid>().SelectMany(row => row.Children.OfType<HotkeyEditor>()))
@@ -214,7 +214,7 @@ public partial class OverlayWindow
         }
         catch (Win32Exception error) { SetHotkeyError(action, error, chord); }
         catch (Exception error) when (error is ArgumentException or IOException or UnauthorizedAccessException)
-        { _hotkeyIssues[action] = error is ArgumentException ? error.Message : "Не удалось сохранить: " + error.Message; }
+        { _hotkeyIssues[action] = () => error is ArgumentException ? error.Message : Localization.Text("Message.CouldNotSave") + error.Message; }
         finally
         {
             if (staged && !committed) ReleaseChord((stagedId, chord!, stagedWatcher));
