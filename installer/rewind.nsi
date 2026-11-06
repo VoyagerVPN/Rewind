@@ -78,9 +78,9 @@ Function .onInit
   ${EndIf}
   IfSilent backend
   InitPluginsDir
-  SetOutPath "$PLUGINSDIR\ui"
   ClearErrors
   !include "${BOOTSTRAP_LIST}"
+  SetOutPath "$PLUGINSDIR\ui"
   FileOpen $0 "$PLUGINSDIR\ui\setup-defaults.txt" w
   IfErrors uiFailed
   FileWriteUTF16LE /BOM $0 "$INSTDIR$\r$\n$DataDirectory$\r$\n$ReplaysDirectory$\r$\n"

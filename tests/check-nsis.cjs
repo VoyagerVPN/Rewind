@@ -22,9 +22,26 @@ const dataDirectory = path.join(fixture, 'Данные Rewind');
 const replayDirectory = path.join(fixture, 'Мои повторы');
 const install = () => run(setup, ['/S', '/DATA="' + dataDirectory + '"', '/REPLAYS="' + replayDirectory + '"', '/D=' + target]);
 fs.mkdirSync(path.join(payload, 'capture'), { recursive: true });
-fs.writeFileSync(path.join(payload, 'Rewind.exe'), 'fixture app');
+const compiler = path.resolve(process.argv[2]);
+const probe = path.join(fixture, 'probe.nsi');
+fs.mkdirSync(path.join(payload, 'ru'), { recursive: true });
+fs.writeFileSync(path.join(payload, 'ru', 'Rewind.resources.dll'), 'fixture translation');
+// Тестовый Rewind проверяет распакованный перевод при запуске внешнего установщика.
+fs.writeFileSync(probe, [
+  'Unicode true', 'SilentInstall silent', 'RequestExecutionLevel user',
+  'OutFile "' + path.join(payload, 'Rewind.exe') + '"',
+  'Section',
+  '  IfFileExists "$EXEDIR\\ru\\Rewind.resources.dll" found',
+  '  SetErrorLevel 3', '  Goto done',
+  'found:', '  SetErrorLevel 0',
+  'done:', 'SectionEnd',
+].join('\n'));
+const compiled = run(compiler, ['/V2', '/WX', 'probe.nsi']);
+assert.equal(compiled.status, 0, compiled.error?.message ?? compiled.stdout?.toString());
 fs.writeFileSync(path.join(payload, 'capture', 'worker.exe'), 'fixture worker');
-buildSetup(process.argv[2], payload, setup, product);
+buildSetup(compiler, payload, setup, product);
+const bootstrap = run(setup, []);
+assert.equal(bootstrap.status, 0, bootstrap.error?.message ?? 'Setup must extract the Russian resource to the bootstrap directory');
 
 fs.mkdirSync(target);
 const foreign = path.join(target, 'keep.txt');

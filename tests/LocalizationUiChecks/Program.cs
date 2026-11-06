@@ -31,10 +31,25 @@ internal static class Program
         try
         {
             new LanguagePreferencesFile(Path.Combine(directory, "language.json")).Save("ru");
-            new HotkeySettingsFile(Path.Combine(directory, "hotkeys.json")).Save(new HotkeySettings(null, null, null)
+            var shortcut = new HotkeyChord(7, 0x78);
+            new HotkeySettingsFile(Path.Combine(directory, "hotkeys.json")).Save(new HotkeySettings(null, shortcut, null)
                 { CaptureToggle = null, Settings = null, Player = new PlayerHotkeySettings(null, null, null, null, null) { GoToStart = null, Delete = null } });
             Environment.SetEnvironmentVariable("REWIND_TEST_NO_ACTIVATE", "1");
             var panel = new OverlayWindow([], directory);
+            const int conflictId = 1;
+            if (!RegisterHotKey(0, conflictId, shortcut.Modifiers, shortcut.Key))
+                throw new InvalidOperationException("Could not reserve the test shortcut.");
+            using var shortcutWindow = new HwndSource(new HwndSourceParameters("Rewind shortcut check"));
+            try
+            {
+                var register = typeof(OverlayWindow).GetMethod("RegisterHotkeys", BindingFlags.Instance | BindingFlags.NonPublic)
+                    ?? throw new InvalidOperationException("Shortcut registration is unavailable.");
+                register.Invoke(panel, [shortcutWindow.Handle]);
+            }
+            finally { UnregisterHotKey(0, conflictId); }
+            var shortcutStatus = (TextBlock)panel.FindName("SaveHotkeyStatus");
+            if (shortcutStatus.Text != "Сочетание уже зарегистрировано в Windows (1409). Выбери другое или повтори попытку.")
+                throw new InvalidOperationException("A Windows shortcut conflict must initially be shown in Russian.");
             var status = (TextBlock)panel.FindName("CaptureStatusText");
             var language = (ComboBox)panel.FindName("InterfaceLanguagePicker");
             var grouping = (ComboBox)panel.FindName("RecentGroupingPicker");
@@ -62,6 +77,8 @@ internal static class Program
                 ((TextBlock)panel.FindName("SettingsLabel")).Text != "Back" || grouping.SelectedIndex != 2 ||
                 grouping.Items[2].ToString() != "By session")
                 throw new InvalidOperationException("Changing the language must immediately update both dynamic and static interface text.");
+            if (shortcutStatus.Text != "This shortcut is already registered in Windows (1409). Choose another or try again.")
+                throw new InvalidOperationException("An existing Windows shortcut conflict must switch to English.");
             if (((TextBlock)toast.FindName("ToastTitle")).Text != "Saving replay…" ||
                 ((TextBlock)toast.FindName("ToastDetail")).Text != "Preparing video")
                 throw new InvalidOperationException("An existing notification must change language without being dismissed.");
@@ -80,12 +97,33 @@ internal static class Program
             CheckSetupLanguage(directory, preserveExisting: false);
             CheckSetupLanguage(directory, preserveExisting: true);
             CheckSystemDefaults();
+            CheckCaptureValidation(directory, "en");
+            CheckCaptureValidation(directory, "ru");
             CheckVideoWorkerLanguage("en", null, "The video player could not complete the action");
             CheckVideoWorkerLanguage("ru", null, "Видеоплеер не смог завершить действие");
             CheckVideoWorkerLanguage("en", "ru", "Видеоплеер не смог завершить действие");
             CheckVideoWorkerLanguage("ru", "en", "The video player could not complete the action");
         }
         finally { app.Shutdown(); Directory.Delete(directory, true); }
+    }
+
+    private static void CheckCaptureValidation(string root, string language)
+    {
+        string directory = Path.Combine(root, "validate-" + language);
+        Directory.CreateDirectory(directory);
+        new LanguagePreferencesFile(Path.Combine(directory, "language.json")).Save(language);
+        var start = new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "Rewind.exe"))
+        { UseShellExecute = false, CreateNoWindow = true };
+        start.ArgumentList.Add("--validate"); start.ArgumentList.Add(directory);
+        using Process child = Process.Start(start) ?? throw new InvalidOperationException("Could not start capture validation.");
+        if (!child.WaitForExit(15000)) { child.Kill(entireProcessTree: true); throw new TimeoutException("Capture validation timed out."); }
+        if (child.ExitCode != 0)
+        {
+            string errorPath = Path.Combine(directory, "error.txt");
+            string detail = File.Exists(errorPath) ? File.ReadAllText(errorPath) : $"Exit code: {child.ExitCode}";
+            throw new InvalidOperationException($"Capture validation failed in {language}: {detail}");
+        }
+        Console.WriteLine("PASS capture_validation_" + language);
     }
 
     private static void CheckSystemDefaults()
@@ -103,6 +141,8 @@ internal static class Program
 
     [DllImport("kernel32.dll")] private static extern ushort GetThreadUILanguage();
     [DllImport("kernel32.dll")] private static extern ushort GetUserDefaultUILanguage();
+    [DllImport("user32.dll")] private static extern bool RegisterHotKey(nint window, int id, uint modifiers, uint key);
+    [DllImport("user32.dll")] private static extern bool UnregisterHotKey(nint window, int id);
     [DllImport("user32.dll")] private static extern nint GetForegroundWindow();
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")] private static extern nint GetWindowLongPtr(nint handle, int index);
 
