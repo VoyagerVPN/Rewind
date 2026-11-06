@@ -12,19 +12,18 @@ Save the last few minutes of gameplay or desktop activity. Rewind keeps a rollin
 
 ## Quick start
 
-1. Build and run `Rewind-Setup.exe`. Choose English or Russian in setup and select where to store replays. The default folder is **Videos → Rewind**. Setup can install FFmpeg and FFprobe with WinGet if needed.
-2. Open Rewind from Start, select your displays in Settings and enable recording.
-3. Wait a few seconds. Press **Alt + F10** for the primary display or **Alt + Shift + F10** for all recorded displays. Release Alt to save.
-4. Open the MP4 in the Rewind library. In standard mode, saved clips are in the `Clips` subfolder.
-
-Change the interface language in Settings at any time. Rewind remembers the choice when you keep its data folder.
+1. Run the installer, choose English or Russian and select a replay folder. The default is **Videos → Rewind**.
+2. In Rewind Settings, select your displays and enable recording.
+3. Press **Alt + F10** for the primary display or **Alt + Shift + F10** for all recorded displays. Release Alt to save, then open the clip in the library.
 
 ## Features
 
-- Set the resolution and frame rate for each display independently.
-- While holding Alt, use **F9 / F11** to adjust the replay length or **C** to cancel.
+- Set the resolution and frame rate independently for each display.
+- Hold Alt and press **F9 / F11** to adjust the replay length or **C** to cancel.
 - Record system audio, microphone and Discord on separate tracks.
-- Browse clips in the built-in player. To continue using an existing ShadowPlay archive, choose its folder under the storage settings. Rewind can keep the archive layout and `.DVR.mp4` filenames.
+- Play and organize clips in the built-in library. Select your existing ShadowPlay archive in storage settings to keep its layout and `.DVR.mp4` filenames.
+
+[Replay feature comparison (Russian)](docs/replay-comparison.ru.md)
 
 ## Requirements
 
