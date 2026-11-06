@@ -16,6 +16,8 @@ Save the last few minutes of gameplay or desktop activity. Rewind keeps a rollin
 2. In Rewind Settings, select your displays and enable recording.
 3. Press **Alt + F10** for the primary display or **Alt + Shift + F10** for all recorded displays. Release Alt to save, then open the clip in the library.
 
+You can change the interface language in Settings.
+
 ## Features
 
 - Set the resolution and frame rate independently for each display.
@@ -23,7 +25,38 @@ Save the last few minutes of gameplay or desktop activity. Rewind keeps a rollin
 - Record system audio, microphone and Discord on separate tracks.
 - Play and organize clips in the built-in library. Select your existing ShadowPlay archive in storage settings to keep its layout and `.DVR.mp4` filenames.
 
-[Replay feature comparison (Russian)](docs/replay-comparison.ru.md)
+## Local replay comparison
+
+| Feature | ShadowPlay | OBS | Medal | Action! | **Rewind** |
+| --- | :---: | :---: | :---: | :---: | :---: |
+| One hotkey saves a separate clip from each monitor | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Independent resolution and frame rate for each recorded monitor | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Choose replay length after pressing the save hotkey | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Open-source capture application | ❌ | ✅ | ❌ | ❌ | ✅ |
+| Free local replays without a trial period | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Discord audio on a separate track | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Instant replay hotkey | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Multiple audio tracks in one clip | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+This compares built-in features in a single running instance without plugins. ✅ Supported · ❌ Unavailable as a built-in feature.
+
+ShadowPlay is evaluated as part of the NVIDIA App. Action! offers a [30-day trial][action-trial].
+
+[ShadowPlay][shadowplay] · [OBS][obs] ([recording][obs-output], [application audio][obs-app-audio], [audio tracks][obs-audio], [source code][obs-source]) · [Medal][medal] ([free mode][medal-free], [audio tracks][medal-audio]) · [Action!][action] ([Time-Shift][action-replay], [application audio][action-audio])
+
+[shadowplay]: https://www.nvidia.com/en-us/geforce/news/nvidia-app-download-and-features/
+[obs]: https://obsproject.com/kb/obs-studio-overview
+[obs-output]: https://obsproject.com/kb/standard-recording-output-guide
+[obs-app-audio]: https://obsproject.com/kb/application-audio-capture-guide
+[obs-audio]: https://obsproject.com/kb/multiple-audio-track-recording-guide/
+[obs-source]: https://github.com/obsproject/obs-studio
+[medal]: https://support.medal.tv/support/solutions/articles/48001157616-how-to-choose-your-recording-method
+[medal-free]: https://medal.tv/download
+[medal-audio]: https://support.medal.tv/support/solutions/articles/48001220541-multi-track-recording
+[action]: https://mirillis.com/action-features
+[action-replay]: https://mirillis.com/action-time-shift
+[action-audio]: https://mirillis.com/action-history
+[action-trial]: https://mirillis.com/activation-action-tutorial
 
 ## Requirements
 
