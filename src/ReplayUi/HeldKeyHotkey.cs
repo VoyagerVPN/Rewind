@@ -11,7 +11,7 @@ internal sealed class HeldKeyHotkey : IDisposable
     public HeldKeyHotkey(HotkeyChord chord, Action pressed)
     {
         chord.Validate();
-        if (chord.HeldKey is not uint held) throw new ArgumentException("Нужна удерживаемая клавиша.", nameof(chord));
+        if (chord.HeldKey is not uint held) throw new ArgumentException(Localization.Text("Message.AHeldKeyIsRequired"), nameof(chord));
         var tracker = new HeldKeyPressTracker(chord, LowLevelKeyboardHook.Down(chord.Key));
         _hook = new LowLevelKeyboardHook((key, down) =>
         {

@@ -35,7 +35,7 @@ public sealed class AudioTimelineBuffer
 
     public void Write(long startFrame, ReadOnlySpan<byte> samples, bool silent = false)
     {
-        if (samples.Length % FrameBytes != 0) throw new ArgumentException("Нужны полные стереокадры float PCM.", nameof(samples));
+        if (samples.Length % FrameBytes != 0) throw new ArgumentException(Localization.Text("Message.CompleteFloatPcmStereoFramesAreRequired"), nameof(samples));
         int frames = samples.Length / FrameBytes;
         _received += frames;
         bool overflow = false;
@@ -59,7 +59,7 @@ public sealed class AudioTimelineBuffer
     public void Read(long startFrame, Span<byte> destination)
     {
         if (startFrame != _readFrame || destination.Length % FrameBytes != 0)
-            throw new ArgumentException("Выход должен читать последовательные полные PCM-кадры.");
+            throw new ArgumentException(Localization.Text("Message.TheOutputMustReadConsecutiveCompletePcmFrames"));
         destination.Clear();
         int frames = destination.Length / FrameBytes;
         for (int index = 0; index < frames; index++)

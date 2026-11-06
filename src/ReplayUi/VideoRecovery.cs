@@ -7,7 +7,7 @@ internal static class VideoRecovery
 {
     public static async Task<double?> FindNextAsync(string file, double from, double duration, IProgress<double> progress, Action<double> failedProbe, CancellationToken cancellation)
     {
-        if (!File.Exists(file)) throw new FileNotFoundException("Файл повтора недоступен.", file);
+        if (!File.Exists(file)) throw new FileNotFoundException(Localization.Text("Message.TheReplayFileIsUnavailable"), file);
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
         deadline.CancelAfter(TimeSpan.FromSeconds(25));
         double end = Math.Max(0, duration - .1), step = Math.Max(1, (duration - from) / 16);
@@ -36,11 +36,11 @@ internal static class VideoRecovery
                  "-an", "-sn", "-dn", "-progress", "pipe:1", "-nostats", "-f", "null", "-"],
                 TimeSpan.FromSeconds(5), cancellation, nonFatalDiagnostics: _ => { });
             if (!progress.Split('\n').Any(line => line.StartsWith("frame=", StringComparison.Ordinal) && int.TryParse(line.AsSpan(6).Trim(), out int frames) && frames > 0))
-                throw new InvalidDataException("В этом участке нет читаемых кадров.");
+                throw new InvalidDataException(Localization.Text("Message.ThisSegmentHasNoReadableFrames"));
         }
         catch (Exception error) when (error is InvalidOperationException or InvalidDataException)
-        { throw new InvalidDataException("Этот участок не удалось воспроизвести. Попробуй перейти дальше по шкале или найти доступный фрагмент.", error); }
+        { throw new InvalidDataException(Localization.Text("Message.CouldNotPlayThisSegmentTryALaterPositionOrFindAnAvailableSegment"), error); }
         catch (OperationCanceledException error) when (!cancellation.IsCancellationRequested)
-        { throw new TimeoutException("Проверка участка не ответила вовремя. Попробуй ещё раз или перейди дальше по шкале.", error); }
+        { throw new TimeoutException(Localization.Text("Message.TheSegmentCheckTimedOutTryAgainOrChooseALaterPosition"), error); }
     }
 }

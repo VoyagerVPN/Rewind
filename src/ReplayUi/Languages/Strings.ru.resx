@@ -1,0 +1,1455 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Setup.Title" xml:space="preserve">
+    <value>Rewind · Установка</value>
+  </data>
+  <data name="Setup.CloseInstaller" xml:space="preserve">
+    <value>Закрыть установщик</value>
+  </data>
+  <data name="Setup.Close" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="Setup.Heading" xml:space="preserve">
+    <value>Установка</value>
+  </data>
+  <data name="Setup.Language" xml:space="preserve">
+    <value>Язык / Language</value>
+  </data>
+  <data name="Setup.ProgramFolder" xml:space="preserve">
+    <value>Папка программы</value>
+  </data>
+  <data name="Setup.DataFolder" xml:space="preserve">
+    <value>Настройки и данные</value>
+  </data>
+  <data name="Setup.ReplaysFolder" xml:space="preserve">
+    <value>Сохранённые повторы</value>
+  </data>
+  <data name="Setup.Browse" xml:space="preserve">
+    <value>Обзор…</value>
+  </data>
+  <data name="Setup.BrowseProgram" xml:space="preserve">
+    <value>Выбрать папку программы</value>
+  </data>
+  <data name="Setup.BrowseData" xml:space="preserve">
+    <value>Выбрать папку настроек и данных</value>
+  </data>
+  <data name="Setup.BrowseReplays" xml:space="preserve">
+    <value>Выбрать папку для повторов</value>
+  </data>
+  <data name="Setup.Autostart" xml:space="preserve">
+    <value>Запускать Rewind при входе в Windows</value>
+  </data>
+  <data name="Setup.Installed" xml:space="preserve">
+    <value>Rewind установлен</value>
+  </data>
+  <data name="Setup.StartMenu" xml:space="preserve">
+    <value>Приложение доступно в меню «Пуск».</value>
+  </data>
+  <data name="Setup.Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Setup.Install" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="Setup.Done" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="Setup.ChooseFolder" xml:space="preserve">
+    <value>Выберите папку</value>
+  </data>
+  <data name="Setup.InvalidFolders" xml:space="preserve">
+    <value>Укажите три разные папки на локальных дисках.</value>
+  </data>
+  <data name="Setup.Installing" xml:space="preserve">
+    <value>Устанавливаем Rewind…</value>
+  </data>
+  <data name="Setup.MissingFfmpeg" xml:space="preserve">
+    <value>WinGet завершился, но FFmpeg и FFprobe не найдены. Повторите установку.</value>
+  </data>
+  <data name="Setup.Occupied" xml:space="preserve">
+    <value>Rewind уже установлен, папка занята или запущена другая установка.</value>
+  </data>
+  <data name="Setup.InstallFailed" xml:space="preserve">
+    <value>Не удалось установить Rewind. Проверьте доступ к папке и свободное место.</value>
+  </data>
+  <data name="Setup.StartFailed" xml:space="preserve">
+    <value>Не удалось запустить установку. {0}</value>
+  </data>
+  <data name="Setup.NsisFailed" xml:space="preserve">
+    <value>Не удалось запустить NSIS.</value>
+  </data>
+  <data name="Setup.NoWinget" xml:space="preserve">
+    <value>WinGet недоступен. Установите «Установщик приложений» и повторите.</value>
+  </data>
+  <data name="Setup.InstallingFfmpeg" xml:space="preserve">
+    <value>Устанавливаем FFmpeg…</value>
+  </data>
+  <data name="Setup.WingetFailed" xml:space="preserve">
+    <value>Не удалось запустить WinGet.</value>
+  </data>
+  <data name="Setup.FfmpegTimeout" xml:space="preserve">
+    <value>Установка FFmpeg заняла слишком много времени. Повторите попытку.</value>
+  </data>
+  <data name="Setup.FfmpegFailed" xml:space="preserve">
+    <value>WinGet не смог установить FFmpeg (0x{0:X8}).</value>
+  </data>
+  <data name="Setup.LanguageSaveFailed" xml:space="preserve">
+    <value>Rewind установлен, но не удалось сохранить язык: {0}</value>
+  </data>
+  <data name="Settings.Language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="Settings.LanguageSaveFailed" xml:space="preserve">
+    <value>Не удалось сохранить язык:</value>
+  </data>
+  <data name="Settings.LanguageLoadFailed" xml:space="preserve">
+    <value>Не удалось прочитать язык:</value>
+  </data>
+  <data name="Ui.RewindNotification" xml:space="preserve">
+    <value>Rewind · Уведомление</value>
+  </data>
+  <data name="Ui.ReplayView" xml:space="preserve">
+    <value>Вид повторов</value>
+  </data>
+  <data name="Ui.AllWindowsApplicationsAndOutputsExceptDiscord" xml:space="preserve">
+    <value>Все приложения и выходы Windows, кроме Discord</value>
+  </data>
+  <data name="Ui.ChooseFolder" xml:space="preserve">
+    <value>Выбрать папку</value>
+  </data>
+  <data name="Ui.RecordDiscordOnASeparateTrack" xml:space="preserve">
+    <value>Выделять Discord в отдельную дорожку</value>
+  </data>
+  <data name="Ui.Hotkeys" xml:space="preserve">
+    <value>Горячие клавиши</value>
+  </data>
+  <data name="Ui.GroupRecentReplays" xml:space="preserve">
+    <value>Группировка недавних повторов</value>
+  </data>
+  <data name="Ui.AddMarker" xml:space="preserve">
+    <value>Добавить отметку</value>
+  </data>
+  <data name="Ui.AddAReplayFolder" xml:space="preserve">
+    <value>Добавить папку с повторами</value>
+  </data>
+  <data name="Ui.ExitRewind" xml:space="preserve">
+    <value>Завершить Rewind</value>
+  </data>
+  <data name="Ui.RecordMicrophoneOnASeparateTrack" xml:space="preserve">
+    <value>Записывать микрофон отдельной дорожкой</value>
+  </data>
+  <data name="Ui.WindowsSoundSettings" xml:space="preserve">
+    <value>Звук Windows</value>
+  </data>
+  <data name="Ui.Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="Ui.SettingsAreSavedAutomatically" xml:space="preserve">
+    <value>Настройки сохраняются автоматически</value>
+  </data>
+  <data name="Ui.Refresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="Ui.RefreshList" xml:space="preserve">
+    <value>Обновить список</value>
+  </data>
+  <data name="Ui.RefreshDevices" xml:space="preserve">
+    <value>Обновить устройства</value>
+  </data>
+  <data name="Ui.IdentifyMonitors" xml:space="preserve">
+    <value>Определить мониторы</value>
+  </data>
+  <data name="Ui.WindowsDisplaySettings" xml:space="preserve">
+    <value>Параметры экрана Windows</value>
+  </data>
+  <data name="Ui.DragMarkers15SecondStepsDefault" xml:space="preserve">
+    <value>Перетаскивай отметки · шаг 15 с · ★ основной</value>
+  </data>
+  <data name="Ui.Default" xml:space="preserve">
+    <value>По умолчанию</value>
+  </data>
+  <data name="Ui.ReplayIsOff" xml:space="preserve">
+    <value>Повтор выключен</value>
+  </data>
+  <data name="Ui.RetryUnavailableShortcuts" xml:space="preserve">
+    <value>Повторить регистрацию недоступных сочетаний</value>
+  </data>
+  <data name="Ui.SearchByNameAndFolder" xml:space="preserve">
+    <value>Поиск по названию и папке</value>
+  </data>
+  <data name="Ui.FinalFileSizeForExample2148Mb" xml:space="preserve">
+    <value>Размер готового файла, например 214.8 МБ</value>
+  </data>
+  <data name="Ui.PreviewSize" xml:space="preserve">
+    <value>Размер превью</value>
+  </data>
+  <data name="Ui.Grid" xml:space="preserve">
+    <value>Сетка</value>
+  </data>
+  <data name="Ui.HidePanel" xml:space="preserve">
+    <value>Скрыть панель</value>
+  </data>
+  <data name="Ui.SortRecentReplays" xml:space="preserve">
+    <value>Сортировка недавних повторов</value>
+  </data>
+  <data name="Ui.SaveAllScreens" xml:space="preserve">
+    <value>Сохранить все экраны</value>
+  </data>
+  <data name="Ui.SaveReplay" xml:space="preserve">
+    <value>Сохранить повтор</value>
+  </data>
+  <data name="Ui.List" xml:space="preserve">
+    <value>Список</value>
+  </data>
+  <data name="Ui.ClearShortcut" xml:space="preserve">
+    <value>Убрать сочетание</value>
+  </data>
+  <data name="Ui.SetTheSeekIntervalInPlayerSettings" xml:space="preserve">
+    <value>Шаг задаётся в настройках плеера</value>
+  </data>
+  <data name="Ui.AlwaysStartRecordingOnLaunch" xml:space="preserve">
+    <value>Всегда включать запись при запуске</value>
+  </data>
+  <data name="Ui.ChooseShadowplayArchive" xml:space="preserve">
+    <value>Выбрать архив ShadowPlay</value>
+  </data>
+  <data name="Ui.ChooseStorageFolder" xml:space="preserve">
+    <value>Выбрать папку хранения</value>
+  </data>
+  <data name="Ui.HistoryLength" xml:space="preserve">
+    <value>Длина истории</value>
+  </data>
+  <data name="Ui.HistoryLengthInSeconds" xml:space="preserve">
+    <value>Длина истории в секундах</value>
+  </data>
+  <data name="Ui.SavedReplayDuration" xml:space="preserve">
+    <value>Длительность сохраняемого повтора</value>
+  </data>
+  <data name="Ui.AddFolder" xml:space="preserve">
+    <value>Добавить папку</value>
+  </data>
+  <data name="Ui.Audio" xml:space="preserve">
+    <value>Звук</value>
+  </data>
+  <data name="Ui.GameOrFolder" xml:space="preserve">
+    <value>Игра или папка</value>
+  </data>
+  <data name="Ui.GoToStartOfVideo" xml:space="preserve">
+    <value>К началу видео</value>
+  </data>
+  <data name="Ui.NextFrame" xml:space="preserve">
+    <value>Кадр вперёд</value>
+  </data>
+  <data name="Ui.PreviousFrame" xml:space="preserve">
+    <value>Кадр назад</value>
+  </data>
+  <data name="Ui.Keys" xml:space="preserve">
+    <value>Клавиши</value>
+  </data>
+  <data name="Ui.ShadowplayArchiveRoot" xml:space="preserve">
+    <value>Корень архива ShadowPlay</value>
+  </data>
+  <data name="Ui.NewMarker" xml:space="preserve">
+    <value>Новая отметка</value>
+  </data>
+  <data name="Ui.RefreshLibrary" xml:space="preserve">
+    <value>Обновить библиотеку</value>
+  </data>
+  <data name="Ui.RefreshMonitors" xml:space="preserve">
+    <value>Обновить мониторы</value>
+  </data>
+  <data name="Ui.RefreshSizes" xml:space="preserve">
+    <value>Обновить размеры</value>
+  </data>
+  <data name="Ui.RefreshAudioDevices" xml:space="preserve">
+    <value>Обновить устройства звука</value>
+  </data>
+  <data name="Ui.ClipStorageByApplication" xml:space="preserve">
+    <value>Объём клипов по приложениям</value>
+  </data>
+  <data name="Ui.OpenSettings" xml:space="preserve">
+    <value>Открыть настройки</value>
+  </data>
+  <data name="Ui.PauseResume" xml:space="preserve">
+    <value>Пауза / продолжить</value>
+  </data>
+  <data name="Ui.SeekForward" xml:space="preserve">
+    <value>Перемотать вперёд</value>
+  </data>
+  <data name="Ui.SeekBackward" xml:space="preserve">
+    <value>Перемотать назад</value>
+  </data>
+  <data name="Ui.Replay" xml:space="preserve">
+    <value>Повтор</value>
+  </data>
+  <data name="Ui.RetryRegisteringHotkeys" xml:space="preserve">
+    <value>Повторить регистрацию горячих клавиш</value>
+  </data>
+  <data name="Ui.SearchReplays" xml:space="preserve">
+    <value>Поиск повторов</value>
+  </data>
+  <data name="Ui.PreviousPage" xml:space="preserve">
+    <value>Предыдущая страница</value>
+  </data>
+  <data name="Ui.StorageFolderPath" xml:space="preserve">
+    <value>Путь к папке хранения</value>
+  </data>
+  <data name="Ui.LibraryPreviewSize" xml:space="preserve">
+    <value>Размер превью библиотеки</value>
+  </data>
+  <data name="Ui.ReplayLayout" xml:space="preserve">
+    <value>Расположение повторов</value>
+  </data>
+  <data name="Ui.LibraryGrid" xml:space="preserve">
+    <value>Сетка библиотеки</value>
+  </data>
+  <data name="Ui.ReplayGrid" xml:space="preserve">
+    <value>Сетка повторов</value>
+  </data>
+  <data name="Ui.NextPage" xml:space="preserve">
+    <value>Следующая страница</value>
+  </data>
+  <data name="Ui.SortByDate" xml:space="preserve">
+    <value>Сортировать: Дата</value>
+  </data>
+  <data name="Ui.SortBySize" xml:space="preserve">
+    <value>Сортировать: Размер</value>
+  </data>
+  <data name="Ui.SortByFile" xml:space="preserve">
+    <value>Сортировать: Файл</value>
+  </data>
+  <data name="Ui.SortReplays" xml:space="preserve">
+    <value>Сортировка повторов</value>
+  </data>
+  <data name="Ui.AutosaveStatus" xml:space="preserve">
+    <value>Состояние автосохранения</value>
+  </data>
+  <data name="Ui.StartOrStopReplayShortcut" xml:space="preserve">
+    <value>Сочетание включения и остановки повтора</value>
+  </data>
+  <data name="Ui.DefaultAllScreensShortcut" xml:space="preserve">
+    <value>Сочетание всех экранов по умолчанию</value>
+  </data>
+  <data name="Ui.OpenPanelShortcut" xml:space="preserve">
+    <value>Сочетание открытия панели</value>
+  </data>
+  <data name="Ui.DefaultPanelShortcut" xml:space="preserve">
+    <value>Сочетание панели по умолчанию</value>
+  </data>
+  <data name="Ui.SaveAllScreensShortcut" xml:space="preserve">
+    <value>Сочетание сохранения всех экранов</value>
+  </data>
+  <data name="Ui.SavePrimaryScreenShortcut" xml:space="preserve">
+    <value>Сочетание сохранения основного экрана</value>
+  </data>
+  <data name="Ui.DefaultSaveShortcut" xml:space="preserve">
+    <value>Сочетание сохранения по умолчанию</value>
+  </data>
+  <data name="Ui.LibraryList" xml:space="preserve">
+    <value>Список библиотеки</value>
+  </data>
+  <data name="Ui.ReplayList" xml:space="preserve">
+    <value>Список повторов</value>
+  </data>
+  <data name="Ui.ClearAllScreensShortcut" xml:space="preserve">
+    <value>Убрать сочетание всех экранов</value>
+  </data>
+  <data name="Ui.ClearPanelShortcut" xml:space="preserve">
+    <value>Убрать сочетание панели</value>
+  </data>
+  <data name="Ui.ClearSaveShortcut" xml:space="preserve">
+    <value>Убрать сочетание сохранения</value>
+  </data>
+  <data name="Ui.DeleteClip" xml:space="preserve">
+    <value>Удалить клип</value>
+  </data>
+  <data name="Ui.DiscordLevel" xml:space="preserve">
+    <value>Уровень Discord</value>
+  </data>
+  <data name="Ui.MicrophoneLevel" xml:space="preserve">
+    <value>Уровень микрофона</value>
+  </data>
+  <data name="Ui.SystemLevel" xml:space="preserve">
+    <value>Уровень системы</value>
+  </data>
+  <data name="Ui.MicrophoneDevice" xml:space="preserve">
+    <value>Устройство микрофона</value>
+  </data>
+  <data name="Ui.FilenameFormat" xml:space="preserve">
+    <value>Формат имени файла</value>
+  </data>
+  <data name="Ui.Storage" xml:space="preserve">
+    <value>Хранение</value>
+  </data>
+  <data name="Ui.Screens" xml:space="preserve">
+    <value>Экраны</value>
+  </data>
+  <data name="Ui.InThePanel" xml:space="preserve">
+    <value>В панели</value>
+  </data>
+  <data name="Ui.InThePlayer" xml:space="preserve">
+    <value>В плеере</value>
+  </data>
+  <data name="Ui.Start" xml:space="preserve">
+    <value>Включить</value>
+  </data>
+  <data name="Ui.StartStopReplay" xml:space="preserve">
+    <value>Включить / остановить повтор</value>
+  </data>
+  <data name="Ui.AllReplays" xml:space="preserve">
+    <value>Все повторы</value>
+  </data>
+  <data name="Ui.ChooseTheRootOfYourNvidiaArchiveTheRecordingBufferWillStayInTheRe" xml:space="preserve">
+    <value>Выберите корень архива NVIDIA. Буфер записи останется в папке Rewind.</value>
+  </data>
+  <data name="Ui.Add" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="Ui.Filename" xml:space="preserve">
+    <value>Имя файла</value>
+  </data>
+  <data name="Ui.Intervals" xml:space="preserve">
+    <value>Интервалы</value>
+  </data>
+  <data name="Ui.History" xml:space="preserve">
+    <value>История</value>
+  </data>
+  <data name="Ui.HistoryAndIntervals" xml:space="preserve">
+    <value>История и интервалы</value>
+  </data>
+  <data name="Ui.RecordingSources" xml:space="preserve">
+    <value>Источники записи</value>
+  </data>
+  <data name="Ui.InstantReplay" xml:space="preserve">
+    <value>Мгновенный повтор</value>
+  </data>
+  <data name="Ui.Microphone" xml:space="preserve">
+    <value>Микрофон</value>
+  </data>
+  <data name="Ui.Recent" xml:space="preserve">
+    <value>Недавние</value>
+  </data>
+  <data name="Ui.ReplayFolder" xml:space="preserve">
+    <value>Папка повторов</value>
+  </data>
+  <data name="Ui.ByDefaultRecordingResumesInItsPreviousState" xml:space="preserve">
+    <value>По умолчанию восстанавливается состояние записи с прошлого запуска.</value>
+  </data>
+  <data name="Ui.ReplayAllScreens" xml:space="preserve">
+    <value>Повтор · все экраны</value>
+  </data>
+  <data name="Ui.ReplayPrimaryScreen" xml:space="preserve">
+    <value>Повтор · основной экран</value>
+  </data>
+  <data name="Ui.ShowHidePanel" xml:space="preserve">
+    <value>Показать / скрыть панель</value>
+  </data>
+  <data name="Ui.System" xml:space="preserve">
+    <value>Система</value>
+  </data>
+  <data name="Ui.Sort" xml:space="preserve">
+    <value>Сортировка</value>
+  </data>
+  <data name="Ui.SaveTheLast" xml:space="preserve">
+    <value>Сохранить последние</value>
+  </data>
+  <data name="Ui.Storagef8f37144" xml:space="preserve">
+    <value>Хранилище</value>
+  </data>
+  <data name="Ui.15Min" xml:space="preserve">
+    <value>15 мин</value>
+  </data>
+  <data name="Ui.2Min" xml:space="preserve">
+    <value>2 мин</value>
+  </data>
+  <data name="Ui.30Sec" xml:space="preserve">
+    <value>30 с</value>
+  </data>
+  <data name="Ui.5Min" xml:space="preserve">
+    <value>5 мин</value>
+  </data>
+  <data name="Ui.Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="Ui.All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="Ui.Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="Ui.Duration" xml:space="preserve">
+    <value>Длительность</value>
+  </data>
+  <data name="Ui.Number" xml:space="preserve">
+    <value>Номер</value>
+  </data>
+  <data name="Ui.Application" xml:space="preserve">
+    <value>Приложение</value>
+  </data>
+  <data name="Ui.Size" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="Ui.NvidiaShadowplayCompatibility" xml:space="preserve">
+    <value>Совместимость с NVIDIA ShadowPlay</value>
+  </data>
+  <data name="Ui.File" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="Ui.Screen" xml:space="preserve">
+    <value>Экран</value>
+  </data>
+  <data name="Ui.RewindReplayDuration" xml:space="preserve">
+    <value>Rewind · Длительность повтора</value>
+  </data>
+  <data name="Ui.F9ShorterF11LongerCCancel" xml:space="preserve">
+    <value>F9 короче   ·   F11 длиннее   ·   C отменить</value>
+  </data>
+  <data name="Ui.TrackVolume" xml:space="preserve">
+    <value>Громкость дорожек</value>
+  </data>
+  <data name="Ui.ClipActions" xml:space="preserve">
+    <value>Действия с клипом</value>
+  </data>
+  <data name="Ui.ClosePlayerEsc" xml:space="preserve">
+    <value>Закрыть плеер · Esc</value>
+  </data>
+  <data name="Ui.PlayerSettings" xml:space="preserve">
+    <value>Настройки плеера</value>
+  </data>
+  <data name="Ui.PauseSpace" xml:space="preserve">
+    <value>Пауза · пробел</value>
+  </data>
+  <data name="Ui.ThePlayerHasRestartedYouCanContinueWatching" xml:space="preserve">
+    <value>Плеер перезапущен. Можно продолжить просмотр.</value>
+  </data>
+  <data name="Ui.TryOpeningTheSelectedPositionDespiteTheRiskOfAFailure" xml:space="preserve">
+    <value>Попытаться открыть выбранное место, несмотря на возможный сбой</value>
+  </data>
+  <data name="Ui.PreviousFrame42bc5e62" xml:space="preserve">
+    <value>Предыдущий кадр · Б / ,</value>
+  </data>
+  <data name="Ui.NextFrame483344ea" xml:space="preserve">
+    <value>Следующий кадр · Ю / .</value>
+  </data>
+  <data name="Ui.ErrorsHaveOccurredInThisPartOfTheRecordingThePlayerMayFreezeOrClo" xml:space="preserve">
+    <value>В этой части записи уже возникали ошибки. Плеер может зависнуть или закрыться.</value>
+  </data>
+  <data name="Ui.PlaybackStopped" xml:space="preserve">
+    <value>Воспроизведение остановлено</value>
+  </data>
+  <data name="Ui.TracksInPanel" xml:space="preserve">
+    <value>Дорожки в панели</value>
+  </data>
+  <data name="Ui.Loading" xml:space="preserve">
+    <value>Загрузка…</value>
+  </data>
+  <data name="Ui.GoToAvailableSegment" xml:space="preserve">
+    <value>К доступному фрагменту</value>
+  </data>
+  <data name="Ui.Master" xml:space="preserve">
+    <value>Общая</value>
+  </data>
+  <data name="Ui.OpenAnyway" xml:space="preserve">
+    <value>Открыть всё равно</value>
+  </data>
+  <data name="Ui.OpenTheSectionWithErrors" xml:space="preserve">
+    <value>Открыть участок с ошибками?</value>
+  </data>
+  <data name="Ui.Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Ui.RestartPlayer" xml:space="preserve">
+    <value>Перезапустить плеер</value>
+  </data>
+  <data name="Ui.Seeking" xml:space="preserve">
+    <value>Перемотка</value>
+  </data>
+  <data name="Ui.PlayerRecovered" xml:space="preserve">
+    <value>Плеер восстановлен</value>
+  </data>
+  <data name="Ui.ShowInFileExplorer" xml:space="preserve">
+    <value>Показать в проводнике</value>
+  </data>
+  <data name="Ui.SystemDiscordAndMicrophone" xml:space="preserve">
+    <value>Система, Discord и микрофон</value>
+  </data>
+  <data name="Ui.Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="Ui.DeleteClip0d16ea49" xml:space="preserve">
+    <value>Удалить клип?</value>
+  </data>
+  <data name="Ui.SeekIntervalForButtonsAndHotkeys" xml:space="preserve">
+    <value>Шаг для кнопок и горячих клавиш</value>
+  </data>
+  <data name="Ui.ErrorsFoundInTheRecording" xml:space="preserve">
+    <value>В записи обнаружены ошибки</value>
+  </data>
+  <data name="Ui.DiscordVolume" xml:space="preserve">
+    <value>Громкость Discord</value>
+  </data>
+  <data name="Ui.DiscordVolumeInPanel" xml:space="preserve">
+    <value>Громкость Discord в панели</value>
+  </data>
+  <data name="Ui.MicrophoneVolume" xml:space="preserve">
+    <value>Громкость микрофона</value>
+  </data>
+  <data name="Ui.MicrophoneVolumeInPanel" xml:space="preserve">
+    <value>Громкость микрофона в панели</value>
+  </data>
+  <data name="Ui.SystemVolume" xml:space="preserve">
+    <value>Громкость системы</value>
+  </data>
+  <data name="Ui.SystemVolumeInPanel" xml:space="preserve">
+    <value>Громкость системы в панели</value>
+  </data>
+  <data name="Ui.ClosePlayer" xml:space="preserve">
+    <value>Закрыть плеер</value>
+  </data>
+  <data name="Ui.GoToStart" xml:space="preserve">
+    <value>К началу</value>
+  </data>
+  <data name="Ui.MasterVolume" xml:space="preserve">
+    <value>Общая громкость</value>
+  </data>
+  <data name="Ui.Pause" xml:space="preserve">
+    <value>Пауза</value>
+  </data>
+  <data name="Ui.PlaybackPosition" xml:space="preserve">
+    <value>Позиция воспроизведения</value>
+  </data>
+  <data name="Ui.ShowTracksInPanel" xml:space="preserve">
+    <value>Показывать дорожки в панели</value>
+  </data>
+  <data name="Ui.PreviousFrame03cf5e3a" xml:space="preserve">
+    <value>Предыдущий кадр</value>
+  </data>
+  <data name="Ui.NextFrame3382400f" xml:space="preserve">
+    <value>Следующий кадр</value>
+  </data>
+  <data name="Ui.SeekInterval" xml:space="preserve">
+    <value>Шаг перемотки</value>
+  </data>
+  <data name="Ui.ReplayScreen" xml:space="preserve">
+    <value>Экран повтора</value>
+  </data>
+  <data name="Ui.10Seconds" xml:space="preserve">
+    <value>10 секунд</value>
+  </data>
+  <data name="Ui.15Seconds" xml:space="preserve">
+    <value>15 секунд</value>
+  </data>
+  <data name="Ui.30Seconds" xml:space="preserve">
+    <value>30 секунд</value>
+  </data>
+  <data name="Ui.5Seconds" xml:space="preserve">
+    <value>5 секунд</value>
+  </data>
+  <data name="Ui.FindAvailableSegment" xml:space="preserve">
+    <value>Найти доступный фрагмент</value>
+  </data>
+  <data name="Ui.CancelSearch" xml:space="preserve">
+    <value>Отменить поиск</value>
+  </data>
+  <data name="Ui.EnterExactTimeMSs" xml:space="preserve">
+    <value>Ввести точное время · м:сс</value>
+  </data>
+  <data name="Ui.ExactTime" xml:space="preserve">
+    <value>Точное время</value>
+  </data>
+  <data name="Message.SetAsDefault" xml:space="preserve">
+    <value>Сделать основным</value>
+  </data>
+  <data name="Message.Default" xml:space="preserve">
+    <value>Основной </value>
+  </data>
+  <data name="Message.Marker" xml:space="preserve">
+    <value>Отметка </value>
+  </data>
+  <data name="Message.OutsideHistory" xml:space="preserve">
+    <value>Вне истории</value>
+  </data>
+  <data name="Message.RemoveMarker" xml:space="preserve">
+    <value>Удалить отметку</value>
+  </data>
+  <data name="Message.Remove" xml:space="preserve">
+    <value>Удалить </value>
+  </data>
+  <data name="Message.UnknownSettingsSection" xml:space="preserve">
+    <value>Неизвестный раздел настроек.</value>
+  </data>
+  <data name="Message.Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Message.IncreaseHistoryTo" xml:space="preserve">
+    <value>Увеличь историю до </value>
+  </data>
+  <data name="Message.ThisMarkerAlreadyExists" xml:space="preserve">
+    <value>Такая отметка уже есть</value>
+  </data>
+  <data name="Message.ReplayFolder" xml:space="preserve">
+    <value>Папка для повторов</value>
+  </data>
+  <data name="Message.ShadowplayArchive" xml:space="preserve">
+    <value>Архив ShadowPlay</value>
+  </data>
+  <data name="Message.TheSelectedMicrophoneIsUnavailableReconnectTheDevice" xml:space="preserve">
+    <value>Выбранный микрофон недоступен · переподключи устройство</value>
+  </data>
+  <data name="Message.CouldNotGetAudioDevices" xml:space="preserve">
+    <value>Не удалось получить устройства звука: </value>
+  </data>
+  <data name="Message.AllWindowsApplicationsAndOutputsIncludingDiscord" xml:space="preserve">
+    <value>Все приложения и выходы Windows, включая Discord</value>
+  </data>
+  <data name="Message.SourceIsOff" xml:space="preserve">
+    <value>Источник выключен</value>
+  </data>
+  <data name="Message.CouldNotLoadSettings" xml:space="preserve">
+    <value>Настройки не загружены: </value>
+  </data>
+  <data name="Message.CouldNotGetMonitors" xml:space="preserve">
+    <value>Не удалось получить мониторы: </value>
+  </data>
+  <data name="Message.Recording" xml:space="preserve">
+    <value>Записывается</value>
+  </data>
+  <data name="Message.ReplayStopped" xml:space="preserve">
+    <value>Повтор остановлен</value>
+  </data>
+  <data name="Message.DoNotRecord" xml:space="preserve">
+    <value>Не записывать</value>
+  </data>
+  <data name="Message.Screen" xml:space="preserve">
+    <value>Экран </value>
+  </data>
+  <data name="Message.NoScreensAreConnected" xml:space="preserve">
+    <value>Нет подключённых экранов.</value>
+  </data>
+  <data name="Message.NoRecordingMicrophoneIsSelected" xml:space="preserve">
+    <value>Микрофон для записи не выбран.</value>
+  </data>
+  <data name="Message.RecordingIsOff" xml:space="preserve">
+    <value>Запись выключена</value>
+  </data>
+  <data name="Message.ScreenRecordingIsDisabledInSettings" xml:space="preserve">
+    <value>Запись экрана отключена в настройках.</value>
+  </data>
+  <data name="Message.CouldNotChangeRecordingState" xml:space="preserve">
+    <value>Не удалось переключить запись</value>
+  </data>
+  <data name="Message.ThisIntervalIsUnavailableForSaving" xml:space="preserve">
+    <value>Этот интервал недоступен для сохранения.</value>
+  </data>
+  <data name="Message.Duration" xml:space="preserve">
+    <value>Длительность </value>
+  </data>
+  <data name="Message.DefaultHotkeyInterval" xml:space="preserve">
+    <value>Основной интервал горячей клавиши</value>
+  </data>
+  <data name="Message.Select" xml:space="preserve">
+    <value>Выбрать </value>
+  </data>
+  <data name="Message.RecordingIsCurrentlyOff" xml:space="preserve">
+    <value>Запись сейчас выключена.</value>
+  </data>
+  <data name="Message.SavingReplay" xml:space="preserve">
+    <value>Сохранение повтора…</value>
+  </data>
+  <data name="Message.CouldNotIdentifyTheScreenUnderThePointer" xml:space="preserve">
+    <value>Не удалось определить экран под курсором.</value>
+  </data>
+  <data name="Message.PreparingVideo" xml:space="preserve">
+    <value>Подготовка видео</value>
+  </data>
+  <data name="Message.ReplaySaved" xml:space="preserve">
+    <value>Повтор сохранён</value>
+  </data>
+  <data name="Message.ReplaySavedButTheLibraryCouldNotBeRefreshed" xml:space="preserve">
+    <value>Повтор сохранён, но библиотеку не удалось обновить.</value>
+  </data>
+  <data name="Message.ReplayWasNotSaved" xml:space="preserve">
+    <value>Повтор не сохранён</value>
+  </data>
+  <data name="Message.Stop" xml:space="preserve">
+    <value>Остановить</value>
+  </data>
+  <data name="Message.RecordingInterruptedRecovering" xml:space="preserve">
+    <value>Запись прервалась · восстановление…</value>
+  </data>
+  <data name="Message.RecoveringVideoCapture" xml:space="preserve">
+    <value>Восстановление видеозахвата…</value>
+  </data>
+  <data name="Message.RecordingAudioProblemDetected" xml:space="preserve">
+    <value>Запись идёт · есть проблема со звуком</value>
+  </data>
+  <data name="Message.Recording9d0a624f" xml:space="preserve">
+    <value>Запись идёт</value>
+  </data>
+  <data name="Message.StartingRecording" xml:space="preserve">
+    <value>Запись запускается…</value>
+  </data>
+  <data name="Message.RecordingInterrupted" xml:space="preserve">
+    <value>Запись прервалась</value>
+  </data>
+  <data name="Message.RecordingDidNotStart" xml:space="preserve">
+    <value>Запись не запустилась</value>
+  </data>
+  <data name="Message.StoppingCaptureAndFinishingSaves" xml:space="preserve">
+    <value>Завершаю захват и сохранения…</value>
+  </data>
+  <data name="Message.CouldNotLoadShortcuts" xml:space="preserve">
+    <value>Не удалось загрузить сочетания: </value>
+  </data>
+  <data name="Message.ThisShortcutIsAlreadyRegisteredInWindows1409ChooseAnotherOrTryAga" xml:space="preserve">
+    <value>Сочетание уже зарегистрировано в Windows (1409). Выбери другое или повтори попытку.</value>
+  </data>
+  <data name="Message.ScreenUnderThePointer" xml:space="preserve">
+    <value>Экран под курсором</value>
+  </data>
+  <data name="Message.AllRecordedScreens" xml:space="preserve">
+    <value>Все записываемые экраны</value>
+  </data>
+  <data name="Message.CouldNotSave" xml:space="preserve">
+    <value>Не удалось сохранить: </value>
+  </data>
+  <data name="Message.NewestFirst" xml:space="preserve">
+    <value>Сначала новые</value>
+  </data>
+  <data name="Message.OldestFirst" xml:space="preserve">
+    <value>Сначала старые</value>
+  </data>
+  <data name="Message.FileAZ" xml:space="preserve">
+    <value>Файл А–Я</value>
+  </data>
+  <data name="Message.LargestFirst" xml:space="preserve">
+    <value>Сначала большие</value>
+  </data>
+  <data name="Message.FileZA" xml:space="preserve">
+    <value>Файл Я–А</value>
+  </data>
+  <data name="Message.SmallestFirst" xml:space="preserve">
+    <value>Сначала маленькие</value>
+  </data>
+  <data name="Message.ByDate" xml:space="preserve">
+    <value>По дате</value>
+  </data>
+  <data name="Message.ByApplication" xml:space="preserve">
+    <value>По приложению</value>
+  </data>
+  <data name="Message.BySession" xml:space="preserve">
+    <value>По сессиям</value>
+  </data>
+  <data name="Message.Refreshing" xml:space="preserve">
+    <value>Обновление…</value>
+  </data>
+  <data name="Message.AllGamesAndFolders" xml:space="preserve">
+    <value>Все игры и папки</value>
+  </data>
+  <data name="Message.AllLocations" xml:space="preserve">
+    <value>Все расположения</value>
+  </data>
+  <data name="Message.FolderUnavailable" xml:space="preserve">
+    <value>Недоступна папка: </value>
+  </data>
+  <data name="Message.CouldNotReadTheLibrary" xml:space="preserve">
+    <value>Не удалось прочитать библиотеку</value>
+  </data>
+  <data name="Message.FolderNotFound" xml:space="preserve">
+    <value>Папка не найдена.</value>
+  </data>
+  <data name="Message.CouldNotRefreshTheLibrary" xml:space="preserve">
+    <value>Не удалось обновить библиотеку</value>
+  </data>
+  <data name="Message.AllGames" xml:space="preserve">
+    <value>Все игры</value>
+  </data>
+  <data name="Message.ReplaySession" xml:space="preserve">
+    <value>Сессия повторов</value>
+  </data>
+  <data name="Message.ApproximateSessionGapsOfUpTo90MinutesBetweenReplays" xml:space="preserve">
+    <value>Приблизительная сессия: пауза между повторами до 90 минут</value>
+  </data>
+  <data name="Message.FromApplicationLaunchToTheLastSavedReplay" xml:space="preserve">
+    <value>От запуска приложения до последнего сохранённого повтора</value>
+  </data>
+  <data name="Message.ApplicationGroup" xml:space="preserve">
+    <value>Группа приложения</value>
+  </data>
+  <data name="Message.DateGroup" xml:space="preserve">
+    <value>Группа даты</value>
+  </data>
+  <data name="Message.NoReplaysFound" xml:space="preserve">
+    <value>Повторы не найдены</value>
+  </data>
+  <data name="Message.SavedMomentsWillAppearHere" xml:space="preserve">
+    <value>Сохранённые моменты появятся здесь</value>
+  </data>
+  <data name="Message.Today" xml:space="preserve">
+    <value>Сегодня</value>
+  </data>
+  <data name="Message.Yesterday" xml:space="preserve">
+    <value>Вчера</value>
+  </data>
+  <data name="Message.LoadingPreview" xml:space="preserve">
+    <value>Загрузка превью…</value>
+  </data>
+  <data name="Message.LoadingPreview29f3bdf5" xml:space="preserve">
+    <value>Загрузка превью</value>
+  </data>
+  <data name="Message.ReplayDuration" xml:space="preserve">
+    <value>Длительность повтора</value>
+  </data>
+  <data name="Message.PlaybackErrorsHaveOccurredInThisRecording" xml:space="preserve">
+    <value>В этой записи встречались ошибки воспроизведения</value>
+  </data>
+  <data name="Message.OpenReplay" xml:space="preserve">
+    <value>Открыть повтор </value>
+  </data>
+  <data name="Message.CouldNotOpenFile" xml:space="preserve">
+    <value>Не удалось открыть файл</value>
+  </data>
+  <data name="Message.PreviewUnavailable" xml:space="preserve">
+    <value>Превью недоступно</value>
+  </data>
+  <data name="Message.Primary" xml:space="preserve">
+    <value> · основной</value>
+  </data>
+  <data name="Message.Record" xml:space="preserve">
+    <value>Записывать</value>
+  </data>
+  <data name="Message.IncludeThisScreenInReplayHistory" xml:space="preserve">
+    <value>Включать этот экран в историю повторов</value>
+  </data>
+  <data name="Message.Recording30f542b5" xml:space="preserve">
+    <value>Запись </value>
+  </data>
+  <data name="Message.Resolution" xml:space="preserve">
+    <value>Разрешение</value>
+  </data>
+  <data name="Message.FrameRate" xml:space="preserve">
+    <value>Частота кадров</value>
+  </data>
+  <data name="Message.Fps" xml:space="preserve">
+    <value>Кадры/с</value>
+  </data>
+  <data name="Message.NoClipsFound" xml:space="preserve">
+    <value>Клипы не найдены</value>
+  </data>
+  <data name="Message.IconFor" xml:space="preserve">
+    <value>Значок </value>
+  </data>
+  <data name="Message.Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Message.SortBy" xml:space="preserve">
+    <value>Сортировать: </value>
+  </data>
+  <data name="Message.CouldNotPlayTheVideo" xml:space="preserve">
+    <value>Не удалось воспроизвести видео.</value>
+  </data>
+  <data name="Message.RecoveringPlayback" xml:space="preserve">
+    <value>Восстанавливаем просмотр…</value>
+  </data>
+  <data name="Message.TheVideoPlayerStoppedWithAnError" xml:space="preserve">
+    <value>Видеоплеер завершился с ошибкой.</value>
+  </data>
+  <data name="Message.CouldNotPlayTheReplay" xml:space="preserve">
+    <value>Не удалось воспроизвести повтор.</value>
+  </data>
+  <data name="Message.TheVideoSurfaceDidNotBecomeReadyInTime" xml:space="preserve">
+    <value>Не удалось дождаться готовности области видео.</value>
+  </data>
+  <data name="Message.CouldNotPrepareTheVideoSurface" xml:space="preserve">
+    <value>Не удалось подготовить область видео.</value>
+  </data>
+  <data name="Message.SeekingTo" xml:space="preserve">
+    <value>Переход к </value>
+  </data>
+  <data name="Message.AvailableSegment" xml:space="preserve">
+    <value>К доступному · </value>
+  </data>
+  <data name="Message.ThePlayerDidNotFinishLoadingTheVideo" xml:space="preserve">
+    <value>Плеер не завершил загрузку видео.</value>
+  </data>
+  <data name="Message.ThePlayerDidNotFinishSeekingToTheSelectedPosition" xml:space="preserve">
+    <value>Плеер не завершил переход к выбранному месту.</value>
+  </data>
+  <data name="Message.Retry" xml:space="preserve">
+    <value>Повторить</value>
+  </data>
+  <data name="Message.FromStart" xml:space="preserve">
+    <value>Сначала</value>
+  </data>
+  <data name="Message.Play" xml:space="preserve">
+    <value>Играть</value>
+  </data>
+  <data name="Message.Recovering" xml:space="preserve">
+    <value>Восстановление…</value>
+  </data>
+  <data name="Message.FindingASegment" xml:space="preserve">
+    <value>Поиск фрагмента…</value>
+  </data>
+  <data name="Message.SegmentUnavailable" xml:space="preserve">
+    <value>Участок недоступен</value>
+  </data>
+  <data name="Message.End" xml:space="preserve">
+    <value>Конец</value>
+  </data>
+  <data name="Message.Seeking" xml:space="preserve">
+    <value>Перемотка…</value>
+  </data>
+  <data name="Message.Playing" xml:space="preserve">
+    <value>Воспроизведение</value>
+  </data>
+  <data name="Message.GoToStartOfAvailableSegment" xml:space="preserve">
+    <value>К началу доступного фрагмента</value>
+  </data>
+  <data name="Message.TheOtherScreensWillRemain" xml:space="preserve">
+    <value>Остальные экраны останутся.</value>
+  </data>
+  <data name="Message.VideoPlayerError" xml:space="preserve">
+    <value>Сбой видеоплеера</value>
+  </data>
+  <data name="Message.ThePlayerStoppedAgainRestartItManuallyOrFindAnotherSegmentRewindI" xml:space="preserve">
+    <value>Плеер снова остановился. Можно перезапустить его вручную или найти другой фрагмент. Rewind продолжает работать.</value>
+  </data>
+  <data name="Message.RestartingThePlayerFromAnAvailablePositionRewindIsStillRunning" xml:space="preserve">
+    <value>Перезапускаем видеоплеер с доступного места. Rewind продолжает работать.</value>
+  </data>
+  <data name="Message.CouldNotRecoverPlaybackAutomaticallyRestartThePlayerOrChooseAnoth" xml:space="preserve">
+    <value>Автоматически восстановить просмотр не удалось. Перезапусти плеер или выбери другой участок.</value>
+  </data>
+  <data name="Message.ChooseAnotherSegment" xml:space="preserve">
+    <value>Нужен другой участок записи</value>
+  </data>
+  <data name="Message.NoAvailableSegmentWasFoundChooseAnotherPositionOnTheTimelinePartO" xml:space="preserve">
+    <value>Поиск не нашёл доступный фрагмент. Можно выбрать другое место по шкале — часть записи всё ещё может читаться.</value>
+  </data>
+  <data name="Message.SearchStoppedYouCanChooseAnotherPositionOnTheTimeline" xml:space="preserve">
+    <value>Поиск остановлен. Можно выбрать другое место по шкале.</value>
+  </data>
+  <data name="Message.CouldNotFindASegmentYouCanChooseAnotherPositionOnTheTimeline" xml:space="preserve">
+    <value>Не удалось найти фрагмент. Можно выбрать другое место по шкале.</value>
+  </data>
+  <data name="Message.StopReplayToChangeSettings" xml:space="preserve">
+    <value>Для изменения настроек останови повтор</value>
+  </data>
+  <data name="Message.Saving" xml:space="preserve">
+    <value>Сохранение…</value>
+  </data>
+  <data name="Message.CouldNotShowReplay" xml:space="preserve">
+    <value>Не удалось показать повтор: </value>
+  </data>
+  <data name="Message.CouldNotShowReplaycde3da3b" xml:space="preserve">
+    <value>Не удалось показать повтор</value>
+  </data>
+  <data name="Message.RecordingStarted" xml:space="preserve">
+    <value>Запись включена</value>
+  </data>
+  <data name="Message.CouldNotReadStartupSettings" xml:space="preserve">
+    <value>Не удалось прочитать параметры запуска: </value>
+  </data>
+  <data name="Message.CouldNotSaveStartupSettings" xml:space="preserve">
+    <value>Не удалось сохранить параметры запуска: </value>
+  </data>
+  <data name="Message.CouldNotSaveSettings" xml:space="preserve">
+    <value>Не удалось сохранить настройки: </value>
+  </data>
+  <data name="Message.AudioMetersAreUnavailable" xml:space="preserve">
+    <value>Индикаторы звука недоступны: </value>
+  </data>
+  <data name="Message.CouldNotIdentifyThePrimaryWindowsScreen" xml:space="preserve">
+    <value>Не удалось определить основной экран Windows.</value>
+  </data>
+  <data name="Message.CouldNotOpenTheClipTryOpeningItAgain" xml:space="preserve">
+    <value>Не удалось открыть клип. Попробуй открыть его ещё раз.</value>
+  </data>
+  <data name="Message.ShowFileInFileExplorer" xml:space="preserve">
+    <value>Показать файл в Проводнике</value>
+  </data>
+  <data name="Message.ClickAndEnterAShortcutEscToCancelBackspaceToClear" xml:space="preserve">
+    <value>Нажми и введи сочетание · Esc — отмена · Backspace — убрать</value>
+  </data>
+  <data name="Message.PressKeys" xml:space="preserve">
+    <value>Нажми клавиши…</value>
+  </data>
+  <data name="Message.NotAssigned" xml:space="preserve">
+    <value>Не назначено</value>
+  </data>
+  <data name="Message.DoNotUseTheWindowsKey" xml:space="preserve">
+    <value>Без клавиши Win</value>
+  </data>
+  <data name="Message.HoldAKeyAndPressAnFKey" xml:space="preserve">
+    <value>Удерживай клавишу и нажми F-клавишу…</value>
+  </data>
+  <data name="Message.MSsOrSeconds" xml:space="preserve">
+    <value>м:сс или секунды</value>
+  </data>
+  <data name="Message.RewindStopped" xml:space="preserve">
+    <value>Rewind · Остановлен</value>
+  </data>
+  <data name="Message.CouldNotAddTheRewindIconToTheNotificationArea" xml:space="preserve">
+    <value>Не удалось добавить индикатор Rewind в область уведомлений.</value>
+  </data>
+  <data name="Message.WindowsDefaultAutomatic" xml:space="preserve">
+    <value>По умолчанию Windows · автоматически</value>
+  </data>
+  <data name="Message.WindowsDefault" xml:space="preserve">
+    <value>По умолчанию Windows · </value>
+  </data>
+  <data name="Message.WindowsDefaultDeviceUnavailable" xml:space="preserve">
+    <value>По умолчанию Windows · устройство недоступно</value>
+  </data>
+  <data name="Message.TheSelectedMicrophoneIsDisconnected" xml:space="preserve">
+    <value>Выбранный микрофон отключён.</value>
+  </data>
+  <data name="Message.MultipleDiscordInstancesAreRunningLeaveOneRunningToSeparateItsAud" xml:space="preserve">
+    <value>Запущено несколько экземпляров Discord. Оставь один для разделения звука.</value>
+  </data>
+  <data name="Message.CompleteFloatPcmStereoFramesAreRequired" xml:space="preserve">
+    <value>Нужны полные стереокадры float PCM.</value>
+  </data>
+  <data name="Message.TheOutputMustReadConsecutiveCompletePcmFrames" xml:space="preserve">
+    <value>Выход должен читать последовательные полные PCM-кадры.</value>
+  </data>
+  <data name="Message.CouldNotStartFfmpeg" xml:space="preserve">
+    <value>Не удалось запустить FFmpeg.</value>
+  </data>
+  <data name="Message.InvalidMonitorProfile" xml:space="preserve">
+    <value>Недопустимый профиль монитора.</value>
+  </data>
+  <data name="Message.NoScreenIsSelectedForRecording" xml:space="preserve">
+    <value>Экран для записи не выбран.</value>
+  </data>
+  <data name="Message.FrameRateMustBe3060Or120Fps" xml:space="preserve">
+    <value>Частота: 30, 60 или 120 кадров/с.</value>
+  </data>
+  <data name="Message.HistoryMustBeBetween4And900Seconds" xml:space="preserve">
+    <value>История: от 4 до 900 секунд.</value>
+  </data>
+  <data name="Message.TheReplayMustFitWithinTheHistory" xml:space="preserve">
+    <value>Повтор должен помещаться в историю.</value>
+  </data>
+  <data name="Message.TheDefaultMarkerMustBeBetween001And1500" xml:space="preserve">
+    <value>Основная отметка должна быть от 0:01 до 15:00.</value>
+  </data>
+  <data name="Message.TheStorageFolderPathIsIncomplete" xml:space="preserve">
+    <value>Путь к папке хранения указан не полностью.</value>
+  </data>
+  <data name="Message.TheMonitorIsListedTwice" xml:space="preserve">
+    <value>Монитор указан дважды.</value>
+  </data>
+  <data name="Message.TheRecordingStateDoesNotMatchTheSelectedScreens" xml:space="preserve">
+    <value>Состояние записи не совпадает с выбранными экранами.</value>
+  </data>
+  <data name="Message.CouldNotReadSettings" xml:space="preserve">
+    <value>Настройки не прочитаны.</value>
+  </data>
+  <data name="Message.LessThan1GibOfDiskSpaceIsAvailableForRecording" xml:space="preserve">
+    <value>Для записи доступно менее 1 ГиБ свободного места на диске.</value>
+  </data>
+  <data name="Message.TheSelectedMonitorIsNoLongerConnected" xml:space="preserve">
+    <value>Выбранный монитор больше не подключён.</value>
+  </data>
+  <data name="Message.NoScreensHaveRecordingEnabled" xml:space="preserve">
+    <value>Нет экранов с включённой записью.</value>
+  </data>
+  <data name="Message.MonitorUnavailable" xml:space="preserve">
+    <value>Монитор недоступен: </value>
+  </data>
+  <data name="Message.CurrentlyOnlyMonitorsConnectedToTheSameGraphicsCardAreSupported" xml:space="preserve">
+    <value>Пока поддерживаются мониторы, подключённые к одной видеокарте.</value>
+  </data>
+  <data name="Message.CouldNotWriteAudioDiagnostics" xml:space="preserve">
+    <value>Не записана диагностика звука: </value>
+  </data>
+  <data name="Message.CaptureStopped" xml:space="preserve">
+    <value>Захват остановлен.</value>
+  </data>
+  <data name="Message.SavingWillBeAvailableAfterVideoCaptureRecovers" xml:space="preserve">
+    <value>Сохранение будет доступно после восстановления видеозахвата.</value>
+  </data>
+  <data name="Message.TwoReplaysAreAlreadyBeingSaved" xml:space="preserve">
+    <value>Уже сохраняются два повтора.</value>
+  </data>
+  <data name="Message.ThereIsNotEnoughVideoForAReplayYet" xml:space="preserve">
+    <value>Пока недостаточно видео для повтора.</value>
+  </data>
+  <data name="Message.TheSelectedScreenIsNotBeingRecorded" xml:space="preserve">
+    <value>Выбранный экран не записывается.</value>
+  </data>
+  <data name="Message.ACompletedReplaySegmentWasNotReceived" xml:space="preserve">
+    <value>Не получен завершённый фрагмент повтора.</value>
+  </data>
+  <data name="Message.TheSavedReplayIsMissingExpectedAudioTracks" xml:space="preserve">
+    <value>В сохранённом повторе отсутствуют ожидаемые звуковые дорожки.</value>
+  </data>
+  <data name="Message.TheSavedFileHasAnInvalidFrameRate" xml:space="preserve">
+    <value>Некорректная частота сохранённого файла.</value>
+  </data>
+  <data name="Message.TheSavedReplayDurationDoesNotMatchTheRequestedDuration" xml:space="preserve">
+    <value>Длительность сохранённого повтора не совпала с запросом.</value>
+  </data>
+  <data name="Message.TheDiskBufferSafetyLimitWasReachedCaptureStopped" xml:space="preserve">
+    <value>Достигнут защитный предел дискового буфера. Захват остановлен.</value>
+  </data>
+  <data name="Message.LessThan512MibRemainsOnDiskCaptureStoppedSavedClipsWereNotDeleted" xml:space="preserve">
+    <value>На диске осталось менее 512 МиБ. Захват остановлен; сохранённые клипы не удалялись.</value>
+  </data>
+  <data name="Message.CaptureEnded" xml:space="preserve">
+    <value>Захват завершился: </value>
+  </data>
+  <data name="Message.InvalidSegmentList" xml:space="preserve">
+    <value>Некорректный список фрагментов.</value>
+  </data>
+  <data name="Message.ASegmentFileIsMissingFromTheHistory" xml:space="preserve">
+    <value>В истории отсутствует файл фрагмента.</value>
+  </data>
+  <data name="Message.ThePathIsOutsideTheSessionDirectory" xml:space="preserve">
+    <value>Путь вышел за пределы сеанса.</value>
+  </data>
+  <data name="Message.TheReplayFileIsUnavailable" xml:space="preserve">
+    <value>Файл повтора недоступен.</value>
+  </data>
+  <data name="Message.AHeldKeyIsRequired" xml:space="preserve">
+    <value>Нужна удерживаемая клавиша.</value>
+  </data>
+  <data name="Message.AddCtrlAltShiftOrAHeldLetter" xml:space="preserve">
+    <value>Добавь Ctrl, Alt, Shift или удерживаемую букву.</value>
+  </data>
+  <data name="Message.HoldALetterOrNumberAndPressAnFKey" xml:space="preserve">
+    <value>Удерживай букву или цифру и нажми F-клавишу.</value>
+  </data>
+  <data name="Message.ChooseALetterNumberFKeyOrNavigationKey" xml:space="preserve">
+    <value>Выбери букву, цифру, F-клавишу или клавишу навигации.</value>
+  </data>
+  <data name="Message.AHeldLetterIsSupportedOnlyForGlobalActions" xml:space="preserve">
+    <value>Удерживаемая буква поддерживается только для глобальных действий.</value>
+  </data>
+  <data name="Message.ThisShortcutIsAlreadyAssignedToAnotherRewindAction" xml:space="preserve">
+    <value>Это сочетание уже назначено другому действию Rewind.</value>
+  </data>
+  <data name="Message.CouldNotReadHotkeys" xml:space="preserve">
+    <value>Не удалось прочитать горячие клавиши.</value>
+  </data>
+  <data name="Message.TheMpvVideoPlayerLibraryWasNotFound" xml:space="preserve">
+    <value>Не найдена библиотека видеоплеера mpv.</value>
+  </data>
+  <data name="Message.CouldNotRecoverVideoCaptureFor" xml:space="preserve">
+    <value>Не удалось восстановить видеозахват </value>
+  </data>
+  <data name="Message.Details" xml:space="preserve">
+    <value>. Подробности: </value>
+  </data>
+  <data name="Message.VideoCaptureError" xml:space="preserve">
+    <value>Ошибка видеозахвата: </value>
+  </data>
+  <data name="Message.CouldNotWriteVideoCaptureDiagnostics" xml:space="preserve">
+    <value>Не удалось записать диагностику видеозахвата: </value>
+  </data>
+  <data name="Message.InvalidPlaybackMetadata" xml:space="preserve">
+    <value>Некорректные метаданные воспроизведения.</value>
+  </data>
+  <data name="Message.CouldNotReadClipAudio" xml:space="preserve">
+    <value>Не удалось прочитать звук клипа: </value>
+  </data>
+  <data name="Message.ClipAudioDidNotRespond" xml:space="preserve">
+    <value>Звук клипа не ответил.</value>
+  </data>
+  <data name="Message.TheCatalogSnapshotIsMissingItsFileList" xml:space="preserve">
+    <value>В снимке каталога отсутствует список файлов.</value>
+  </data>
+  <data name="Message.SomeFilesAreUnavailable" xml:space="preserve">
+    <value>Часть файлов недоступна</value>
+  </data>
+  <data name="Message.SomeFoldersAreUnavailableShowingTheSavedSnapshot" xml:space="preserve">
+    <value>Часть папок недоступна; показан сохранённый снимок</value>
+  </data>
+  <data name="Message.TheFileIsNoLongerAvailable" xml:space="preserve">
+    <value>Файл больше недоступен.</value>
+  </data>
+  <data name="Message.CouldNotDeleteTheClipTheFileMayBeInUseByAnotherApplication" xml:space="preserve">
+    <value>Не удалось удалить клип. Файл мог быть занят другим приложением.</value>
+  </data>
+  <data name="Message.ExportRequiresCompletedSegmentsAndAPositiveDuration" xml:space="preserve">
+    <value>Для экспорта нужны завершённые сегменты и положительная длительность.</value>
+  </data>
+  <data name="Message.TheFirstVideoFrameTimestampIsUnavailable" xml:space="preserve">
+    <value>Не определена временная привязка первого видеокадра.</value>
+  </data>
+  <data name="Message.TheFilenameFormatMustContain1To200Characters" xml:space="preserve">
+    <value>Формат имени должен содержать от 1 до 200 символов.</value>
+  </data>
+  <data name="Message.UnknownFilenamePlaceholder" xml:space="preserve">
+    <value>Неизвестный плейсхолдер имени файла.</value>
+  </data>
+  <data name="Message.UseTheSizePlaceholderWithoutAnAdditionalFormat" xml:space="preserve">
+    <value>Для размера используется плейсхолдер {size} без дополнительного формата.</value>
+  </data>
+  <data name="Message.InvalidDateTimeOrNumberFormat" xml:space="preserve">
+    <value>Некорректный формат даты, времени или номера.</value>
+  </data>
+  <data name="Message.TheNameContainsInvalidCharactersOrIsTooLong" xml:space="preserve">
+    <value>Имя содержит недопустимые символы или слишком длинное.</value>
+  </data>
+  <data name="Message.CouldNotFindAnAvailableClipName" xml:space="preserve">
+    <value>Не удалось подобрать свободное имя клипа.</value>
+  </data>
+  <data name="Message.HistoryMustBeBetween004And1500" xml:space="preserve">
+    <value>История должна быть от 0:04 до 15:00.</value>
+  </data>
+  <data name="Message.TheMarkerMustBeBetween001And1500" xml:space="preserve">
+    <value>Отметка должна быть от 0:01 до 15:00.</value>
+  </data>
+  <data name="Message.TheMarkerWasNotFoundOnTheTimeline" xml:space="preserve">
+    <value>Отметка не найдена на шкале.</value>
+  </data>
+  <data name="Message.TheMarkerMustFitWithinTheHistory" xml:space="preserve">
+    <value>Отметка должна помещаться в историю.</value>
+  </data>
+  <data name="Message.KeepAtLeastOneMarker" xml:space="preserve">
+    <value>Оставь хотя бы одну отметку.</value>
+  </data>
+  <data name="Message.MarkerNotFound" xml:space="preserve">
+    <value>Отметка не найдена.</value>
+  </data>
+  <data name="Message.ThisMarkerAlreadyExistsd5b52575" xml:space="preserve">
+    <value>Такая отметка уже есть.</value>
+  </data>
+  <data name="Message.EnterATimeInMSsFormatForExample130" xml:space="preserve">
+    <value>Введи время в формате м:сс, например 1:30.</value>
+  </data>
+  <data name="Message.Drag15SecondSteps" xml:space="preserve">
+    <value> · перетащить · шаг 15 с</value>
+  </data>
+  <data name="Message.CouldNotReadStartupSettingsf84e6851" xml:space="preserve">
+    <value>Не удалось прочитать параметры запуска.</value>
+  </data>
+  <data name="Message.InvalidRewindLaunchArguments" xml:space="preserve">
+    <value>Некорректные параметры запуска Rewind.</value>
+  </data>
+  <data name="Message.Connecting" xml:space="preserve">
+    <value>Подключение…</value>
+  </data>
+  <data name="Message.BriefAudioGapRecordingContinues" xml:space="preserve">
+    <value>Краткий пропуск звука · запись продолжается</value>
+  </data>
+  <data name="Message.SeparatingAudioRequiresWindowsBuild20348OrLater" xml:space="preserve">
+    <value>Разделение звука требует Windows build 20348 или новее.</value>
+  </data>
+  <data name="Message.AllWindowsOutputs" xml:space="preserve">
+    <value>Все выходы Windows</value>
+  </data>
+  <data name="Message.AllWindowsOutputsExcludingDiscord" xml:space="preserve">
+    <value>Все выходы Windows · без Discord</value>
+  </data>
+  <data name="Message.DiscordIsNotRunning" xml:space="preserve">
+    <value>Discord не запущен</value>
+  </data>
+  <data name="Message.NoSystemAudio" xml:space="preserve">
+    <value>Нет системного звука: </value>
+  </data>
+  <data name="Message.DiscordIsNotConnected" xml:space="preserve">
+    <value>Discord не подключён: </value>
+  </data>
+  <data name="Message.MicrophoneUnavailable" xml:space="preserve">
+    <value>Микрофон недоступен</value>
+  </data>
+  <data name="Message.AudioBuffer" xml:space="preserve">
+    <value>Буфер звука: </value>
+  </data>
+  <data name="Message.SourceStopped" xml:space="preserve">
+    <value>Источник остановлен</value>
+  </data>
+  <data name="Message.AudioTransportError" xml:space="preserve">
+    <value>Ошибка передачи звука: </value>
+  </data>
+  <data name="Message.CouldNotStartTheVideoPlayer" xml:space="preserve">
+    <value>Не удалось запустить видеоплеер.</value>
+  </data>
+  <data name="Message.TheVideoPlayerDidNotFinishOpeningTheReplayTryAgain" xml:space="preserve">
+    <value>Видеоплеер не завершил открытие повтора. Попробуй открыть его ещё раз.</value>
+  </data>
+  <data name="Message.TheVideoPlayerExited" xml:space="preserve">
+    <value>Видеоплеер завершился.</value>
+  </data>
+  <data name="Message.TheVideoPlayerIsNotResponding" xml:space="preserve">
+    <value>Видеоплеер не отвечает.</value>
+  </data>
+  <data name="Message.EmptyResponseFromTheVideoPlayer" xml:space="preserve">
+    <value>Пустой ответ видеоплеера.</value>
+  </data>
+  <data name="Message.TheVideoPlayerStoppedWithAnErrorTheFileMayBeDamagedYouCanOpenAnot" xml:space="preserve">
+    <value>Видеоплеер завершился с ошибкой. Файл может быть повреждён. Можно открыть другой повтор.</value>
+  </data>
+  <data name="Message.TheConnectionToTheVideoPlayerWasLostYouCanOpenAnotherReplay" xml:space="preserve">
+    <value>Связь с видеоплеером потеряна. Можно открыть другой повтор.</value>
+  </data>
+  <data name="Message.TheVideoPlayerIsNotRespondingYouCanOpenAnotherReplay" xml:space="preserve">
+    <value>Видеоплеер не отвечает. Можно открыть другой повтор.</value>
+  </data>
+  <data name="Message.ThisSegmentHasNoReadableFrames" xml:space="preserve">
+    <value>В этом участке нет читаемых кадров.</value>
+  </data>
+  <data name="Message.CouldNotPlayThisSegmentTryALaterPositionOrFindAnAvailableSegment" xml:space="preserve">
+    <value>Этот участок не удалось воспроизвести. Попробуй перейти дальше по шкале или найти доступный фрагмент.</value>
+  </data>
+  <data name="Message.TheSegmentCheckTimedOutTryAgainOrChooseALaterPosition" xml:space="preserve">
+    <value>Проверка участка не ответила вовремя. Попробуй ещё раз или перейди дальше по шкале.</value>
+  </data>
+  <data name="Message.EmptyCommand" xml:space="preserve">
+    <value>Пустая команда.</value>
+  </data>
+  <data name="Message.TheVideoPlayerCouldNotCompleteTheActionTryAnotherPositionOrRestar" xml:space="preserve">
+    <value>Видеоплеер не смог завершить действие. Попробуй другое место или перезапусти просмотр.</value>
+  </data>
+  <data name="Count.Screen.One" xml:space="preserve"><value>{0} экран</value></data>
+  <data name="Count.Screen.Few" xml:space="preserve"><value>{0} экрана</value></data>
+  <data name="Count.Screen.Many" xml:space="preserve"><value>{0} экранов</value></data>
+  <data name="Count.Replay.One" xml:space="preserve"><value>{0} повтор</value></data>
+  <data name="Count.Replay.Few" xml:space="preserve"><value>{0} повтора</value></data>
+  <data name="Count.Replay.Many" xml:space="preserve"><value>{0} повторов</value></data>
+  <data name="Saved.Detail" xml:space="preserve"><value>{0} · {1:F1} МБ · {2}</value></data>
+  <data name="Format.Range" xml:space="preserve"><value>От {0} до {1}</value></data>
+  <data name="Format.StoragePercent" xml:space="preserve"><value>{0:F1}% объёма</value></data>
+  <data name="Format.ClipCount" xml:space="preserve"><value>Клипов: {0}</value></data>
+  <data name="Format.SeekBackward" xml:space="preserve"><value>Назад на {0} с</value></data>
+  <data name="Format.SeekForward" xml:space="preserve"><value>Вперёд на {0} с</value></data>
+  <data name="Format.SearchProgress" xml:space="preserve"><value>Ищем доступный фрагмент… {0} из {1}</value></data>
+  <data name="Format.FileCount" xml:space="preserve"><value>Файлов: {0}</value></data>
+  <data name="Format.ShowMore" xml:space="preserve"><value>Ещё {0}</value></data>
+  <data name="Format.MonitorUnavailable" xml:space="preserve"><value>экран {0} · недоступен</value></data>
+  <data name="Format.MonitorName" xml:space="preserve"><value>экран {0} · {1}</value></data>
+  <data name="Format.MonitorResolution" xml:space="preserve"><value>Исходное: {0} × {1}. Уменьшение пока использует CPU.</value></data>
+  <data name="Format.CatalogProgress" xml:space="preserve"><value>Обновление · {0:N0} файлов</value></data>
+  <data name="Format.SizeGb" xml:space="preserve"><value>{0:F1} ГБ</value></data>
+  <data name="Format.SizeMb" xml:space="preserve"><value>{0:F1} МБ</value></data>
+  <data name="Format.SizeKb" xml:space="preserve"><value>{0:F0} КБ</value></data>
+  <data name="Format.SavedSummary" xml:space="preserve"><value>Сохранено · {0} · {1:F0} МБ</value></data>
+  <data name="Format.EstimatedMb" xml:space="preserve"><value>≈ {0:F0} МБ</value></data>
+  <data name="Format.HotkeyError" xml:space="preserve"><value>Windows не зарегистрировала сочетание ({0}): {1}</value></data>
+  <data name="Format.InactiveMarkers" xml:space="preserve"><value>Вне истории: {0}. Отметки сохранены. Сейчас: {1}.</value></data>
+  <data name="Format.MonitorDetails" xml:space="preserve"><value>{0} × {1} · масштаб {2}%</value></data>
+  <data name="Format.WindowsAudioOutput" xml:space="preserve"><value>Звук Windows&#10;Текущий выход: {0}</value></data>
+  <data name="Format.WindowsAudioUnavailable" xml:space="preserve"><value>Звук Windows&#10;Выход недоступен; захват приложений не привязан к устройству.</value></data>
+  <data name="Risk.Description" xml:space="preserve"><value>Жёлтые участки — области, где встречались ошибки. Границы приблизительные: отдельные кадры между проверенными местами могут воспроизводиться.</value></data>
+  <data name="Risk.Failures" xml:space="preserve"><value>&#10;Сбои и ошибки в точках: {0}.</value></data>
+  <data name="Risk.Recovered" xml:space="preserve"><value>&#10;Доступный фрагмент найден с {0}.</value></data>
+  <data name="Version.Installed" xml:space="preserve"><value>Установленная сборка</value></data>
+  <data name="Version.Local" xml:space="preserve"><value>Локальная сборка</value></data>
+  <data name="Version.Missing" xml:space="preserve"><value>отсутствует</value></data>
+  <data name="Version.Details" xml:space="preserve"><value>{0}&#10;{1}&#10;{2}&#10;Модуль захвата: {3}</value></data>
+</root>

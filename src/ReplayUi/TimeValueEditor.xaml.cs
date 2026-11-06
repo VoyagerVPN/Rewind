@@ -32,7 +32,7 @@ public partial class TimeValueEditor : UserControl
     private void OnEdit(object sender, RoutedEventArgs args)
     {
         _editing = true;
-        Input.Text = ReplayIntervals.Format(Value); Input.ClearValue(Border.BorderBrushProperty); Input.ToolTip = "м:сс или секунды"; ErrorText.Visibility = Visibility.Collapsed;
+        Input.Text = ReplayIntervals.Format(Value); Input.ClearValue(Border.BorderBrushProperty); Input.ToolTip = Localization.Text("Message.MSsOrSeconds"); ErrorText.Visibility = Visibility.Collapsed;
         Display.Visibility = Visibility.Collapsed; Input.Visibility = Visibility.Visible;
         Input.Focus(); Input.SelectAll();
     }
@@ -42,7 +42,7 @@ public partial class TimeValueEditor : UserControl
         try
         {
             int value = ReplayIntervals.Parse(Input.Text);
-            if (value < Minimum || value > Maximum) throw new ArgumentException($"От {ReplayIntervals.Format(Minimum)} до {ReplayIntervals.Format(Maximum)}");
+            if (value < Minimum || value > Maximum) throw new ArgumentException(Localization.Format("Format.Range", ReplayIntervals.Format(Minimum), ReplayIntervals.Format(Maximum)));
             Value = value; Finish(); return true;
         }
         catch (ArgumentException error)

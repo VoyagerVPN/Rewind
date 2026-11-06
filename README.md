@@ -13,6 +13,8 @@
 3. Через несколько секунд нажмите **Alt + F10** и отпустите Alt. Чтобы сохранить все записываемые экраны, нажмите **Alt + Shift + F10**.
 4. Откройте клип в библиотеке Rewind. В обычном режиме файлы лежат в подпапке `Clips` выбранной папки повторов.
 
+Язык интерфейса можно выбрать в установщике и изменить в настройках Rewind: **English / Русский**. При первом запуске выбирается поддерживаемый язык системы, для остальных языков — английский. Выбор сохраняется между запусками и при переустановке с сохранением папки данных.
+
 ## Что умеет Rewind
 
 - **Несколько экранов.** У каждого экрана свои разрешение и частота кадров. Одно нажатие сохраняет отдельный MP4 для каждого записываемого экрана.
@@ -89,6 +91,7 @@ ShadowPlay сравнивается в составе NVIDIA App. У Action! е�
 
 ```powershell
 dotnet run --project tests/ReplayUiChecks/ReplayUiChecks.csproj --artifacts-path .cache/tests
+dotnet run --project tests/LocalizationUiChecks/LocalizationUiChecks.csproj --artifacts-path .cache/l10n-ui-tests
 node tests/check-nsis.cjs "C:\путь\к\NSIS\makensis.exe"
 ```
 

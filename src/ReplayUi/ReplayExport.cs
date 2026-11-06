@@ -22,13 +22,13 @@ internal static class ReplayExport
         ReplayExportRequest request, CancellationToken cancellation = default)
     {
         if (segments.Count == 0 || !double.IsFinite(request.Seconds) || request.Seconds <= 0)
-            throw new ArgumentException("Для экспорта нужны завершённые сегменты и положительная длительность.");
+            throw new ArgumentException(Localization.Text("Message.ExportRequiresCompletedSegmentsAndAPositiveDuration"));
         var timer = System.Diagnostics.Stopwatch.StartNew();
         string json = await CaptureProcesses.RunAsync(CaptureProcesses.Ffprobe,
             ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=start_time", "-of", "json", segments[0].Path], TimeSpan.FromSeconds(15), cancellation);
         using JsonDocument probe = JsonDocument.Parse(json);
         double firstVideo = double.Parse(probe.RootElement.GetProperty("streams")[0].GetProperty("start_time").GetString()!, CultureInfo.InvariantCulture);
-        if (!double.IsFinite(firstVideo)) throw new InvalidDataException("Не определена временная привязка первого видеокадра.");
+        if (!double.IsFinite(firstVideo)) throw new InvalidDataException(Localization.Text("Message.TheFirstVideoFrameTimestampIsUnavailable"));
         var arguments = new List<string> { "-hide_banner", "-v", "error", "-nostdin", "-y", "-copyts", "-itsoffset", (-firstVideo).ToString("F9", CultureInfo.InvariantCulture),
             // При 1440p120 стандартные 5 МБ заканчиваются до определения параметров тихой AAC-дорожки.
             "-probesize", "33554432", "-f", "mpegts", "-i", "pipe:0", "-map", "0:v:0", "-map", "0:a?", "-c", "copy", "-t", request.Seconds.ToString("F9", CultureInfo.InvariantCulture),

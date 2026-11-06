@@ -162,6 +162,8 @@ internal static class Program
         }
         if (args.Length == 3 && args[0] == "--video-worker")
         {
+            string? workerLanguage = Environment.GetEnvironmentVariable("REWIND_UI_LANGUAGE");
+            if (workerLanguage is "en" or "ru") Localization.SetLanguage(workerLanguage);
             try { VideoWorker.RunAsync(args[1], int.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture)).GetAwaiter().GetResult(); }
             catch { Environment.ExitCode = 1; }
             return;

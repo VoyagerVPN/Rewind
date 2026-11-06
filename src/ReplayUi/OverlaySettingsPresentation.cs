@@ -18,7 +18,7 @@ public partial class OverlayWindow
     private string MonitorDescription(string name)
     {
         CaptureMonitor? monitor = _monitors.FirstOrDefault(monitor => monitor.DeviceName == name);
-        return $"экран {MonitorNumber(name)}" + (monitor is null ? " · недоступен" : " · " + monitor.Name);
+        return monitor is null ? Localization.Format("Format.MonitorUnavailable", MonitorNumber(name)) : Localization.Format("Format.MonitorName", MonitorNumber(name), monitor.Name);
     }
 
     private CaptureSettings? AppliedSettingsForComparison()
@@ -49,11 +49,11 @@ public partial class OverlayWindow
         try { candidate = ReadCaptureSettings(); }
         catch (ArgumentException error) { invalid = error.Message; }
         QueueAutomaticSettings(candidate);
-        SettingsChangesText.Text = _capture is not null ? "Для изменения настроек останови повтор" : _settingsSaveError ?? invalid ?? "";
+        SettingsChangesText.Text = _capture is not null ? Localization.Text("Message.StopReplayToChangeSettings") : _settingsSaveError?.Invoke() ?? invalid ?? "";
         SettingsChangesText.Visibility = string.IsNullOrEmpty(SettingsChangesText.Text) || HotkeysSettings.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         SettingsSaveGlyph.Symbol = _settingsSaveError is not null || invalid is not null ? Wpf.Ui.Controls.SymbolRegular.Dismiss24 :
             _pendingAutoSettings is not null ? Wpf.Ui.Controls.SymbolRegular.ArrowClockwise24 : Wpf.Ui.Controls.SymbolRegular.Checkmark24;
-        SettingsSaveStatus.ToolTip = _settingsSaveError ?? invalid ?? (_pendingAutoSettings is not null ? "Сохранение…" : "Настройки сохраняются автоматически");
+        SettingsSaveStatus.ToolTip = _settingsSaveError?.Invoke() ?? invalid ?? (_pendingAutoSettings is not null ? Localization.Text("Message.Saving") : Localization.Text("Ui.SettingsAreSavedAutomatically"));
         SettingsSaveStatus.Cursor = _settingsSaveError is not null ? System.Windows.Input.Cursors.Hand : System.Windows.Input.Cursors.Arrow;
         SettingsSaveStatus.IsEnabled = _settingsSaveError is not null;
         SettingsSaveStatus.Visibility = _settingsSaveError is not null || invalid is not null ? Visibility.Visible : Visibility.Hidden;

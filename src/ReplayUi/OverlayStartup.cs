@@ -15,7 +15,7 @@ public partial class OverlayWindow
         _startupPreferencesFile = new(Path.Combine(_diagnostics, "startup.json"));
         try { _startupPreferences = _startupPreferencesFile.Load(); }
         catch (Exception error) when (error is IOException or JsonException or UnauthorizedAccessException)
-        { SettingsMessageText.Text = "Не удалось прочитать параметры запуска: " + error.Message; }
+        { SettingsMessageText.Text = Localization.Text("Message.CouldNotReadStartupSettings") + error.Message; }
         AlwaysRecordAtStartup.IsChecked = _startupPreferences.AlwaysStartRecording;
         _startupPreferencesReady = true;
     }
@@ -40,7 +40,7 @@ public partial class OverlayWindow
         try { _startupPreferencesFile.Save(preferences); _startupPreferences = preferences; }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            SettingsMessageText.Text = "Не удалось сохранить параметры запуска: " + error.Message;
+            SettingsMessageText.Text = Localization.Text("Message.CouldNotSaveStartupSettings") + error.Message;
             _telemetry.Event("startup-settings-error", new { error.Message });
         }
     }

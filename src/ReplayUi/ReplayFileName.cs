@@ -18,10 +18,10 @@ public static class ReplayFileName
     public static void Validate(string template) => _ = Format(template, "Desktop", new DateTime(2026, 10, 23, 14, 5, 9), 90, 1, "1");
     public static string Format(string template, string application, DateTime time, double seconds, int ordinal, string screen, long sizeBytes = 0)
     {
-        if (string.IsNullOrWhiteSpace(template) || template.Length > 200) throw new ArgumentException("Формат имени должен содержать от 1 до 200 символов.");
+        if (string.IsNullOrWhiteSpace(template) || template.Length > 200) throw new ArgumentException(Localization.Text("Message.TheFilenameFormatMustContain1To200Characters"));
         ArgumentOutOfRangeException.ThrowIfNegative(sizeBytes);
         string remaining = Tokens.Replace(template, "");
-        if (remaining.IndexOfAny(['{', '}']) >= 0) throw new ArgumentException("Неизвестный плейсхолдер имени файла.");
+        if (remaining.IndexOfAny(['{', '}']) >= 0) throw new ArgumentException(Localization.Text("Message.UnknownFilenamePlaceholder"));
         string name;
         try
         {
@@ -31,13 +31,13 @@ public static class ReplayFileName
                 "date" => time.ToString(match.Groups[2].Success ? match.Groups[2].Value : "yyyy.MM.dd", CultureInfo.InvariantCulture),
                 "time" => time.ToString(match.Groups[2].Success ? match.Groups[2].Value : "HH.mm.ss.ff", CultureInfo.InvariantCulture),
                 "n" => ordinal.ToString(match.Groups[2].Success ? match.Groups[2].Value : "000", CultureInfo.InvariantCulture),
-                "size" => match.Groups[2].Success ? throw new ArgumentException("Для размера используется плейсхолдер {size} без дополнительного формата.") : FormatSize(sizeBytes),
+                "size" => match.Groups[2].Success ? throw new ArgumentException(Localization.Text("Message.UseTheSizePlaceholderWithoutAnAdditionalFormat")) : FormatSize(sizeBytes),
                 _ => TimeSpan.FromSeconds(Math.Max(0, seconds)).ToString(@"mm\-ss", CultureInfo.InvariantCulture)
             });
         }
-        catch (FormatException) { throw new ArgumentException("Некорректный формат даты, времени или номера."); }
+        catch (FormatException) { throw new ArgumentException(Localization.Text("Message.InvalidDateTimeOrNumberFormat")); }
         if (name.IndexOfAny("<>:\"/\\|?*".ToCharArray()) >= 0 || name.Any(char.IsControl) || name is "." or ".." || name.Trim().Length == 0 || name.EndsWith('.') || name.Length > 220)
-            throw new ArgumentException("Имя содержит недопустимые символы или слишком длинное.");
+            throw new ArgumentException(Localization.Text("Message.TheNameContainsInvalidCharactersOrIsTooLong"));
         return name.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) ? name : name + ".mp4";
     }
     private static string FormatSize(long bytes)
@@ -61,6 +61,6 @@ public static class ReplayFileName
             try { using var reservation = new FileStream(Path.ChangeExtension(candidate, ".partial.mp4"), FileMode.CreateNew, FileAccess.Write, FileShare.None); return candidate; }
             catch (IOException) when (File.Exists(Path.ChangeExtension(candidate, ".partial.mp4"))) { }
         }
-        throw new IOException("Не удалось подобрать свободное имя клипа.");
+        throw new IOException(Localization.Text("Message.CouldNotFindAnAvailableClipName"));
     }
 }

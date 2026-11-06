@@ -15,12 +15,23 @@ public partial class SetupWindow : Window
     private readonly string _optionsFile;
     private bool _installing;
     private int _result = 1;
+    private Func<string>? _statusText;
+
+    private sealed class SetupFailure(string key, params object?[] arguments) : InvalidOperationException
+    {
+        public override string Message => Localization.Format(key, arguments);
+    }
 
     private SetupWindow(string installer, string defaultsFile)
     {
         _installer = installer;
         _optionsFile = Path.Combine(Path.GetDirectoryName(defaultsFile)!, "setup-options.txt");
+        string language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "ru" : "en";
+        UiLanguage.Apply(language);
         InitializeComponent();
+        // Сквозная проверка открывает настоящее окно, не меняя активное приложение.
+        TestWindowActivation.Configure(this);
+        LanguagePicker.SelectedIndex = language == "ru" ? 1 : 0;
         SetupVersion.Text = typeof(AppVersion).Assembly.GetName().Version?.ToString(3);
         SetupVersion.ToolTip = AppVersion.InformationalVersion;
         string[] defaults = File.ReadAllLines(defaultsFile);
@@ -53,9 +64,21 @@ public partial class SetupWindow : Window
     private void OnBrowseData(object sender, RoutedEventArgs e) => Browse(DataDirectory);
     private void OnBrowseReplays(object sender, RoutedEventArgs e) => Browse(ReplaysDirectory);
 
+    private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ComboBox { SelectedItem: ComboBoxItem { Tag: string language } })
+        {
+            UiLanguage.Apply(language);
+            if (_statusText is not null) Status.Text = _statusText();
+        }
+    }
+
+    private void SetStatus(string key) => SetStatus(() => UiLanguage.Text(key));
+    private void SetStatus(Func<string>? text) { _statusText = text; Status.Text = text?.Invoke() ?? ""; }
+
     private void Browse(TextBox field)
     {
-        var dialog = new OpenFolderDialog { Title = "Выберите папку" };
+        var dialog = new OpenFolderDialog { Title = UiLanguage.Text("Setup.ChooseFolder") };
         if (Directory.Exists(field.Text)) dialog.InitialDirectory = field.Text;
         if (dialog.ShowDialog(this) == true) field.Text = dialog.FolderName;
     }
@@ -73,24 +96,25 @@ public partial class SetupWindow : Window
         if (folders.Any(folder => folder.Length < 3 || folder[1] != ':' || folder[2] != '\\' ||
                                   folder.Any(char.IsControl) || !Path.IsPathFullyQualified(folder)))
         {
-            Status.Text = "Укажите три разные папки на локальных дисках.";
+            SetStatus("Setup.InvalidFolders");
             return;
         }
 
         _installing = true;
         Options.IsEnabled = InstallButton.IsEnabled = CancelButton.IsEnabled = false;
-        Status.Text = "Устанавливаем Rewind…";
+        SetStatus("Setup.Installing");
         Progress.IsIndeterminate = true;
         Progress.Visibility = Visibility.Visible;
         try
         {
             if (!await FfmpegTools.EnsureAsync(() => FfmpegTools.Find(folders[0]), InstallFfmpegAsync))
             {
-                Status.Text = "WinGet завершился, но FFmpeg и FFprobe не найдены. Повторите установку.";
+                SetStatus("Setup.MissingFfmpeg");
                 return;
             }
-            Status.Text = "Устанавливаем Rewind…";
-            await File.WriteAllLinesAsync(_optionsFile, [..folders, AutoStart.IsChecked == true ? "1" : "0"], Encoding.Unicode);
+            SetStatus("Setup.Installing");
+            string setupLanguage = (string)((ComboBoxItem)LanguagePicker.SelectedItem).Tag;
+            await File.WriteAllLinesAsync(_optionsFile, [..folders, AutoStart.IsChecked == true ? "1" : "0", setupLanguage], Encoding.Unicode);
             // GetOptions ожидает кавычки вокруг значения, если в пути есть пробелы.
             var start = new ProcessStartInfo(_installer)
             {
@@ -98,27 +122,37 @@ public partial class SetupWindow : Window
                 UseShellExecute = false,
                 CreateNoWindow = true,
             };
-            using Process process = Process.Start(start) ?? throw new InvalidOperationException("Не удалось запустить NSIS.");
+            using Process process = Process.Start(start) ?? throw new SetupFailure("Setup.NsisFailed");
             await process.WaitForExitAsync();
-            Status.Text = process.ExitCode switch
+            string? status = process.ExitCode switch
             {
-                0 => "",
-                1 => "Rewind уже установлен, папка занята или запущена другая установка.",
-                3 => "Укажите три разные папки на локальных дисках.",
-                _ => "Не удалось установить Rewind. Проверьте доступ к папке и свободное место.",
+                0 => null,
+                1 => "Setup.Occupied",
+                3 => "Setup.InvalidFolders",
+                _ => "Setup.InstallFailed",
             };
+            if (status is null) SetStatus((Func<string>?)null); else SetStatus(status);
             if (process.ExitCode == 0)
             {
                 _result = 0;
+                try
+                {
+                    string language = (string)((ComboBoxItem)LanguagePicker.SelectedItem).Tag;
+                    new LanguagePreferencesFile(Path.Combine(folders[1], "language.json")).SetInitialLanguage(language);
+                }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+                {
+                    SetStatus(() => Localization.Format("Setup.LanguageSaveFailed", error.Message));
+                }
                 InstalledLocation.Text = folders[0];
                 Options.Visibility = CancelButton.Visibility = Visibility.Collapsed;
                 Complete.Visibility = Visibility.Visible;
-                InstallButton.Content = "Готово";
+                InstallButton.SetResourceReference(ContentControl.ContentProperty, "Setup.Done");
             }
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or Win32Exception or InvalidOperationException)
         {
-            Status.Text = "Не удалось запустить установку. " + error.Message;
+            SetStatus(() => Localization.Format("Setup.StartFailed", error.Message));
         }
         finally
         {
@@ -133,16 +167,16 @@ public partial class SetupWindow : Window
     {
         string winget = Path.Combine(FfmpegTools.LocalAppData, "Microsoft", "WindowsApps", "winget.exe");
         if (!File.Exists(winget))
-            throw new InvalidOperationException("WinGet недоступен. Установите «Установщик приложений» и повторите.");
+            throw new SetupFailure("Setup.NoWinget");
 
-        Status.Text = "Устанавливаем FFmpeg…";
+        SetStatus("Setup.InstallingFfmpeg");
         var start = new ProcessStartInfo(winget) { UseShellExecute = false, CreateNoWindow = true };
         string[] arguments = ["install", "--id", "Gyan.FFmpeg", "--exact", "--source", "winget",
             "--scope", "user", "--silent", "--disable-interactivity",
             "--accept-source-agreements", "--accept-package-agreements", "--force"];
         foreach (string argument in arguments) start.ArgumentList.Add(argument);
 
-        using Process process = Process.Start(start) ?? throw new InvalidOperationException("Не удалось запустить WinGet.");
+        using Process process = Process.Start(start) ?? throw new SetupFailure("Setup.WingetFailed");
         using var deadline = new CancellationTokenSource(TimeSpan.FromMinutes(10));
         try
         {
@@ -152,11 +186,11 @@ public partial class SetupWindow : Window
         {
             if (!process.HasExited) process.Kill(entireProcessTree: true);
             await process.WaitForExitAsync();
-            throw new InvalidOperationException("Установка FFmpeg заняла слишком много времени. Повторите попытку.");
+            throw new SetupFailure("Setup.FfmpegTimeout");
         }
 
         if (process.ExitCode != 0 && FfmpegTools.Find(InstallDirectory.Text.Trim()) is null)
-            throw new InvalidOperationException($"WinGet не смог установить FFmpeg (0x{process.ExitCode:X8}).");
+            throw new SetupFailure("Setup.FfmpegFailed", process.ExitCode);
     }
 
     private void OnClose(object sender, RoutedEventArgs e) => Close();

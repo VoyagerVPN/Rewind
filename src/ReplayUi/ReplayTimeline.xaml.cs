@@ -45,8 +45,8 @@ public partial class ReplayTimeline : UserControl
             dot.SetValue(Shape.FillProperty, primary ? Brushes.White : new SolidColorBrush(Color.FromRgb(28, 28, 28)));
             template.VisualTree = dot;
             var thumb = new Thumb { Style = null, Template = template, Width = 28, Height = 28, Cursor = Cursors.SizeWE,
-                Focusable = true, ToolTip = ReplayIntervals.Format(seconds) + " · перетащить · шаг 15 с" };
-            System.Windows.Automation.AutomationProperties.SetName(thumb, "Отметка " + ReplayIntervals.Format(seconds));
+                Focusable = true, ToolTip = ReplayIntervals.Format(seconds) + Localization.Text("Message.Drag15SecondSteps") };
+            System.Windows.Automation.AutomationProperties.SetName(thumb, Localization.Text("Message.Marker") + ReplayIntervals.Format(seconds));
             double startX = x;
             double offset = 0;
             int target = seconds;
@@ -90,7 +90,7 @@ public partial class ReplayTimeline : UserControl
                 catch (ArgumentException) { }
                 args.Handled = true; Redraw();
                 Ruler.Children.OfType<Thumb>().FirstOrDefault(control => System.Windows.Automation.AutomationProperties.GetName(control) ==
-                    "Отметка " + ReplayIntervals.Format(focusSeconds))?.Focus();
+                    Localization.Text("Message.Marker") + ReplayIntervals.Format(focusSeconds))?.Focus();
                 Changed?.Invoke(this, EventArgs.Empty);
             };
             Canvas.SetLeft(thumb, x - 14); Canvas.SetTop(thumb, 6); Ruler.Children.Add(thumb);

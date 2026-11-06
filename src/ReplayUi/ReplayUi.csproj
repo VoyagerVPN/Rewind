@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
+    <NeutralLanguage>en</NeutralLanguage>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -16,6 +17,7 @@
   <Import Project="$(REWIND_BUILD_PROPS)" Condition="'$(REWIND_BUILD_PROPS)' != ''" />
   <ItemGroup><Compile Include="../DiskBuffer/DiskReplayBuffer.cs" Link="DiskReplayBuffer.cs" /></ItemGroup>
   <ItemGroup><Resource Include="Assets/Rewind.ico"/><Resource Include="Assets/Rewind.png"/></ItemGroup>
+  <ItemGroup><EmbeddedResource Update="Languages/Strings.resx"><LogicalName>Rewind.Preview.Languages.Strings.resources</LogicalName></EmbeddedResource><EmbeddedResource Update="Languages/Strings.ru.resx"><LogicalName>Rewind.Preview.Languages.Strings.ru.resources</LogicalName></EmbeddedResource></ItemGroup>
   <ItemGroup><PackageReference Include="NAudio.Wasapi" Version="3.3.0" /></ItemGroup>
   <ItemGroup><PackageReference Include="WPF-UI" Version="4.3.0" /></ItemGroup>
   <ItemGroup><PackageReference Include="LibVLCSharp.WPF" Version="3.10.2" /><PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.24" /></ItemGroup>

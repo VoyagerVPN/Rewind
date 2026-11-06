@@ -15,6 +15,8 @@ internal sealed partial class ActionToastWindow : Window
     private readonly DispatcherTimer _expiry = new(DispatcherPriority.Background);
     private readonly Action<string> _openFile;
     private string? _file;
+    private string _title = "", _detail = "";
+    private Func<string>? _titleProvider, _detailProvider;
     private TimeSpan _lifetime;
     public string NoticeKey { get; }
     public nint Monitor { get; }
@@ -30,16 +32,31 @@ internal sealed partial class ActionToastWindow : Window
         MouseLeave += (_, _) => RestartExpiry();
     }
 
-    public void Present(string title, string detail, SymbolRegular symbol, string? file, bool error, bool persistent)
+    public void Present(string title, string detail, SymbolRegular symbol, string? file, bool error, bool persistent,
+        Func<string>? titleProvider = null, Func<string>? detailProvider = null)
     {
         _file = file;
+        _title = title; _detail = detail; _titleProvider = titleProvider; _detailProvider = detailProvider;
+        RenderText(title, detail);
+        ToastIcon.Symbol = symbol;
+        ToastIcon.Foreground = new SolidColorBrush(error ? Color.FromRgb(230, 164, 155) : Color.FromRgb(235, 235, 232));
+        ToastAction.Cursor = file is null ? Cursors.Arrow : Cursors.Hand;
+        _lifetime = persistent ? TimeSpan.Zero : TimeSpan.FromSeconds(error ? 6 : 3.5);
+        if (new WindowInteropHelper(this).Handle != 0) UpdateNativeStyle();
+        RestartExpiry();
+    }
+
+    public void RefreshLanguage() => RenderText(_titleProvider?.Invoke() ?? _title, _detailProvider?.Invoke() ?? _detail);
+
+    private void RenderText(string title, string detail)
+    {
         ToastTitle.Text = title;
-        int newline = file is null ? -1 : detail.IndexOf('\n');
+        int newline = _file is null ? -1 : detail.IndexOf('\n');
         string parameters = newline < 0 ? detail : detail[..newline];
         string filenames = newline < 0 ? "" : detail[(newline + 1)..];
         ToastDetail.Text = parameters;
-        ToastDetail.TextWrapping = file is null ? TextWrapping.Wrap : TextWrapping.NoWrap;
-        int countSeparator = file is null ? -1 : parameters.LastIndexOf(" · ", StringComparison.Ordinal);
+        ToastDetail.TextWrapping = _file is null ? TextWrapping.Wrap : TextWrapping.NoWrap;
+        int countSeparator = _file is null ? -1 : parameters.LastIndexOf(" · ", StringComparison.Ordinal);
         if (countSeparator >= 0)
         {
             ToastDetail.Inlines.Clear();
@@ -50,14 +67,8 @@ internal sealed partial class ActionToastWindow : Window
         ToastFileName.ToolTip = filenames;
         ToastFileName.Visibility = filenames.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         ToastDetail.Visibility = detail.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        ToastIcon.Symbol = symbol;
-        ToastIcon.Foreground = new SolidColorBrush(error ? Color.FromRgb(230, 164, 155) : Color.FromRgb(235, 235, 232));
-        ToastAction.Cursor = file is null ? Cursors.Arrow : Cursors.Hand;
-        ToastAction.ToolTip = file is null ? null : "Показать файл в Проводнике";
+        ToastAction.ToolTip = _file is null ? null : Localization.Text("Message.ShowFileInFileExplorer");
         System.Windows.Automation.AutomationProperties.SetName(ToastAction, title);
-        _lifetime = persistent ? TimeSpan.Zero : TimeSpan.FromSeconds(error ? 6 : 3.5);
-        if (new WindowInteropHelper(this).Handle != 0) UpdateNativeStyle();
-        RestartExpiry();
     }
 
     private void RestartExpiry()
@@ -111,11 +122,12 @@ internal sealed class ActionToastPresenter(Action<string> openFile) : IDisposabl
     private readonly List<ActionToastWindow> _windows = [];
     private bool _disposed;
 
-    public void Show(string key, string title, string detail, SymbolRegular symbol, nint monitor, string? file = null, bool error = false, bool persistent = false) =>
-        Show(key, title, detail, symbol, [monitor], file, error, persistent);
+    public void Show(string key, string title, string detail, SymbolRegular symbol, nint monitor, string? file = null, bool error = false, bool persistent = false,
+        Func<string>? titleProvider = null, Func<string>? detailProvider = null) =>
+        Show(key, title, detail, symbol, [monitor], file, error, persistent, titleProvider, detailProvider);
 
     public void Show(string key, string title, string detail, SymbolRegular symbol, IReadOnlyList<nint> monitors,
-        string? file = null, bool error = false, bool persistent = false)
+        string? file = null, bool error = false, bool persistent = false, Func<string>? titleProvider = null, Func<string>? detailProvider = null)
     {
         if (_disposed) return;
         foreach (ActionToastWindow obsolete in _windows.Where(window => window.NoticeKey == key && !monitors.Contains(window.Monitor)).ToArray())
@@ -133,12 +145,18 @@ internal sealed class ActionToastPresenter(Action<string> openFile) : IDisposabl
             }
             try
             {
-                window.Present(title, detail, symbol, file, error, persistent);
+                window.Present(title, detail, symbol, file, error, persistent, titleProvider, detailProvider);
                 if (!window.IsVisible) window.Show();
                 Reposition();
             }
             catch { window.Close(); throw; }
         }
+    }
+
+    public void RefreshLanguage()
+    {
+        foreach (ActionToastWindow window in _windows) window.RefreshLanguage();
+        if (_windows.Count > 0) Reposition();
     }
 
     private void Reposition()

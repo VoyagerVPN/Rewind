@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 
 namespace Rewind.Preview;
 
-internal sealed record VideoCommand(string Kind, string? File = null, long Handle = 0, long Time = 0, bool Headless = false, bool Paused = false, bool Software = false, bool AllowDamaged = false, long Id = 0, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] VideoProbeProof? Validation = null);
+internal sealed record VideoCommand(string Kind, string? File = null, long Handle = 0, long Time = 0, bool Headless = false, bool Paused = false, bool Software = false, bool AllowDamaged = false, long Id = 0, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] VideoProbeProof? Validation = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Language = null);
 public sealed record VideoPlaybackStatistics(int? DecodedFrames, int? DisplayedFrames, int? LostFrames, bool SoftwareForced);
 internal sealed record VideoMessage(string Kind, long Time = 0, uint Vout = 0, string? Error = null, string? Details = null, VideoPlaybackStatistics? Statistics = null, long Id = 0, bool DamageConfirmed = false, VideoProbeProof? Validation = null);
 internal sealed class VideoTimeEventArgs(long time) : EventArgs { public long Time { get; } = time; }
@@ -51,11 +51,12 @@ internal sealed class VideoProcess
         string name = "rewind-video-" + Guid.NewGuid().ToString("N");
         var pipe = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
         var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+        start.Environment["REWIND_UI_LANGUAGE"] = Localization.Language;
         if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.OrdinalIgnoreCase))
             start.ArgumentList.Add(typeof(VideoProcess).Assembly.Location);
         start.ArgumentList.Add("--video-worker"); start.ArgumentList.Add(name); start.ArgumentList.Add(Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture));
         Process process;
-        try { process = Process.Start(start) ?? throw new InvalidOperationException("Не удалось запустить видеоплеер."); }
+        try { process = Process.Start(start) ?? throw new InvalidOperationException(Localization.Text("Message.CouldNotStartTheVideoPlayer")); }
         catch { pipe.Dispose(); throw; }
         var connection = new Connection(process, pipe, file, time); _connection = connection;
         Interlocked.Exchange(ref _time, time); _vout = 0; Volatile.Write(ref _statistics, null); Error = ErrorDetails = OverlayCompatibility = null; FailureMayIndicateDamage = false;
@@ -66,6 +67,7 @@ internal sealed class VideoProcess
         {
             await pipe.WaitForConnectionAsync(deadline.Token);
             _ = ReadAsync(connection); _ = WriteAsync(connection); _ = WatchAsync(connection);
+            connection.Commands.Writer.TryWrite(new("language", Language: Localization.Language));
             connection.Commands.Writer.TryWrite(new("open", file, handle.ToInt64(), time, headless, Software: software, AllowDamaged: allowDamaged, Validation: allowDamaged ? null : VideoProbeCache.Candidate(file, time / 1000d)));
             await connection.Opened.Task.WaitAsync(deadline.Token);
         }
@@ -73,33 +75,34 @@ internal sealed class VideoProcess
         {
             await StopAsync();
             cancellation.ThrowIfCancellationRequested();
-            throw new InvalidOperationException(Error ?? "Видеоплеер не завершил открытие повтора. Попробуй открыть его ещё раз.", error);
+            throw new InvalidOperationException(Error ?? Localization.Text("Message.TheVideoPlayerDidNotFinishOpeningTheReplayTryAgain"), error);
         }
     }
 
     public void SetPause(bool paused) => Send(new("pause", Paused: paused));
+    public void SetLanguage(string language) => Send(new("language", Language: language));
     public async Task SeekAsync(long time, CancellationToken cancellation = default)
         => await RequestAsync(new("seek", Time: time), cancellation);
     public async Task SetPauseAsync(bool paused, CancellationToken cancellation = default)
         => await RequestAsync(new("pause", Paused: paused), cancellation);
     private async Task RequestAsync(VideoCommand command, CancellationToken cancellation)
     {
-        Connection connection = _connection ?? throw new IOException("Видеоплеер завершился.");
+        Connection connection = _connection ?? throw new IOException(Localization.Text("Message.TheVideoPlayerExited"));
         long id = Interlocked.Increment(ref _nextRequest);
         var completion = new TaskCompletionSource<long>(TaskCreationOptions.RunContinuationsAsynchronously);
         connection.Pending[id] = completion;
         try
         {
-            if (connection.Failed != 0 || !connection.Commands.Writer.TryWrite(command with { Id = id })) throw new IOException(Error ?? "Видеоплеер не отвечает.");
+            if (connection.Failed != 0 || !connection.Commands.Writer.TryWrite(command with { Id = id })) throw new IOException(Error ?? Localization.Text("Message.TheVideoPlayerIsNotResponding"));
             await completion.Task.WaitAsync(TimeSpan.FromSeconds(8), cancellation);
         }
         finally { connection.Pending.TryRemove(id, out _); }
     }
     public async Task WaitUntilReadyAsync(CancellationToken cancellation)
     {
-        Connection connection = _connection ?? throw new IOException("Видеоплеер завершился.");
+        Connection connection = _connection ?? throw new IOException(Localization.Text("Message.TheVideoPlayerExited"));
         await connection.Started.Task.WaitAsync(cancellation);
-        if (connection.Failed != 0) throw new InvalidOperationException(Error ?? "Видеоплеер завершился с ошибкой.");
+        if (connection.Failed != 0) throw new InvalidOperationException(Error ?? Localization.Text("Message.TheVideoPlayerStoppedWithAnError"));
     }
     private void Send(VideoCommand command) => _connection?.Commands.Writer.TryWrite(command);
     private async Task ReadAsync(Connection connection)
@@ -109,7 +112,7 @@ internal sealed class VideoProcess
             using var reader = new StreamReader(connection.Pipe, leaveOpen: true);
             while (await reader.ReadLineAsync(connection.Cancellation.Token) is string line)
             {
-                VideoMessage message = JsonSerializer.Deserialize<VideoMessage>(line) ?? throw new IOException("Пустой ответ видеоплеера.");
+                VideoMessage message = JsonSerializer.Deserialize<VideoMessage>(line) ?? throw new IOException(Localization.Text("Message.EmptyResponseFromTheVideoPlayer"));
                 Interlocked.Exchange(ref connection.LastMessage, Stopwatch.GetTimestamp());
                 // Закрываемый процесс ещё может дописывать ответы: читаем их без публикации в UI.
                 if (!ReferenceEquals(_connection, connection)) continue;
@@ -129,13 +132,13 @@ internal sealed class VideoProcess
                     case "playing": Playing?.Invoke(this, EventArgs.Empty); connection.Started.TrySetResult(); break;
                     case "state": if (message.Time != previousTime) TimeChanged?.Invoke(this, new(message.Time)); break;
                     case "ended": EndReached?.Invoke(this, EventArgs.Empty); break;
-                    case "error": ErrorDetails = message.Details; Fail(connection, message.Error ?? "Не удалось воспроизвести видео.", rememberPosition: message.DamageConfirmed); return;
+                    case "error": ErrorDetails = message.Details; Fail(connection, message.Error ?? Localization.Text("Message.CouldNotPlayTheVideo"), rememberPosition: message.DamageConfirmed); return;
                 }
             }
-            Fail(connection, "Видеоплеер завершился с ошибкой. Файл может быть повреждён. Можно открыть другой повтор.");
+            Fail(connection, Localization.Text("Message.TheVideoPlayerStoppedWithAnErrorTheFileMayBeDamagedYouCanOpenAnot"));
         }
         catch (Exception error) when (error is IOException or OperationCanceledException or ObjectDisposedException or JsonException)
-        { Fail(connection, "Связь с видеоплеером потеряна. Можно открыть другой повтор."); }
+        { Fail(connection, Localization.Text("Message.TheConnectionToTheVideoPlayerWasLostYouCanOpenAnotherReplay")); }
     }
     private async Task WriteAsync(Connection connection)
     {
@@ -146,7 +149,7 @@ internal sealed class VideoProcess
                 await writer.WriteLineAsync(JsonSerializer.Serialize(command).AsMemory(), connection.Cancellation.Token);
         }
         catch (Exception error) when (error is IOException or OperationCanceledException or ObjectDisposedException)
-        { Fail(connection, "Видеоплеер не отвечает. Можно открыть другой повтор."); }
+        { Fail(connection, Localization.Text("Message.TheVideoPlayerIsNotRespondingYouCanOpenAnotherReplay")); }
     }
     private async Task WatchAsync(Connection connection)
     {
@@ -158,7 +161,7 @@ internal sealed class VideoProcess
                 if (!ReferenceEquals(_connection, connection)) return;
                 bool exited = connection.Process.HasExited;
                 if (exited || Stopwatch.GetElapsedTime(Interlocked.Read(ref connection.LastMessage)).TotalSeconds > 5)
-                { Fail(connection, "Видеоплеер не отвечает. Можно открыть другой повтор.", rememberPosition: exited); return; }
+                { Fail(connection, Localization.Text("Message.TheVideoPlayerIsNotRespondingYouCanOpenAnotherReplay"), rememberPosition: exited); return; }
             }
         }
         catch (OperationCanceledException) { }

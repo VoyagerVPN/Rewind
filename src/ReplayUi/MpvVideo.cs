@@ -188,7 +188,7 @@ public sealed class MpvVideo(nint surface, string cacheRoot, bool software = fal
     private void InitializeCore(nint surface)
     {
         string dll = Environment.GetEnvironmentVariable("REWIND_MPV_DLL") ?? Environment.GetEnvironmentVariable("REWIND_LAB_MPV_DLL") ?? Path.Combine(AppContext.BaseDirectory, "mpv", "libmpv-2.dll");
-        if (!Path.IsPathFullyQualified(dll) || !File.Exists(dll)) throw new FileNotFoundException("Не найдена библиотека видеоплеера mpv.", dll);
+        if (!Path.IsPathFullyQualified(dll) || !File.Exists(dll)) throw new FileNotFoundException(Localization.Text("Message.TheMpvVideoPlayerLibraryWasNotFound"), dll);
         string cache = Path.Combine(Path.GetFullPath(cacheRoot), "mpv");
         Directory.CreateDirectory(cache);
         MpvApi api = new(dll);

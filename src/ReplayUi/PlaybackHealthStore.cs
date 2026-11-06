@@ -36,7 +36,7 @@ internal sealed class PlaybackHealthStore(string folder)
         if (stored is null || stored.Version != 1 || string.IsNullOrWhiteSpace(stored.File) || stored.Key != version.Key || stored.Issues is null ||
             stored.RecoveredStartSeconds is double start && (!double.IsFinite(start) || start < 0) ||
             stored.Issues.Any(issue => issue is null || !double.IsFinite(issue.PositionSeconds) || issue.PositionSeconds < 0))
-            throw new InvalidDataException("Некорректные метаданные воспроизведения.");
+            throw new InvalidDataException(Localization.Text("Message.InvalidPlaybackMetadata"));
         return stored;
     }
     public async Task SaveAsync(PlaybackHealth version, IReadOnlyList<double> failures, double? recoveredStart = null, string failureKind = "unavailable-at-position", bool invalidateKnownStart = true)

@@ -17,8 +17,30 @@ Icon "${ICON}"
 UninstallIcon "${ICON}"
 !define REGKEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}"
 
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\Russian.nlf"
-Caption "${PRODUCT} — установка"
+LangString SetupCaption ${LANG_ENGLISH} "${PRODUCT} — Setup"
+LangString SetupCaption ${LANG_RUSSIAN} "${PRODUCT} — установка"
+LangString RemoveCaption ${LANG_ENGLISH} "${PRODUCT} — Uninstall"
+LangString RemoveCaption ${LANG_RUSSIAN} "${PRODUCT} — удаление"
+LangString NeedX64 ${LANG_ENGLISH} "Rewind requires 64-bit Windows."
+LangString NeedX64 ${LANG_RUSSIAN} "Для Rewind нужна Windows x64."
+LangString UiFailed ${LANG_ENGLISH} "Could not open Rewind Setup."
+LangString UiFailed ${LANG_RUSSIAN} "Не удалось открыть окно установки Rewind."
+LangString LockFailed ${LANG_ENGLISH} "Setup is already running or could not lock the folder."
+LangString LockFailed ${LANG_RUSSIAN} "Установщик уже запущен или не смог заблокировать каталог."
+LangString InvalidPaths ${LANG_ENGLISH} "Choose three different folders on local drives."
+LangString InvalidPaths ${LANG_RUSSIAN} "Укажите три разные папки на локальных дисках."
+LangString Occupied ${LANG_ENGLISH} "Rewind is already installed or the folder is in use. Uninstall the previous copy in Windows Settings before installing again."
+LangString Occupied ${LANG_RUSSIAN} "Rewind уже установлен или папка занята. Перед повторной установкой удалите предыдущую копию через настройки Windows."
+LangString InstallFailed ${LANG_ENGLISH} "Could not install Rewind. Check folder permissions and free space."
+LangString InstallFailed ${LANG_RUSSIAN} "Не удалось установить Rewind. Проверьте доступ к папке и свободное место."
+LangString UninstallPathFailed ${LANG_ENGLISH} "The folder does not match the registered Rewind installation."
+LangString UninstallPathFailed ${LANG_RUSSIAN} "Папка не соответствует зарегистрированной установке Rewind."
+LangString UninstallFailed ${LANG_ENGLISH} "Close Rewind and try uninstalling again."
+LangString UninstallFailed ${LANG_RUSSIAN} "Закройте Rewind и повторите удаление."
+Caption "$(SetupCaption)"
+UninstallCaption "$(RemoveCaption)"
 VIProductVersion "${VERSION}.0"
 VIAddVersionKey /LANG=1049 "ProductName" "${PRODUCT}"
 VIAddVersionKey /LANG=1049 "ProductVersion" "${VERSION}"
@@ -29,6 +51,7 @@ VIAddVersionKey /LANG=1049 "LegalCopyright" "Rewind contributors"
 Var AutoStart
 Var DataDirectory
 Var ReplaysDirectory
+Var SetupLanguage
 
 UninstPage uninstConfirm
 UninstPage instfiles
@@ -49,7 +72,7 @@ Function .onInit
   ${EndIf}
   ClearErrors
   ${IfNot} ${RunningX64}
-    MessageBox MB_ICONSTOP "Для Rewind нужна Windows x64." /SD IDOK
+    MessageBox MB_ICONSTOP "$(NeedX64)" /SD IDOK
     SetErrorLevel 1
     Quit
   ${EndIf}
@@ -71,7 +94,7 @@ Function .onInit
   SetErrorLevel $0
   Quit
   uiFailed:
-    MessageBox MB_ICONSTOP "Не удалось открыть окно установки Rewind."
+    MessageBox MB_ICONSTOP "$(UiFailed)"
     SetErrorLevel 2
     Quit
 
@@ -86,12 +109,22 @@ Function .onInit
   FileReadUTF16LE $2 $DataDirectory
   FileReadUTF16LE $2 $ReplaysDirectory
   FileReadUTF16LE $2 $AutoStart
+  IfErrors invalidOptions
+  ClearErrors
+  FileReadUTF16LE $2 $SetupLanguage
+  ClearErrors
   FileClose $2
   IfErrors invalidOptions
   ${TrimNewLines} "$INSTDIR" $INSTDIR
   ${TrimNewLines} "$DataDirectory" $DataDirectory
   ${TrimNewLines} "$ReplaysDirectory" $ReplaysDirectory
   ${TrimNewLines} "$AutoStart" $AutoStart
+  ${TrimNewLines} "$SetupLanguage" $SetupLanguage
+  ${If} $SetupLanguage == "ru"
+    StrCpy $LANGUAGE ${LANG_RUSSIAN}
+  ${ElseIf} $SetupLanguage == "en"
+    StrCpy $LANGUAGE ${LANG_ENGLISH}
+  ${EndIf}
   Goto lock
   invalidOptions:
     SetErrorLevel 3
@@ -102,7 +135,7 @@ Function .onInit
   Pop $1
   ${If} $0 == 0
   ${OrIf} $1 == 183
-    MessageBox MB_ICONSTOP "Установщик уже запущен или не смог заблокировать каталог." /SD IDOK
+    MessageBox MB_ICONSTOP "$(LockFailed)" /SD IDOK
     SetErrorLevel 1
     Quit
   ${EndIf}
@@ -196,29 +229,35 @@ Section "Rewind"
   WriteRegStr HKCU "${REGKEY}" "UninstallString" '$\"$INSTDIR\Uninstall.exe$\"'
   WriteRegDWORD HKCU "${REGKEY}" "NoModify" 1
   WriteRegDWORD HKCU "${REGKEY}" "NoRepair" 1
+  WriteRegDWORD HKCU "${REGKEY}" "InstallLanguage" $LANGUAGE
   IfErrors failed
   Goto done
   invalidPaths:
-    MessageBox MB_ICONSTOP "Укажите три разные папки на локальных дисках." /SD IDOK
+    MessageBox MB_ICONSTOP "$(InvalidPaths)" /SD IDOK
     SetErrorLevel 3
     Quit
   occupied:
-    MessageBox MB_ICONSTOP "Rewind уже установлен или папка занята. Перед повторной установкой удалите предыдущую копию через настройки Windows." /SD IDOK
+    MessageBox MB_ICONSTOP "$(Occupied)" /SD IDOK
     SetErrorLevel 1
     Quit
   failed:
     !insertmacro RemovePayload
     !insertmacro RemoveRegistration
-    MessageBox MB_ICONSTOP "Не удалось установить Rewind. Проверьте доступ к папке и свободное место." /SD IDOK
+    MessageBox MB_ICONSTOP "$(InstallFailed)" /SD IDOK
     SetErrorLevel 2
     Quit
   done:
 SectionEnd
 
 Function un.onInit
+  ReadRegDWORD $1 HKCU "${REGKEY}" "InstallLanguage"
+  ${If} $1 == ${LANG_ENGLISH}
+  ${OrIf} $1 == ${LANG_RUSSIAN}
+    StrCpy $LANGUAGE $1
+  ${EndIf}
   ReadRegStr $0 HKCU "${REGKEY}" "InstallLocation"
   ${If} $0 != $INSTDIR
-    MessageBox MB_ICONSTOP "Папка не соответствует зарегистрированной установке Rewind." /SD IDOK
+    MessageBox MB_ICONSTOP "$(UninstallPathFailed)" /SD IDOK
     SetErrorLevel 1
     Quit
   ${EndIf}
@@ -231,7 +270,7 @@ Section "Uninstall"
   !insertmacro RemoveRegistration
   Goto done
   failed:
-    MessageBox MB_ICONSTOP "Закройте Rewind и повторите удаление." /SD IDOK
+    MessageBox MB_ICONSTOP "$(UninstallFailed)" /SD IDOK
     SetErrorLevel 2
   done:
 SectionEnd

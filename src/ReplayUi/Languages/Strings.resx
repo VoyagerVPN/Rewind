@@ -1,0 +1,1455 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Setup.Title" xml:space="preserve">
+    <value>Rewind · Setup</value>
+  </data>
+  <data name="Setup.CloseInstaller" xml:space="preserve">
+    <value>Close setup</value>
+  </data>
+  <data name="Setup.Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Setup.Heading" xml:space="preserve">
+    <value>Setup</value>
+  </data>
+  <data name="Setup.Language" xml:space="preserve">
+    <value>Language / Язык</value>
+  </data>
+  <data name="Setup.ProgramFolder" xml:space="preserve">
+    <value>Program folder</value>
+  </data>
+  <data name="Setup.DataFolder" xml:space="preserve">
+    <value>Settings and data</value>
+  </data>
+  <data name="Setup.ReplaysFolder" xml:space="preserve">
+    <value>Saved replays</value>
+  </data>
+  <data name="Setup.Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="Setup.BrowseProgram" xml:space="preserve">
+    <value>Choose program folder</value>
+  </data>
+  <data name="Setup.BrowseData" xml:space="preserve">
+    <value>Choose settings and data folder</value>
+  </data>
+  <data name="Setup.BrowseReplays" xml:space="preserve">
+    <value>Choose replay folder</value>
+  </data>
+  <data name="Setup.Autostart" xml:space="preserve">
+    <value>Start Rewind when signing in to Windows</value>
+  </data>
+  <data name="Setup.Installed" xml:space="preserve">
+    <value>Rewind is installed</value>
+  </data>
+  <data name="Setup.StartMenu" xml:space="preserve">
+    <value>The app is available in the Start menu.</value>
+  </data>
+  <data name="Setup.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Setup.Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Setup.Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="Setup.ChooseFolder" xml:space="preserve">
+    <value>Choose a folder</value>
+  </data>
+  <data name="Setup.InvalidFolders" xml:space="preserve">
+    <value>Choose three different folders on local drives.</value>
+  </data>
+  <data name="Setup.Installing" xml:space="preserve">
+    <value>Installing Rewind…</value>
+  </data>
+  <data name="Setup.MissingFfmpeg" xml:space="preserve">
+    <value>WinGet finished, but FFmpeg and FFprobe were not found. Try again.</value>
+  </data>
+  <data name="Setup.Occupied" xml:space="preserve">
+    <value>Rewind is already installed, the folder is in use, or another setup is running.</value>
+  </data>
+  <data name="Setup.InstallFailed" xml:space="preserve">
+    <value>Could not install Rewind. Check folder permissions and free space.</value>
+  </data>
+  <data name="Setup.StartFailed" xml:space="preserve">
+    <value>Could not start setup. {0}</value>
+  </data>
+  <data name="Setup.NsisFailed" xml:space="preserve">
+    <value>Could not start NSIS.</value>
+  </data>
+  <data name="Setup.NoWinget" xml:space="preserve">
+    <value>WinGet is unavailable. Install App Installer and try again.</value>
+  </data>
+  <data name="Setup.InstallingFfmpeg" xml:space="preserve">
+    <value>Installing FFmpeg…</value>
+  </data>
+  <data name="Setup.WingetFailed" xml:space="preserve">
+    <value>Could not start WinGet.</value>
+  </data>
+  <data name="Setup.FfmpegTimeout" xml:space="preserve">
+    <value>Installing FFmpeg took too long. Try again.</value>
+  </data>
+  <data name="Setup.FfmpegFailed" xml:space="preserve">
+    <value>WinGet could not install FFmpeg (0x{0:X8}).</value>
+  </data>
+  <data name="Setup.LanguageSaveFailed" xml:space="preserve">
+    <value>Rewind was installed, but the language could not be saved: {0}</value>
+  </data>
+  <data name="Settings.Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings.LanguageSaveFailed" xml:space="preserve">
+    <value>Could not save the language setting:</value>
+  </data>
+  <data name="Settings.LanguageLoadFailed" xml:space="preserve">
+    <value>Could not read the language setting:</value>
+  </data>
+  <data name="Ui.RewindNotification" xml:space="preserve">
+    <value>Rewind · Notification</value>
+  </data>
+  <data name="Ui.ReplayView" xml:space="preserve">
+    <value>Replay view</value>
+  </data>
+  <data name="Ui.AllWindowsApplicationsAndOutputsExceptDiscord" xml:space="preserve">
+    <value>All Windows applications and outputs except Discord</value>
+  </data>
+  <data name="Ui.ChooseFolder" xml:space="preserve">
+    <value>Choose folder</value>
+  </data>
+  <data name="Ui.RecordDiscordOnASeparateTrack" xml:space="preserve">
+    <value>Record Discord on a separate track</value>
+  </data>
+  <data name="Ui.Hotkeys" xml:space="preserve">
+    <value>Hotkeys</value>
+  </data>
+  <data name="Ui.GroupRecentReplays" xml:space="preserve">
+    <value>Group recent replays</value>
+  </data>
+  <data name="Ui.AddMarker" xml:space="preserve">
+    <value>Add marker</value>
+  </data>
+  <data name="Ui.AddAReplayFolder" xml:space="preserve">
+    <value>Add a replay folder</value>
+  </data>
+  <data name="Ui.ExitRewind" xml:space="preserve">
+    <value>Exit Rewind</value>
+  </data>
+  <data name="Ui.RecordMicrophoneOnASeparateTrack" xml:space="preserve">
+    <value>Record microphone on a separate track</value>
+  </data>
+  <data name="Ui.WindowsSoundSettings" xml:space="preserve">
+    <value>Windows sound settings</value>
+  </data>
+  <data name="Ui.Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Ui.SettingsAreSavedAutomatically" xml:space="preserve">
+    <value>Settings are saved automatically</value>
+  </data>
+  <data name="Ui.Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Ui.RefreshList" xml:space="preserve">
+    <value>Refresh list</value>
+  </data>
+  <data name="Ui.RefreshDevices" xml:space="preserve">
+    <value>Refresh devices</value>
+  </data>
+  <data name="Ui.IdentifyMonitors" xml:space="preserve">
+    <value>Identify monitors</value>
+  </data>
+  <data name="Ui.WindowsDisplaySettings" xml:space="preserve">
+    <value>Windows display settings</value>
+  </data>
+  <data name="Ui.DragMarkers15SecondStepsDefault" xml:space="preserve">
+    <value>Drag markers · 15-second steps · ★ default</value>
+  </data>
+  <data name="Ui.Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="Ui.ReplayIsOff" xml:space="preserve">
+    <value>Replay is off</value>
+  </data>
+  <data name="Ui.RetryUnavailableShortcuts" xml:space="preserve">
+    <value>Retry unavailable shortcuts</value>
+  </data>
+  <data name="Ui.SearchByNameAndFolder" xml:space="preserve">
+    <value>Search by name and folder</value>
+  </data>
+  <data name="Ui.FinalFileSizeForExample2148Mb" xml:space="preserve">
+    <value>Final file size, for example 214.8 MB</value>
+  </data>
+  <data name="Ui.PreviewSize" xml:space="preserve">
+    <value>Preview size</value>
+  </data>
+  <data name="Ui.Grid" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="Ui.HidePanel" xml:space="preserve">
+    <value>Hide panel</value>
+  </data>
+  <data name="Ui.SortRecentReplays" xml:space="preserve">
+    <value>Sort recent replays</value>
+  </data>
+  <data name="Ui.SaveAllScreens" xml:space="preserve">
+    <value>Save all screens</value>
+  </data>
+  <data name="Ui.SaveReplay" xml:space="preserve">
+    <value>Save replay</value>
+  </data>
+  <data name="Ui.List" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="Ui.ClearShortcut" xml:space="preserve">
+    <value>Clear shortcut</value>
+  </data>
+  <data name="Ui.SetTheSeekIntervalInPlayerSettings" xml:space="preserve">
+    <value>Set the seek interval in player settings</value>
+  </data>
+  <data name="Ui.AlwaysStartRecordingOnLaunch" xml:space="preserve">
+    <value>Always start recording on launch</value>
+  </data>
+  <data name="Ui.ChooseShadowplayArchive" xml:space="preserve">
+    <value>Choose ShadowPlay archive</value>
+  </data>
+  <data name="Ui.ChooseStorageFolder" xml:space="preserve">
+    <value>Choose storage folder</value>
+  </data>
+  <data name="Ui.HistoryLength" xml:space="preserve">
+    <value>History length</value>
+  </data>
+  <data name="Ui.HistoryLengthInSeconds" xml:space="preserve">
+    <value>History length in seconds</value>
+  </data>
+  <data name="Ui.SavedReplayDuration" xml:space="preserve">
+    <value>Saved replay duration</value>
+  </data>
+  <data name="Ui.AddFolder" xml:space="preserve">
+    <value>Add folder</value>
+  </data>
+  <data name="Ui.Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="Ui.GameOrFolder" xml:space="preserve">
+    <value>Game or folder</value>
+  </data>
+  <data name="Ui.GoToStartOfVideo" xml:space="preserve">
+    <value>Go to start of video</value>
+  </data>
+  <data name="Ui.NextFrame" xml:space="preserve">
+    <value>Next frame</value>
+  </data>
+  <data name="Ui.PreviousFrame" xml:space="preserve">
+    <value>Previous frame</value>
+  </data>
+  <data name="Ui.Keys" xml:space="preserve">
+    <value>Keys</value>
+  </data>
+  <data name="Ui.ShadowplayArchiveRoot" xml:space="preserve">
+    <value>ShadowPlay archive root</value>
+  </data>
+  <data name="Ui.NewMarker" xml:space="preserve">
+    <value>New marker</value>
+  </data>
+  <data name="Ui.RefreshLibrary" xml:space="preserve">
+    <value>Refresh library</value>
+  </data>
+  <data name="Ui.RefreshMonitors" xml:space="preserve">
+    <value>Refresh monitors</value>
+  </data>
+  <data name="Ui.RefreshSizes" xml:space="preserve">
+    <value>Refresh sizes</value>
+  </data>
+  <data name="Ui.RefreshAudioDevices" xml:space="preserve">
+    <value>Refresh audio devices</value>
+  </data>
+  <data name="Ui.ClipStorageByApplication" xml:space="preserve">
+    <value>Clip storage by application</value>
+  </data>
+  <data name="Ui.OpenSettings" xml:space="preserve">
+    <value>Open settings</value>
+  </data>
+  <data name="Ui.PauseResume" xml:space="preserve">
+    <value>Pause / resume</value>
+  </data>
+  <data name="Ui.SeekForward" xml:space="preserve">
+    <value>Seek forward</value>
+  </data>
+  <data name="Ui.SeekBackward" xml:space="preserve">
+    <value>Seek backward</value>
+  </data>
+  <data name="Ui.Replay" xml:space="preserve">
+    <value>Replay</value>
+  </data>
+  <data name="Ui.RetryRegisteringHotkeys" xml:space="preserve">
+    <value>Retry registering hotkeys</value>
+  </data>
+  <data name="Ui.SearchReplays" xml:space="preserve">
+    <value>Search replays</value>
+  </data>
+  <data name="Ui.PreviousPage" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="Ui.StorageFolderPath" xml:space="preserve">
+    <value>Storage folder path</value>
+  </data>
+  <data name="Ui.LibraryPreviewSize" xml:space="preserve">
+    <value>Library preview size</value>
+  </data>
+  <data name="Ui.ReplayLayout" xml:space="preserve">
+    <value>Replay layout</value>
+  </data>
+  <data name="Ui.LibraryGrid" xml:space="preserve">
+    <value>Library grid</value>
+  </data>
+  <data name="Ui.ReplayGrid" xml:space="preserve">
+    <value>Replay grid</value>
+  </data>
+  <data name="Ui.NextPage" xml:space="preserve">
+    <value>Next page</value>
+  </data>
+  <data name="Ui.SortByDate" xml:space="preserve">
+    <value>Sort by date</value>
+  </data>
+  <data name="Ui.SortBySize" xml:space="preserve">
+    <value>Sort by size</value>
+  </data>
+  <data name="Ui.SortByFile" xml:space="preserve">
+    <value>Sort by file</value>
+  </data>
+  <data name="Ui.SortReplays" xml:space="preserve">
+    <value>Sort replays</value>
+  </data>
+  <data name="Ui.AutosaveStatus" xml:space="preserve">
+    <value>Autosave status</value>
+  </data>
+  <data name="Ui.StartOrStopReplayShortcut" xml:space="preserve">
+    <value>Start or stop replay shortcut</value>
+  </data>
+  <data name="Ui.DefaultAllScreensShortcut" xml:space="preserve">
+    <value>Default all-screens shortcut</value>
+  </data>
+  <data name="Ui.OpenPanelShortcut" xml:space="preserve">
+    <value>Open panel shortcut</value>
+  </data>
+  <data name="Ui.DefaultPanelShortcut" xml:space="preserve">
+    <value>Default panel shortcut</value>
+  </data>
+  <data name="Ui.SaveAllScreensShortcut" xml:space="preserve">
+    <value>Save all screens shortcut</value>
+  </data>
+  <data name="Ui.SavePrimaryScreenShortcut" xml:space="preserve">
+    <value>Save primary screen shortcut</value>
+  </data>
+  <data name="Ui.DefaultSaveShortcut" xml:space="preserve">
+    <value>Default save shortcut</value>
+  </data>
+  <data name="Ui.LibraryList" xml:space="preserve">
+    <value>Library list</value>
+  </data>
+  <data name="Ui.ReplayList" xml:space="preserve">
+    <value>Replay list</value>
+  </data>
+  <data name="Ui.ClearAllScreensShortcut" xml:space="preserve">
+    <value>Clear all-screens shortcut</value>
+  </data>
+  <data name="Ui.ClearPanelShortcut" xml:space="preserve">
+    <value>Clear panel shortcut</value>
+  </data>
+  <data name="Ui.ClearSaveShortcut" xml:space="preserve">
+    <value>Clear save shortcut</value>
+  </data>
+  <data name="Ui.DeleteClip" xml:space="preserve">
+    <value>Delete clip</value>
+  </data>
+  <data name="Ui.DiscordLevel" xml:space="preserve">
+    <value>Discord level</value>
+  </data>
+  <data name="Ui.MicrophoneLevel" xml:space="preserve">
+    <value>Microphone level</value>
+  </data>
+  <data name="Ui.SystemLevel" xml:space="preserve">
+    <value>System level</value>
+  </data>
+  <data name="Ui.MicrophoneDevice" xml:space="preserve">
+    <value>Microphone device</value>
+  </data>
+  <data name="Ui.FilenameFormat" xml:space="preserve">
+    <value>Filename format</value>
+  </data>
+  <data name="Ui.Storage" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="Ui.Screens" xml:space="preserve">
+    <value>Screens</value>
+  </data>
+  <data name="Ui.InThePanel" xml:space="preserve">
+    <value>In the panel</value>
+  </data>
+  <data name="Ui.InThePlayer" xml:space="preserve">
+    <value>In the player</value>
+  </data>
+  <data name="Ui.Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Ui.StartStopReplay" xml:space="preserve">
+    <value>Start / stop replay</value>
+  </data>
+  <data name="Ui.AllReplays" xml:space="preserve">
+    <value>All replays</value>
+  </data>
+  <data name="Ui.ChooseTheRootOfYourNvidiaArchiveTheRecordingBufferWillStayInTheRe" xml:space="preserve">
+    <value>Choose the root of your NVIDIA archive. The recording buffer will stay in the Rewind folder.</value>
+  </data>
+  <data name="Ui.Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Ui.Filename" xml:space="preserve">
+    <value>Filename</value>
+  </data>
+  <data name="Ui.Intervals" xml:space="preserve">
+    <value>Intervals</value>
+  </data>
+  <data name="Ui.History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="Ui.HistoryAndIntervals" xml:space="preserve">
+    <value>History and intervals</value>
+  </data>
+  <data name="Ui.RecordingSources" xml:space="preserve">
+    <value>Recording sources</value>
+  </data>
+  <data name="Ui.InstantReplay" xml:space="preserve">
+    <value>Instant replay</value>
+  </data>
+  <data name="Ui.Microphone" xml:space="preserve">
+    <value>Microphone</value>
+  </data>
+  <data name="Ui.Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="Ui.ReplayFolder" xml:space="preserve">
+    <value>Replay folder</value>
+  </data>
+  <data name="Ui.ByDefaultRecordingResumesInItsPreviousState" xml:space="preserve">
+    <value>By default, recording resumes in its previous state.</value>
+  </data>
+  <data name="Ui.ReplayAllScreens" xml:space="preserve">
+    <value>Replay · all screens</value>
+  </data>
+  <data name="Ui.ReplayPrimaryScreen" xml:space="preserve">
+    <value>Replay · primary screen</value>
+  </data>
+  <data name="Ui.ShowHidePanel" xml:space="preserve">
+    <value>Show / hide panel</value>
+  </data>
+  <data name="Ui.System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="Ui.Sort" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="Ui.SaveTheLast" xml:space="preserve">
+    <value>Save the last</value>
+  </data>
+  <data name="Ui.Storagef8f37144" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="Ui.15Min" xml:space="preserve">
+    <value>15 min</value>
+  </data>
+  <data name="Ui.2Min" xml:space="preserve">
+    <value>2 min</value>
+  </data>
+  <data name="Ui.30Sec" xml:space="preserve">
+    <value>30 sec</value>
+  </data>
+  <data name="Ui.5Min" xml:space="preserve">
+    <value>5 min</value>
+  </data>
+  <data name="Ui.Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="Ui.All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Ui.Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Ui.Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="Ui.Number" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="Ui.Application" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="Ui.Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="Ui.NvidiaShadowplayCompatibility" xml:space="preserve">
+    <value>NVIDIA ShadowPlay compatibility</value>
+  </data>
+  <data name="Ui.File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="Ui.Screen" xml:space="preserve">
+    <value>Screen</value>
+  </data>
+  <data name="Ui.RewindReplayDuration" xml:space="preserve">
+    <value>Rewind · Replay duration</value>
+  </data>
+  <data name="Ui.F9ShorterF11LongerCCancel" xml:space="preserve">
+    <value>F9 shorter   ·   F11 longer   ·   C cancel</value>
+  </data>
+  <data name="Ui.TrackVolume" xml:space="preserve">
+    <value>Track volume</value>
+  </data>
+  <data name="Ui.ClipActions" xml:space="preserve">
+    <value>Clip actions</value>
+  </data>
+  <data name="Ui.ClosePlayerEsc" xml:space="preserve">
+    <value>Close player · Esc</value>
+  </data>
+  <data name="Ui.PlayerSettings" xml:space="preserve">
+    <value>Player settings</value>
+  </data>
+  <data name="Ui.PauseSpace" xml:space="preserve">
+    <value>Pause · Space</value>
+  </data>
+  <data name="Ui.ThePlayerHasRestartedYouCanContinueWatching" xml:space="preserve">
+    <value>The player has restarted. You can continue watching.</value>
+  </data>
+  <data name="Ui.TryOpeningTheSelectedPositionDespiteTheRiskOfAFailure" xml:space="preserve">
+    <value>Try opening the selected position despite the risk of a failure</value>
+  </data>
+  <data name="Ui.PreviousFrame42bc5e62" xml:space="preserve">
+    <value>Previous frame · ,</value>
+  </data>
+  <data name="Ui.NextFrame483344ea" xml:space="preserve">
+    <value>Next frame · .</value>
+  </data>
+  <data name="Ui.ErrorsHaveOccurredInThisPartOfTheRecordingThePlayerMayFreezeOrClo" xml:space="preserve">
+    <value>Errors have occurred in this part of the recording. The player may freeze or close.</value>
+  </data>
+  <data name="Ui.PlaybackStopped" xml:space="preserve">
+    <value>Playback stopped</value>
+  </data>
+  <data name="Ui.TracksInPanel" xml:space="preserve">
+    <value>Tracks in panel</value>
+  </data>
+  <data name="Ui.Loading" xml:space="preserve">
+    <value>Loading…</value>
+  </data>
+  <data name="Ui.GoToAvailableSegment" xml:space="preserve">
+    <value>Go to available segment</value>
+  </data>
+  <data name="Ui.Master" xml:space="preserve">
+    <value>Master</value>
+  </data>
+  <data name="Ui.OpenAnyway" xml:space="preserve">
+    <value>Open anyway</value>
+  </data>
+  <data name="Ui.OpenTheSectionWithErrors" xml:space="preserve">
+    <value>Open the section with errors?</value>
+  </data>
+  <data name="Ui.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Ui.RestartPlayer" xml:space="preserve">
+    <value>Restart player</value>
+  </data>
+  <data name="Ui.Seeking" xml:space="preserve">
+    <value>Seeking</value>
+  </data>
+  <data name="Ui.PlayerRecovered" xml:space="preserve">
+    <value>Player recovered</value>
+  </data>
+  <data name="Ui.ShowInFileExplorer" xml:space="preserve">
+    <value>Show in File Explorer</value>
+  </data>
+  <data name="Ui.SystemDiscordAndMicrophone" xml:space="preserve">
+    <value>System, Discord and microphone</value>
+  </data>
+  <data name="Ui.Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Ui.DeleteClip0d16ea49" xml:space="preserve">
+    <value>Delete clip?</value>
+  </data>
+  <data name="Ui.SeekIntervalForButtonsAndHotkeys" xml:space="preserve">
+    <value>Seek interval for buttons and hotkeys</value>
+  </data>
+  <data name="Ui.ErrorsFoundInTheRecording" xml:space="preserve">
+    <value>Errors found in the recording</value>
+  </data>
+  <data name="Ui.DiscordVolume" xml:space="preserve">
+    <value>Discord volume</value>
+  </data>
+  <data name="Ui.DiscordVolumeInPanel" xml:space="preserve">
+    <value>Discord volume in panel</value>
+  </data>
+  <data name="Ui.MicrophoneVolume" xml:space="preserve">
+    <value>Microphone volume</value>
+  </data>
+  <data name="Ui.MicrophoneVolumeInPanel" xml:space="preserve">
+    <value>Microphone volume in panel</value>
+  </data>
+  <data name="Ui.SystemVolume" xml:space="preserve">
+    <value>System volume</value>
+  </data>
+  <data name="Ui.SystemVolumeInPanel" xml:space="preserve">
+    <value>System volume in panel</value>
+  </data>
+  <data name="Ui.ClosePlayer" xml:space="preserve">
+    <value>Close player</value>
+  </data>
+  <data name="Ui.GoToStart" xml:space="preserve">
+    <value>Go to start</value>
+  </data>
+  <data name="Ui.MasterVolume" xml:space="preserve">
+    <value>Master volume</value>
+  </data>
+  <data name="Ui.Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Ui.PlaybackPosition" xml:space="preserve">
+    <value>Playback position</value>
+  </data>
+  <data name="Ui.ShowTracksInPanel" xml:space="preserve">
+    <value>Show tracks in panel</value>
+  </data>
+  <data name="Ui.PreviousFrame03cf5e3a" xml:space="preserve">
+    <value>Previous frame</value>
+  </data>
+  <data name="Ui.NextFrame3382400f" xml:space="preserve">
+    <value>Next frame</value>
+  </data>
+  <data name="Ui.SeekInterval" xml:space="preserve">
+    <value>Seek interval</value>
+  </data>
+  <data name="Ui.ReplayScreen" xml:space="preserve">
+    <value>Replay screen</value>
+  </data>
+  <data name="Ui.10Seconds" xml:space="preserve">
+    <value>10 seconds</value>
+  </data>
+  <data name="Ui.15Seconds" xml:space="preserve">
+    <value>15 seconds</value>
+  </data>
+  <data name="Ui.30Seconds" xml:space="preserve">
+    <value>30 seconds</value>
+  </data>
+  <data name="Ui.5Seconds" xml:space="preserve">
+    <value>5 seconds</value>
+  </data>
+  <data name="Ui.FindAvailableSegment" xml:space="preserve">
+    <value>Find available segment</value>
+  </data>
+  <data name="Ui.CancelSearch" xml:space="preserve">
+    <value>Cancel search</value>
+  </data>
+  <data name="Ui.EnterExactTimeMSs" xml:space="preserve">
+    <value>Enter exact time · m:ss</value>
+  </data>
+  <data name="Ui.ExactTime" xml:space="preserve">
+    <value>Exact time</value>
+  </data>
+  <data name="Message.SetAsDefault" xml:space="preserve">
+    <value>Set as default</value>
+  </data>
+  <data name="Message.Default" xml:space="preserve">
+    <value>Default </value>
+  </data>
+  <data name="Message.Marker" xml:space="preserve">
+    <value>Marker </value>
+  </data>
+  <data name="Message.OutsideHistory" xml:space="preserve">
+    <value>Outside history</value>
+  </data>
+  <data name="Message.RemoveMarker" xml:space="preserve">
+    <value>Remove marker</value>
+  </data>
+  <data name="Message.Remove" xml:space="preserve">
+    <value>Remove </value>
+  </data>
+  <data name="Message.UnknownSettingsSection" xml:space="preserve">
+    <value>Unknown settings section.</value>
+  </data>
+  <data name="Message.Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Message.IncreaseHistoryTo" xml:space="preserve">
+    <value>Increase history to </value>
+  </data>
+  <data name="Message.ThisMarkerAlreadyExists" xml:space="preserve">
+    <value>This marker already exists</value>
+  </data>
+  <data name="Message.ReplayFolder" xml:space="preserve">
+    <value>Replay folder</value>
+  </data>
+  <data name="Message.ShadowplayArchive" xml:space="preserve">
+    <value>ShadowPlay archive</value>
+  </data>
+  <data name="Message.TheSelectedMicrophoneIsUnavailableReconnectTheDevice" xml:space="preserve">
+    <value>The selected microphone is unavailable · reconnect the device</value>
+  </data>
+  <data name="Message.CouldNotGetAudioDevices" xml:space="preserve">
+    <value>Could not get audio devices: </value>
+  </data>
+  <data name="Message.AllWindowsApplicationsAndOutputsIncludingDiscord" xml:space="preserve">
+    <value>All Windows applications and outputs including Discord</value>
+  </data>
+  <data name="Message.SourceIsOff" xml:space="preserve">
+    <value>Source is off</value>
+  </data>
+  <data name="Message.CouldNotLoadSettings" xml:space="preserve">
+    <value>Could not load settings: </value>
+  </data>
+  <data name="Message.CouldNotGetMonitors" xml:space="preserve">
+    <value>Could not get monitors: </value>
+  </data>
+  <data name="Message.Recording" xml:space="preserve">
+    <value>Recording</value>
+  </data>
+  <data name="Message.ReplayStopped" xml:space="preserve">
+    <value>Replay stopped</value>
+  </data>
+  <data name="Message.DoNotRecord" xml:space="preserve">
+    <value>Do not record</value>
+  </data>
+  <data name="Message.Screen" xml:space="preserve">
+    <value>Screen </value>
+  </data>
+  <data name="Message.NoScreensAreConnected" xml:space="preserve">
+    <value>No screens are connected.</value>
+  </data>
+  <data name="Message.NoRecordingMicrophoneIsSelected" xml:space="preserve">
+    <value>No recording microphone is selected.</value>
+  </data>
+  <data name="Message.RecordingIsOff" xml:space="preserve">
+    <value>Recording is off</value>
+  </data>
+  <data name="Message.ScreenRecordingIsDisabledInSettings" xml:space="preserve">
+    <value>Screen recording is disabled in settings.</value>
+  </data>
+  <data name="Message.CouldNotChangeRecordingState" xml:space="preserve">
+    <value>Could not change recording state</value>
+  </data>
+  <data name="Message.ThisIntervalIsUnavailableForSaving" xml:space="preserve">
+    <value>This interval is unavailable for saving.</value>
+  </data>
+  <data name="Message.Duration" xml:space="preserve">
+    <value>Duration </value>
+  </data>
+  <data name="Message.DefaultHotkeyInterval" xml:space="preserve">
+    <value>Default hotkey interval</value>
+  </data>
+  <data name="Message.Select" xml:space="preserve">
+    <value>Select </value>
+  </data>
+  <data name="Message.RecordingIsCurrentlyOff" xml:space="preserve">
+    <value>Recording is currently off.</value>
+  </data>
+  <data name="Message.SavingReplay" xml:space="preserve">
+    <value>Saving replay…</value>
+  </data>
+  <data name="Message.CouldNotIdentifyTheScreenUnderThePointer" xml:space="preserve">
+    <value>Could not identify the screen under the pointer.</value>
+  </data>
+  <data name="Message.PreparingVideo" xml:space="preserve">
+    <value>Preparing video</value>
+  </data>
+  <data name="Message.ReplaySaved" xml:space="preserve">
+    <value>Replay saved</value>
+  </data>
+  <data name="Message.ReplaySavedButTheLibraryCouldNotBeRefreshed" xml:space="preserve">
+    <value>Replay saved, but the library could not be refreshed.</value>
+  </data>
+  <data name="Message.ReplayWasNotSaved" xml:space="preserve">
+    <value>Replay was not saved</value>
+  </data>
+  <data name="Message.Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Message.RecordingInterruptedRecovering" xml:space="preserve">
+    <value>Recording interrupted · recovering…</value>
+  </data>
+  <data name="Message.RecoveringVideoCapture" xml:space="preserve">
+    <value>Recovering video capture…</value>
+  </data>
+  <data name="Message.RecordingAudioProblemDetected" xml:space="preserve">
+    <value>Recording · audio problem detected</value>
+  </data>
+  <data name="Message.Recording9d0a624f" xml:space="preserve">
+    <value>Recording</value>
+  </data>
+  <data name="Message.StartingRecording" xml:space="preserve">
+    <value>Starting recording…</value>
+  </data>
+  <data name="Message.RecordingInterrupted" xml:space="preserve">
+    <value>Recording interrupted</value>
+  </data>
+  <data name="Message.RecordingDidNotStart" xml:space="preserve">
+    <value>Recording did not start</value>
+  </data>
+  <data name="Message.StoppingCaptureAndFinishingSaves" xml:space="preserve">
+    <value>Stopping capture and finishing saves…</value>
+  </data>
+  <data name="Message.CouldNotLoadShortcuts" xml:space="preserve">
+    <value>Could not load shortcuts: </value>
+  </data>
+  <data name="Message.ThisShortcutIsAlreadyRegisteredInWindows1409ChooseAnotherOrTryAga" xml:space="preserve">
+    <value>This shortcut is already registered in Windows (1409). Choose another or try again.</value>
+  </data>
+  <data name="Message.ScreenUnderThePointer" xml:space="preserve">
+    <value>Screen under the pointer</value>
+  </data>
+  <data name="Message.AllRecordedScreens" xml:space="preserve">
+    <value>All recorded screens</value>
+  </data>
+  <data name="Message.CouldNotSave" xml:space="preserve">
+    <value>Could not save: </value>
+  </data>
+  <data name="Message.NewestFirst" xml:space="preserve">
+    <value>Newest first</value>
+  </data>
+  <data name="Message.OldestFirst" xml:space="preserve">
+    <value>Oldest first</value>
+  </data>
+  <data name="Message.FileAZ" xml:space="preserve">
+    <value>File A–Z</value>
+  </data>
+  <data name="Message.LargestFirst" xml:space="preserve">
+    <value>Largest first</value>
+  </data>
+  <data name="Message.FileZA" xml:space="preserve">
+    <value>File Z–A</value>
+  </data>
+  <data name="Message.SmallestFirst" xml:space="preserve">
+    <value>Smallest first</value>
+  </data>
+  <data name="Message.ByDate" xml:space="preserve">
+    <value>By date</value>
+  </data>
+  <data name="Message.ByApplication" xml:space="preserve">
+    <value>By application</value>
+  </data>
+  <data name="Message.BySession" xml:space="preserve">
+    <value>By session</value>
+  </data>
+  <data name="Message.Refreshing" xml:space="preserve">
+    <value>Refreshing…</value>
+  </data>
+  <data name="Message.AllGamesAndFolders" xml:space="preserve">
+    <value>All games and folders</value>
+  </data>
+  <data name="Message.AllLocations" xml:space="preserve">
+    <value>All locations</value>
+  </data>
+  <data name="Message.FolderUnavailable" xml:space="preserve">
+    <value>Folder unavailable: </value>
+  </data>
+  <data name="Message.CouldNotReadTheLibrary" xml:space="preserve">
+    <value>Could not read the library</value>
+  </data>
+  <data name="Message.FolderNotFound" xml:space="preserve">
+    <value>Folder not found.</value>
+  </data>
+  <data name="Message.CouldNotRefreshTheLibrary" xml:space="preserve">
+    <value>Could not refresh the library</value>
+  </data>
+  <data name="Message.AllGames" xml:space="preserve">
+    <value>All games</value>
+  </data>
+  <data name="Message.ReplaySession" xml:space="preserve">
+    <value>Replay session</value>
+  </data>
+  <data name="Message.ApproximateSessionGapsOfUpTo90MinutesBetweenReplays" xml:space="preserve">
+    <value>Approximate session: gaps of up to 90 minutes between replays</value>
+  </data>
+  <data name="Message.FromApplicationLaunchToTheLastSavedReplay" xml:space="preserve">
+    <value>From application launch to the last saved replay</value>
+  </data>
+  <data name="Message.ApplicationGroup" xml:space="preserve">
+    <value>Application group</value>
+  </data>
+  <data name="Message.DateGroup" xml:space="preserve">
+    <value>Date group</value>
+  </data>
+  <data name="Message.NoReplaysFound" xml:space="preserve">
+    <value>No replays found</value>
+  </data>
+  <data name="Message.SavedMomentsWillAppearHere" xml:space="preserve">
+    <value>Saved moments will appear here</value>
+  </data>
+  <data name="Message.Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Message.Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
+  </data>
+  <data name="Message.LoadingPreview" xml:space="preserve">
+    <value>Loading preview…</value>
+  </data>
+  <data name="Message.LoadingPreview29f3bdf5" xml:space="preserve">
+    <value>Loading preview</value>
+  </data>
+  <data name="Message.ReplayDuration" xml:space="preserve">
+    <value>Replay duration</value>
+  </data>
+  <data name="Message.PlaybackErrorsHaveOccurredInThisRecording" xml:space="preserve">
+    <value>Playback errors have occurred in this recording</value>
+  </data>
+  <data name="Message.OpenReplay" xml:space="preserve">
+    <value>Open replay </value>
+  </data>
+  <data name="Message.CouldNotOpenFile" xml:space="preserve">
+    <value>Could not open file</value>
+  </data>
+  <data name="Message.PreviewUnavailable" xml:space="preserve">
+    <value>Preview unavailable</value>
+  </data>
+  <data name="Message.Primary" xml:space="preserve">
+    <value> · primary</value>
+  </data>
+  <data name="Message.Record" xml:space="preserve">
+    <value>Record</value>
+  </data>
+  <data name="Message.IncludeThisScreenInReplayHistory" xml:space="preserve">
+    <value>Include this screen in replay history</value>
+  </data>
+  <data name="Message.Recording30f542b5" xml:space="preserve">
+    <value>Recording </value>
+  </data>
+  <data name="Message.Resolution" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="Message.FrameRate" xml:space="preserve">
+    <value>Frame rate</value>
+  </data>
+  <data name="Message.Fps" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Message.NoClipsFound" xml:space="preserve">
+    <value>No clips found</value>
+  </data>
+  <data name="Message.IconFor" xml:space="preserve">
+    <value>Icon for </value>
+  </data>
+  <data name="Message.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Message.SortBy" xml:space="preserve">
+    <value>Sort by: </value>
+  </data>
+  <data name="Message.CouldNotPlayTheVideo" xml:space="preserve">
+    <value>Could not play the video.</value>
+  </data>
+  <data name="Message.RecoveringPlayback" xml:space="preserve">
+    <value>Recovering playback…</value>
+  </data>
+  <data name="Message.TheVideoPlayerStoppedWithAnError" xml:space="preserve">
+    <value>The video player stopped with an error.</value>
+  </data>
+  <data name="Message.CouldNotPlayTheReplay" xml:space="preserve">
+    <value>Could not play the replay.</value>
+  </data>
+  <data name="Message.TheVideoSurfaceDidNotBecomeReadyInTime" xml:space="preserve">
+    <value>The video surface did not become ready in time.</value>
+  </data>
+  <data name="Message.CouldNotPrepareTheVideoSurface" xml:space="preserve">
+    <value>Could not prepare the video surface.</value>
+  </data>
+  <data name="Message.SeekingTo" xml:space="preserve">
+    <value>Seeking to </value>
+  </data>
+  <data name="Message.AvailableSegment" xml:space="preserve">
+    <value>Available segment · </value>
+  </data>
+  <data name="Message.ThePlayerDidNotFinishLoadingTheVideo" xml:space="preserve">
+    <value>The player did not finish loading the video.</value>
+  </data>
+  <data name="Message.ThePlayerDidNotFinishSeekingToTheSelectedPosition" xml:space="preserve">
+    <value>The player did not finish seeking to the selected position.</value>
+  </data>
+  <data name="Message.Retry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="Message.FromStart" xml:space="preserve">
+    <value>From start</value>
+  </data>
+  <data name="Message.Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="Message.Recovering" xml:space="preserve">
+    <value>Recovering…</value>
+  </data>
+  <data name="Message.FindingASegment" xml:space="preserve">
+    <value>Finding a segment…</value>
+  </data>
+  <data name="Message.SegmentUnavailable" xml:space="preserve">
+    <value>Segment unavailable</value>
+  </data>
+  <data name="Message.End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="Message.Seeking" xml:space="preserve">
+    <value>Seeking…</value>
+  </data>
+  <data name="Message.Playing" xml:space="preserve">
+    <value>Playing</value>
+  </data>
+  <data name="Message.GoToStartOfAvailableSegment" xml:space="preserve">
+    <value>Go to start of available segment</value>
+  </data>
+  <data name="Message.TheOtherScreensWillRemain" xml:space="preserve">
+    <value>The other screens will remain.</value>
+  </data>
+  <data name="Message.VideoPlayerError" xml:space="preserve">
+    <value>Video player error</value>
+  </data>
+  <data name="Message.ThePlayerStoppedAgainRestartItManuallyOrFindAnotherSegmentRewindI" xml:space="preserve">
+    <value>The player stopped again. Restart it manually or find another segment. Rewind is still running.</value>
+  </data>
+  <data name="Message.RestartingThePlayerFromAnAvailablePositionRewindIsStillRunning" xml:space="preserve">
+    <value>Restarting the player from an available position. Rewind is still running.</value>
+  </data>
+  <data name="Message.CouldNotRecoverPlaybackAutomaticallyRestartThePlayerOrChooseAnoth" xml:space="preserve">
+    <value>Could not recover playback automatically. Restart the player or choose another segment.</value>
+  </data>
+  <data name="Message.ChooseAnotherSegment" xml:space="preserve">
+    <value>Choose another segment</value>
+  </data>
+  <data name="Message.NoAvailableSegmentWasFoundChooseAnotherPositionOnTheTimelinePartO" xml:space="preserve">
+    <value>No available segment was found. Choose another position on the timeline; part of the recording may still be readable.</value>
+  </data>
+  <data name="Message.SearchStoppedYouCanChooseAnotherPositionOnTheTimeline" xml:space="preserve">
+    <value>Search stopped. You can choose another position on the timeline.</value>
+  </data>
+  <data name="Message.CouldNotFindASegmentYouCanChooseAnotherPositionOnTheTimeline" xml:space="preserve">
+    <value>Could not find a segment. You can choose another position on the timeline.</value>
+  </data>
+  <data name="Message.StopReplayToChangeSettings" xml:space="preserve">
+    <value>Stop replay to change settings</value>
+  </data>
+  <data name="Message.Saving" xml:space="preserve">
+    <value>Saving…</value>
+  </data>
+  <data name="Message.CouldNotShowReplay" xml:space="preserve">
+    <value>Could not show replay: </value>
+  </data>
+  <data name="Message.CouldNotShowReplaycde3da3b" xml:space="preserve">
+    <value>Could not show replay</value>
+  </data>
+  <data name="Message.RecordingStarted" xml:space="preserve">
+    <value>Recording started</value>
+  </data>
+  <data name="Message.CouldNotReadStartupSettings" xml:space="preserve">
+    <value>Could not read startup settings: </value>
+  </data>
+  <data name="Message.CouldNotSaveStartupSettings" xml:space="preserve">
+    <value>Could not save startup settings: </value>
+  </data>
+  <data name="Message.CouldNotSaveSettings" xml:space="preserve">
+    <value>Could not save settings: </value>
+  </data>
+  <data name="Message.AudioMetersAreUnavailable" xml:space="preserve">
+    <value>Audio meters are unavailable: </value>
+  </data>
+  <data name="Message.CouldNotIdentifyThePrimaryWindowsScreen" xml:space="preserve">
+    <value>Could not identify the primary Windows screen.</value>
+  </data>
+  <data name="Message.CouldNotOpenTheClipTryOpeningItAgain" xml:space="preserve">
+    <value>Could not open the clip. Try opening it again.</value>
+  </data>
+  <data name="Message.ShowFileInFileExplorer" xml:space="preserve">
+    <value>Show file in File Explorer</value>
+  </data>
+  <data name="Message.ClickAndEnterAShortcutEscToCancelBackspaceToClear" xml:space="preserve">
+    <value>Click and enter a shortcut · Esc to cancel · Backspace to clear</value>
+  </data>
+  <data name="Message.PressKeys" xml:space="preserve">
+    <value>Press keys…</value>
+  </data>
+  <data name="Message.NotAssigned" xml:space="preserve">
+    <value>Not assigned</value>
+  </data>
+  <data name="Message.DoNotUseTheWindowsKey" xml:space="preserve">
+    <value>Do not use the Windows key</value>
+  </data>
+  <data name="Message.HoldAKeyAndPressAnFKey" xml:space="preserve">
+    <value>Hold a key and press an F-key…</value>
+  </data>
+  <data name="Message.MSsOrSeconds" xml:space="preserve">
+    <value>m:ss or seconds</value>
+  </data>
+  <data name="Message.RewindStopped" xml:space="preserve">
+    <value>Rewind · Stopped</value>
+  </data>
+  <data name="Message.CouldNotAddTheRewindIconToTheNotificationArea" xml:space="preserve">
+    <value>Could not add the Rewind icon to the notification area.</value>
+  </data>
+  <data name="Message.WindowsDefaultAutomatic" xml:space="preserve">
+    <value>Windows default · automatic</value>
+  </data>
+  <data name="Message.WindowsDefault" xml:space="preserve">
+    <value>Windows default · </value>
+  </data>
+  <data name="Message.WindowsDefaultDeviceUnavailable" xml:space="preserve">
+    <value>Windows default · device unavailable</value>
+  </data>
+  <data name="Message.TheSelectedMicrophoneIsDisconnected" xml:space="preserve">
+    <value>The selected microphone is disconnected.</value>
+  </data>
+  <data name="Message.MultipleDiscordInstancesAreRunningLeaveOneRunningToSeparateItsAud" xml:space="preserve">
+    <value>Multiple Discord instances are running. Leave one running to separate its audio.</value>
+  </data>
+  <data name="Message.CompleteFloatPcmStereoFramesAreRequired" xml:space="preserve">
+    <value>Complete float PCM stereo frames are required.</value>
+  </data>
+  <data name="Message.TheOutputMustReadConsecutiveCompletePcmFrames" xml:space="preserve">
+    <value>The output must read consecutive complete PCM frames.</value>
+  </data>
+  <data name="Message.CouldNotStartFfmpeg" xml:space="preserve">
+    <value>Could not start FFmpeg.</value>
+  </data>
+  <data name="Message.InvalidMonitorProfile" xml:space="preserve">
+    <value>Invalid monitor profile.</value>
+  </data>
+  <data name="Message.NoScreenIsSelectedForRecording" xml:space="preserve">
+    <value>No screen is selected for recording.</value>
+  </data>
+  <data name="Message.FrameRateMustBe3060Or120Fps" xml:space="preserve">
+    <value>Frame rate must be 30, 60 or 120 FPS.</value>
+  </data>
+  <data name="Message.HistoryMustBeBetween4And900Seconds" xml:space="preserve">
+    <value>History must be between 4 and 900 seconds.</value>
+  </data>
+  <data name="Message.TheReplayMustFitWithinTheHistory" xml:space="preserve">
+    <value>The replay must fit within the history.</value>
+  </data>
+  <data name="Message.TheDefaultMarkerMustBeBetween001And1500" xml:space="preserve">
+    <value>The default marker must be between 0:01 and 15:00.</value>
+  </data>
+  <data name="Message.TheStorageFolderPathIsIncomplete" xml:space="preserve">
+    <value>The storage folder path is incomplete.</value>
+  </data>
+  <data name="Message.TheMonitorIsListedTwice" xml:space="preserve">
+    <value>The monitor is listed twice.</value>
+  </data>
+  <data name="Message.TheRecordingStateDoesNotMatchTheSelectedScreens" xml:space="preserve">
+    <value>The recording state does not match the selected screens.</value>
+  </data>
+  <data name="Message.CouldNotReadSettings" xml:space="preserve">
+    <value>Could not read settings.</value>
+  </data>
+  <data name="Message.LessThan1GibOfDiskSpaceIsAvailableForRecording" xml:space="preserve">
+    <value>Less than 1 GiB of disk space is available for recording.</value>
+  </data>
+  <data name="Message.TheSelectedMonitorIsNoLongerConnected" xml:space="preserve">
+    <value>The selected monitor is no longer connected.</value>
+  </data>
+  <data name="Message.NoScreensHaveRecordingEnabled" xml:space="preserve">
+    <value>No screens have recording enabled.</value>
+  </data>
+  <data name="Message.MonitorUnavailable" xml:space="preserve">
+    <value>Monitor unavailable: </value>
+  </data>
+  <data name="Message.CurrentlyOnlyMonitorsConnectedToTheSameGraphicsCardAreSupported" xml:space="preserve">
+    <value>Currently, only monitors connected to the same graphics card are supported.</value>
+  </data>
+  <data name="Message.CouldNotWriteAudioDiagnostics" xml:space="preserve">
+    <value>Could not write audio diagnostics: </value>
+  </data>
+  <data name="Message.CaptureStopped" xml:space="preserve">
+    <value>Capture stopped.</value>
+  </data>
+  <data name="Message.SavingWillBeAvailableAfterVideoCaptureRecovers" xml:space="preserve">
+    <value>Saving will be available after video capture recovers.</value>
+  </data>
+  <data name="Message.TwoReplaysAreAlreadyBeingSaved" xml:space="preserve">
+    <value>Two replays are already being saved.</value>
+  </data>
+  <data name="Message.ThereIsNotEnoughVideoForAReplayYet" xml:space="preserve">
+    <value>There is not enough video for a replay yet.</value>
+  </data>
+  <data name="Message.TheSelectedScreenIsNotBeingRecorded" xml:space="preserve">
+    <value>The selected screen is not being recorded.</value>
+  </data>
+  <data name="Message.ACompletedReplaySegmentWasNotReceived" xml:space="preserve">
+    <value>A completed replay segment was not received.</value>
+  </data>
+  <data name="Message.TheSavedReplayIsMissingExpectedAudioTracks" xml:space="preserve">
+    <value>The saved replay is missing expected audio tracks.</value>
+  </data>
+  <data name="Message.TheSavedFileHasAnInvalidFrameRate" xml:space="preserve">
+    <value>The saved file has an invalid frame rate.</value>
+  </data>
+  <data name="Message.TheSavedReplayDurationDoesNotMatchTheRequestedDuration" xml:space="preserve">
+    <value>The saved replay duration does not match the requested duration.</value>
+  </data>
+  <data name="Message.TheDiskBufferSafetyLimitWasReachedCaptureStopped" xml:space="preserve">
+    <value>The disk buffer safety limit was reached. Capture stopped.</value>
+  </data>
+  <data name="Message.LessThan512MibRemainsOnDiskCaptureStoppedSavedClipsWereNotDeleted" xml:space="preserve">
+    <value>Less than 512 MiB remains on disk. Capture stopped; saved clips were not deleted.</value>
+  </data>
+  <data name="Message.CaptureEnded" xml:space="preserve">
+    <value>Capture ended: </value>
+  </data>
+  <data name="Message.InvalidSegmentList" xml:space="preserve">
+    <value>Invalid segment list.</value>
+  </data>
+  <data name="Message.ASegmentFileIsMissingFromTheHistory" xml:space="preserve">
+    <value>A segment file is missing from the history.</value>
+  </data>
+  <data name="Message.ThePathIsOutsideTheSessionDirectory" xml:space="preserve">
+    <value>The path is outside the session directory.</value>
+  </data>
+  <data name="Message.TheReplayFileIsUnavailable" xml:space="preserve">
+    <value>The replay file is unavailable.</value>
+  </data>
+  <data name="Message.AHeldKeyIsRequired" xml:space="preserve">
+    <value>A held key is required.</value>
+  </data>
+  <data name="Message.AddCtrlAltShiftOrAHeldLetter" xml:space="preserve">
+    <value>Add Ctrl, Alt, Shift or a held letter.</value>
+  </data>
+  <data name="Message.HoldALetterOrNumberAndPressAnFKey" xml:space="preserve">
+    <value>Hold a letter or number and press an F-key.</value>
+  </data>
+  <data name="Message.ChooseALetterNumberFKeyOrNavigationKey" xml:space="preserve">
+    <value>Choose a letter, number, F-key or navigation key.</value>
+  </data>
+  <data name="Message.AHeldLetterIsSupportedOnlyForGlobalActions" xml:space="preserve">
+    <value>A held letter is supported only for global actions.</value>
+  </data>
+  <data name="Message.ThisShortcutIsAlreadyAssignedToAnotherRewindAction" xml:space="preserve">
+    <value>This shortcut is already assigned to another Rewind action.</value>
+  </data>
+  <data name="Message.CouldNotReadHotkeys" xml:space="preserve">
+    <value>Could not read hotkeys.</value>
+  </data>
+  <data name="Message.TheMpvVideoPlayerLibraryWasNotFound" xml:space="preserve">
+    <value>The mpv video player library was not found.</value>
+  </data>
+  <data name="Message.CouldNotRecoverVideoCaptureFor" xml:space="preserve">
+    <value>Could not recover video capture for </value>
+  </data>
+  <data name="Message.Details" xml:space="preserve">
+    <value>. Details: </value>
+  </data>
+  <data name="Message.VideoCaptureError" xml:space="preserve">
+    <value>Video capture error: </value>
+  </data>
+  <data name="Message.CouldNotWriteVideoCaptureDiagnostics" xml:space="preserve">
+    <value>Could not write video capture diagnostics: </value>
+  </data>
+  <data name="Message.InvalidPlaybackMetadata" xml:space="preserve">
+    <value>Invalid playback metadata.</value>
+  </data>
+  <data name="Message.CouldNotReadClipAudio" xml:space="preserve">
+    <value>Could not read clip audio: </value>
+  </data>
+  <data name="Message.ClipAudioDidNotRespond" xml:space="preserve">
+    <value>Clip audio did not respond.</value>
+  </data>
+  <data name="Message.TheCatalogSnapshotIsMissingItsFileList" xml:space="preserve">
+    <value>The catalog snapshot is missing its file list.</value>
+  </data>
+  <data name="Message.SomeFilesAreUnavailable" xml:space="preserve">
+    <value>Some files are unavailable</value>
+  </data>
+  <data name="Message.SomeFoldersAreUnavailableShowingTheSavedSnapshot" xml:space="preserve">
+    <value>Some folders are unavailable; showing the saved snapshot</value>
+  </data>
+  <data name="Message.TheFileIsNoLongerAvailable" xml:space="preserve">
+    <value>The file is no longer available.</value>
+  </data>
+  <data name="Message.CouldNotDeleteTheClipTheFileMayBeInUseByAnotherApplication" xml:space="preserve">
+    <value>Could not delete the clip. The file may be in use by another application.</value>
+  </data>
+  <data name="Message.ExportRequiresCompletedSegmentsAndAPositiveDuration" xml:space="preserve">
+    <value>Export requires completed segments and a positive duration.</value>
+  </data>
+  <data name="Message.TheFirstVideoFrameTimestampIsUnavailable" xml:space="preserve">
+    <value>The first video frame timestamp is unavailable.</value>
+  </data>
+  <data name="Message.TheFilenameFormatMustContain1To200Characters" xml:space="preserve">
+    <value>The filename format must contain 1 to 200 characters.</value>
+  </data>
+  <data name="Message.UnknownFilenamePlaceholder" xml:space="preserve">
+    <value>Unknown filename placeholder.</value>
+  </data>
+  <data name="Message.UseTheSizePlaceholderWithoutAnAdditionalFormat" xml:space="preserve">
+    <value>Use the {size} placeholder without an additional format.</value>
+  </data>
+  <data name="Message.InvalidDateTimeOrNumberFormat" xml:space="preserve">
+    <value>Invalid date, time or number format.</value>
+  </data>
+  <data name="Message.TheNameContainsInvalidCharactersOrIsTooLong" xml:space="preserve">
+    <value>The name contains invalid characters or is too long.</value>
+  </data>
+  <data name="Message.CouldNotFindAnAvailableClipName" xml:space="preserve">
+    <value>Could not find an available clip name.</value>
+  </data>
+  <data name="Message.HistoryMustBeBetween004And1500" xml:space="preserve">
+    <value>History must be between 0:04 and 15:00.</value>
+  </data>
+  <data name="Message.TheMarkerMustBeBetween001And1500" xml:space="preserve">
+    <value>The marker must be between 0:01 and 15:00.</value>
+  </data>
+  <data name="Message.TheMarkerWasNotFoundOnTheTimeline" xml:space="preserve">
+    <value>The marker was not found on the timeline.</value>
+  </data>
+  <data name="Message.TheMarkerMustFitWithinTheHistory" xml:space="preserve">
+    <value>The marker must fit within the history.</value>
+  </data>
+  <data name="Message.KeepAtLeastOneMarker" xml:space="preserve">
+    <value>Keep at least one marker.</value>
+  </data>
+  <data name="Message.MarkerNotFound" xml:space="preserve">
+    <value>Marker not found.</value>
+  </data>
+  <data name="Message.ThisMarkerAlreadyExistsd5b52575" xml:space="preserve">
+    <value>This marker already exists.</value>
+  </data>
+  <data name="Message.EnterATimeInMSsFormatForExample130" xml:space="preserve">
+    <value>Enter a time in m:ss format, for example 1:30.</value>
+  </data>
+  <data name="Message.Drag15SecondSteps" xml:space="preserve">
+    <value> · drag · 15-second steps</value>
+  </data>
+  <data name="Message.CouldNotReadStartupSettingsf84e6851" xml:space="preserve">
+    <value>Could not read startup settings.</value>
+  </data>
+  <data name="Message.InvalidRewindLaunchArguments" xml:space="preserve">
+    <value>Invalid Rewind launch arguments.</value>
+  </data>
+  <data name="Message.Connecting" xml:space="preserve">
+    <value>Connecting…</value>
+  </data>
+  <data name="Message.BriefAudioGapRecordingContinues" xml:space="preserve">
+    <value>Brief audio gap · recording continues</value>
+  </data>
+  <data name="Message.SeparatingAudioRequiresWindowsBuild20348OrLater" xml:space="preserve">
+    <value>Separating audio requires Windows build 20348 or later.</value>
+  </data>
+  <data name="Message.AllWindowsOutputs" xml:space="preserve">
+    <value>All Windows outputs</value>
+  </data>
+  <data name="Message.AllWindowsOutputsExcludingDiscord" xml:space="preserve">
+    <value>All Windows outputs · excluding Discord</value>
+  </data>
+  <data name="Message.DiscordIsNotRunning" xml:space="preserve">
+    <value>Discord is not running</value>
+  </data>
+  <data name="Message.NoSystemAudio" xml:space="preserve">
+    <value>No system audio: </value>
+  </data>
+  <data name="Message.DiscordIsNotConnected" xml:space="preserve">
+    <value>Discord is not connected: </value>
+  </data>
+  <data name="Message.MicrophoneUnavailable" xml:space="preserve">
+    <value>Microphone unavailable</value>
+  </data>
+  <data name="Message.AudioBuffer" xml:space="preserve">
+    <value>Audio buffer: </value>
+  </data>
+  <data name="Message.SourceStopped" xml:space="preserve">
+    <value>Source stopped</value>
+  </data>
+  <data name="Message.AudioTransportError" xml:space="preserve">
+    <value>Audio transport error: </value>
+  </data>
+  <data name="Message.CouldNotStartTheVideoPlayer" xml:space="preserve">
+    <value>Could not start the video player.</value>
+  </data>
+  <data name="Message.TheVideoPlayerDidNotFinishOpeningTheReplayTryAgain" xml:space="preserve">
+    <value>The video player did not finish opening the replay. Try again.</value>
+  </data>
+  <data name="Message.TheVideoPlayerExited" xml:space="preserve">
+    <value>The video player exited.</value>
+  </data>
+  <data name="Message.TheVideoPlayerIsNotResponding" xml:space="preserve">
+    <value>The video player is not responding.</value>
+  </data>
+  <data name="Message.EmptyResponseFromTheVideoPlayer" xml:space="preserve">
+    <value>Empty response from the video player.</value>
+  </data>
+  <data name="Message.TheVideoPlayerStoppedWithAnErrorTheFileMayBeDamagedYouCanOpenAnot" xml:space="preserve">
+    <value>The video player stopped with an error. The file may be damaged. You can open another replay.</value>
+  </data>
+  <data name="Message.TheConnectionToTheVideoPlayerWasLostYouCanOpenAnotherReplay" xml:space="preserve">
+    <value>The connection to the video player was lost. You can open another replay.</value>
+  </data>
+  <data name="Message.TheVideoPlayerIsNotRespondingYouCanOpenAnotherReplay" xml:space="preserve">
+    <value>The video player is not responding. You can open another replay.</value>
+  </data>
+  <data name="Message.ThisSegmentHasNoReadableFrames" xml:space="preserve">
+    <value>This segment has no readable frames.</value>
+  </data>
+  <data name="Message.CouldNotPlayThisSegmentTryALaterPositionOrFindAnAvailableSegment" xml:space="preserve">
+    <value>Could not play this segment. Try a later position or find an available segment.</value>
+  </data>
+  <data name="Message.TheSegmentCheckTimedOutTryAgainOrChooseALaterPosition" xml:space="preserve">
+    <value>The segment check timed out. Try again or choose a later position.</value>
+  </data>
+  <data name="Message.EmptyCommand" xml:space="preserve">
+    <value>Empty command.</value>
+  </data>
+  <data name="Message.TheVideoPlayerCouldNotCompleteTheActionTryAnotherPositionOrRestar" xml:space="preserve">
+    <value>The video player could not complete the action. Try another position or restart playback.</value>
+  </data>
+  <data name="Count.Screen.One" xml:space="preserve"><value>{0} screen</value></data>
+  <data name="Count.Screen.Few" xml:space="preserve"><value>{0} screens</value></data>
+  <data name="Count.Screen.Many" xml:space="preserve"><value>{0} screens</value></data>
+  <data name="Count.Replay.One" xml:space="preserve"><value>{0} replay</value></data>
+  <data name="Count.Replay.Few" xml:space="preserve"><value>{0} replays</value></data>
+  <data name="Count.Replay.Many" xml:space="preserve"><value>{0} replays</value></data>
+  <data name="Saved.Detail" xml:space="preserve"><value>{0} · {1:F1} MB · {2}</value></data>
+  <data name="Format.Range" xml:space="preserve"><value>From {0} to {1}</value></data>
+  <data name="Format.StoragePercent" xml:space="preserve"><value>{0:F1}% of storage</value></data>
+  <data name="Format.ClipCount" xml:space="preserve"><value>Clips: {0}</value></data>
+  <data name="Format.SeekBackward" xml:space="preserve"><value>Back {0} sec</value></data>
+  <data name="Format.SeekForward" xml:space="preserve"><value>Forward {0} sec</value></data>
+  <data name="Format.SearchProgress" xml:space="preserve"><value>Finding an available segment… {0} of {1}</value></data>
+  <data name="Format.FileCount" xml:space="preserve"><value>Files: {0}</value></data>
+  <data name="Format.ShowMore" xml:space="preserve"><value>Show {0} more</value></data>
+  <data name="Format.MonitorUnavailable" xml:space="preserve"><value>screen {0} · unavailable</value></data>
+  <data name="Format.MonitorName" xml:space="preserve"><value>screen {0} · {1}</value></data>
+  <data name="Format.MonitorResolution" xml:space="preserve"><value>Source: {0} × {1}. Downscaling currently uses the CPU.</value></data>
+  <data name="Format.CatalogProgress" xml:space="preserve"><value>Refreshing · {0:N0} files</value></data>
+  <data name="Format.SizeGb" xml:space="preserve"><value>{0:F1} GB</value></data>
+  <data name="Format.SizeMb" xml:space="preserve"><value>{0:F1} MB</value></data>
+  <data name="Format.SizeKb" xml:space="preserve"><value>{0:F0} KB</value></data>
+  <data name="Format.SavedSummary" xml:space="preserve"><value>Saved · {0} · {1:F0} MB</value></data>
+  <data name="Format.EstimatedMb" xml:space="preserve"><value>≈ {0:F0} MB</value></data>
+  <data name="Format.HotkeyError" xml:space="preserve"><value>Windows could not register the shortcut ({0}): {1}</value></data>
+  <data name="Format.InactiveMarkers" xml:space="preserve"><value>Outside history: {0}. Markers are saved. Current: {1}.</value></data>
+  <data name="Format.MonitorDetails" xml:space="preserve"><value>{0} × {1} · scale {2}%</value></data>
+  <data name="Format.WindowsAudioOutput" xml:space="preserve"><value>Windows sound settings&#10;Current output: {0}</value></data>
+  <data name="Format.WindowsAudioUnavailable" xml:space="preserve"><value>Windows sound settings&#10;Output unavailable; application capture is not tied to a device.</value></data>
+  <data name="Risk.Description" xml:space="preserve"><value>Yellow areas indicate previous errors. Boundaries are approximate: individual frames between checked positions may still play.</value></data>
+  <data name="Risk.Failures" xml:space="preserve"><value>&#10;Failures and errors at: {0}.</value></data>
+  <data name="Risk.Recovered" xml:space="preserve"><value>&#10;An available segment was found from {0}.</value></data>
+  <data name="Version.Installed" xml:space="preserve"><value>Installed build</value></data>
+  <data name="Version.Local" xml:space="preserve"><value>Local build</value></data>
+  <data name="Version.Missing" xml:space="preserve"><value>missing</value></data>
+  <data name="Version.Details" xml:space="preserve"><value>{0}&#10;{1}&#10;{2}&#10;Capture module: {3}</value></data>
+</root>

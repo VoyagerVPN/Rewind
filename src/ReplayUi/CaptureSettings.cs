@@ -13,7 +13,7 @@ public sealed record MonitorRecordingProfile(string DeviceName, bool Enabled, in
     public void Validate()
     {
         if (string.IsNullOrWhiteSpace(DeviceName) || Fps is not (30 or 60 or 120) || OutputHeight is not (0 or 360 or 480 or 720 or 1080 or 1440))
-            throw new ArgumentException("Недопустимый профиль монитора.");
+            throw new ArgumentException(Localization.Text("Message.InvalidMonitorProfile"));
     }
 }
 
@@ -60,18 +60,18 @@ public sealed record CaptureSettings(string MonitorDeviceName, int Fps, int Hist
     public void Validate()
     {
         ReplayFileName.Validate(FileNameFormat);
-        if (string.IsNullOrWhiteSpace(MonitorDeviceName)) throw new ArgumentException("Экран для записи не выбран.");
-        if (Fps is not (30 or 60 or 120)) throw new ArgumentException("Частота: 30, 60 или 120 кадров/с.");
-        if (HistorySeconds is < 4 or > 900) throw new ArgumentException("История: от 4 до 900 секунд.");
-        if (ReplaySeconds < 1 || ReplaySeconds > HistorySeconds) throw new ArgumentException("Повтор должен помещаться в историю.");
-        if (PreferredReplaySeconds is < 1 or > 900) throw new ArgumentException("Основная отметка должна быть от 0:01 до 15:00.");
+        if (string.IsNullOrWhiteSpace(MonitorDeviceName)) throw new ArgumentException(Localization.Text("Message.NoScreenIsSelectedForRecording"));
+        if (Fps is not (30 or 60 or 120)) throw new ArgumentException(Localization.Text("Message.FrameRateMustBe3060Or120Fps"));
+        if (HistorySeconds is < 4 or > 900) throw new ArgumentException(Localization.Text("Message.HistoryMustBeBetween4And900Seconds"));
+        if (ReplaySeconds < 1 || ReplaySeconds > HistorySeconds) throw new ArgumentException(Localization.Text("Message.TheReplayMustFitWithinTheHistory"));
+        if (PreferredReplaySeconds is < 1 or > 900) throw new ArgumentException(Localization.Text("Message.TheDefaultMarkerMustBeBetween001And1500"));
         if (ReplayMarkers is not null) _ = new ReplayIntervals(HistorySeconds, ReplayMarkers, PreferredReplaySeconds ?? ReplaySeconds);
-        if (!Path.IsPathFullyQualified(StorageRoot)) throw new ArgumentException("Путь к папке хранения указан не полностью.");
+        if (!Path.IsPathFullyQualified(StorageRoot)) throw new ArgumentException(Localization.Text("Message.TheStorageFolderPathIsIncomplete"));
         foreach (MonitorRecordingProfile profile in ResolveMonitorProfiles()) profile.Validate();
         if (ResolveMonitorProfiles().Select(profile => profile.Identity ?? profile.DeviceName).Distinct().Count() != ResolveMonitorProfiles().Count)
-            throw new ArgumentException("Монитор указан дважды.");
+            throw new ArgumentException(Localization.Text("Message.TheMonitorIsListedTwice"));
         if (MonitorProfiles is not null && MonitorProfiles.Any(profile => profile.Enabled) != CaptureVideo)
-            throw new ArgumentException("Состояние записи не совпадает с выбранными экранами.");
+            throw new ArgumentException(Localization.Text("Message.TheRecordingStateDoesNotMatchTheSelectedScreens"));
     }
 }
 
@@ -81,7 +81,7 @@ public sealed class CaptureSettingsFile(string path)
     {
         if (!File.Exists(path)) return null;
         CaptureSettings value = JsonSerializer.Deserialize<CaptureSettings>(File.ReadAllText(path))
-            ?? throw new InvalidDataException("Настройки не прочитаны.");
+            ?? throw new InvalidDataException(Localization.Text("Message.CouldNotReadSettings"));
         value.Validate();
         return value;
     }

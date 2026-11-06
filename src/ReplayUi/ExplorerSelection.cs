@@ -8,7 +8,7 @@ internal static class ExplorerSelection
     public static void SelectFile(string file)
     {
         string fullPath = Path.GetFullPath(file);
-        if (!File.Exists(fullPath)) throw new FileNotFoundException("Файл повтора недоступен.", fullPath);
+        if (!File.Exists(fullPath)) throw new FileNotFoundException(Localization.Text("Message.TheReplayFileIsUnavailable"), fullPath);
         Marshal.ThrowExceptionForHR(CoInitializeEx(0, 2));
         nint item = 0;
         try

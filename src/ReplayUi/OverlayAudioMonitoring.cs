@@ -51,7 +51,7 @@ public partial class OverlayWindow
         catch (Exception error)
         {
             _previewSettings = _desiredPreviewSettings;
-            SettingsMessageText.Text = "Индикаторы звука недоступны: " + error.Message;
+            SettingsMessageText.Text = Localization.Text("Message.AudioMetersAreUnavailable") + error.Message;
             _telemetry.Event("audio-monitor-error", new { error.Message });
         }
         UpdateAudioStatus();

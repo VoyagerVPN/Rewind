@@ -17,7 +17,7 @@ internal static class CaptureProcesses
             RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true
         };
         foreach (string argument in arguments) info.ArgumentList.Add(argument);
-        return Process.Start(info) ?? throw new InvalidOperationException("Не удалось запустить FFmpeg.");
+        return Process.Start(info) ?? throw new InvalidOperationException(Localization.Text("Message.CouldNotStartFfmpeg"));
     }
 
     public static async Task<string> RunAsync(string executable, IEnumerable<string> arguments, TimeSpan timeout, CancellationToken cancellation = default, Action<string>? nonFatalDiagnostics = null,

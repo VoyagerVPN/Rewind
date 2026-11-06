@@ -42,12 +42,12 @@ public partial class OverlayWindow
                 var header = new Grid { MinHeight = 40, Margin = new Thickness(0, 0, 0, 10) };
                 header.ColumnDefinitions.Add(new ColumnDefinition()); header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 var labels = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 12, 0) };
-                labels.Children.Add(new TextBlock { Text = "Экран " + MonitorNumber(monitor.DeviceName), FontSize = 16, FontWeight = FontWeights.SemiBold });
-                labels.Children.Add(new TextBlock { Text = monitor.Name + (monitor.Primary ? " · основной" : ""), FontSize = 12,
+                labels.Children.Add(new TextBlock { Text = Localization.Text("Message.Screen") + MonitorNumber(monitor.DeviceName), FontSize = 16, FontWeight = FontWeights.SemiBold });
+                labels.Children.Add(new TextBlock { Text = monitor.Name + (monitor.Primary ? Localization.Text("Message.Primary") : ""), FontSize = 12,
                     Foreground = (Brush)FindResource("Muted"), TextTrimming = TextTrimming.CharacterEllipsis, Margin = new Thickness(0, 3, 0, 0) });
                 header.Children.Add(labels);
-                var toggle = new CheckBox { Content = "Записывать", VerticalAlignment = VerticalAlignment.Center, ToolTip = "Включать этот экран в историю повторов" };
-                System.Windows.Automation.AutomationProperties.SetName(toggle, "Запись " + monitor.DeviceName);
+                var toggle = new CheckBox { Content = Localization.Text("Message.Record"), VerticalAlignment = VerticalAlignment.Center, ToolTip = Localization.Text("Message.IncludeThisScreenInReplayHistory") };
+                System.Windows.Automation.AutomationProperties.SetName(toggle, Localization.Text("Message.Recording30f542b5") + monitor.DeviceName);
                 void Change()
                 {
                     if (_syncingMonitorSwitches) return;
@@ -65,14 +65,14 @@ public partial class OverlayWindow
                 }
                 ResolutionChoice[] choices = new[] { new ResolutionChoice(0, monitor.Height + "p") }
                     .Concat(new[] { 1440, 1080, 720, 480, 360 }.Where(height => height < monitor.Height).Select(height => new ResolutionChoice(height, height + "p"))).Reverse().ToArray();
-                var resolution = Selector("Разрешение", choices.Cast<object>().ToArray());
-                resolution.ToolTip = $"Исходное: {monitor.Width} × {monitor.Height}. Уменьшение пока использует CPU.";
-                var fps = Selector("Частота кадров", new object[] { 30, 60, 120 });
+                var resolution = Selector(Localization.Text("Message.Resolution"), choices.Cast<object>().ToArray());
+                resolution.ToolTip = Localization.Format("Format.MonitorResolution", monitor.Width, monitor.Height);
+                var fps = Selector(Localization.Text("Message.FrameRate"), new object[] { 30, 60, 120 });
                 var quality = new Grid(); quality.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(95) }); quality.ColumnDefinitions.Add(new ColumnDefinition());
                 quality.RowDefinitions.Add(new RowDefinition()); quality.RowDefinitions.Add(new RowDefinition());
                 TextBlock Label(string text) => new() { Text = text, FontSize = 12, Foreground = (Brush)FindResource("Muted"), VerticalAlignment = VerticalAlignment.Center };
-                quality.Children.Add(Label("Разрешение")); Grid.SetColumn(resolution, 1); quality.Children.Add(resolution);
-                var fpsLabel = Label("Кадры/с"); Grid.SetRow(fpsLabel, 1); quality.Children.Add(fpsLabel);
+                quality.Children.Add(Label(Localization.Text("Message.Resolution"))); Grid.SetColumn(resolution, 1); quality.Children.Add(resolution);
+                var fpsLabel = Label(Localization.Text("Message.Fps")); Grid.SetRow(fpsLabel, 1); quality.Children.Add(fpsLabel);
                 fps.Margin = new Thickness(0, 6, 0, 0); Grid.SetColumn(fps, 1); Grid.SetRow(fps, 1); quality.Children.Add(fps);
                 row.Children.Add(quality);
                 void SaveQuality()

@@ -31,9 +31,9 @@ public sealed class TimelineRiskView : FrameworkElement
         }
         _ranges = merged.ToArray();
         Visibility = _ranges.Length > 0 && duration > 0 ? Visibility.Visible : Visibility.Collapsed;
-        Description = "Жёлтые участки — области, где встречались ошибки. Границы приблизительные: отдельные кадры между проверенными местами могут воспроизводиться.";
-        if (_failures.Length > 0) Description += "\nСбои и ошибки в точках: " + string.Join(", ", _failures.Take(6).Select(Format)) + ".";
-        if (health?.RecoveredStartSeconds is double start) Description += "\nДоступный фрагмент найден с " + Format(start) + ".";
+        Description = Localization.Text("Risk.Description");
+        if (_failures.Length > 0) Description += Localization.Format("Risk.Failures", string.Join(", ", _failures.Take(6).Select(Format)));
+        if (health?.RecoveredStartSeconds is double start) Description += Localization.Format("Risk.Recovered", Format(start));
         InvalidateVisual();
     }
     private static string Format(double seconds) => TimeSpan.FromSeconds(Math.Max(0, seconds)).ToString(@"m\:ss", CultureInfo.InvariantCulture);

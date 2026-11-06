@@ -20,7 +20,7 @@ internal sealed class TrayIndicator : IDisposable
         var logo = new BitmapImage();
         logo.BeginInit(); logo.UriSource = new Uri("pack://application:,,,/Assets/Rewind.png"); logo.DecodePixelWidth = 32; logo.CacheOption = BitmapCacheOption.OnLoad; logo.EndInit();
         new FormatConvertedBitmap(logo, PixelFormats.Bgra32, null, 0).CopyPixels(_logoPixels, 32 * 4, 0);
-        SetStatus(Color.FromRgb(196, 123, 116), "Rewind · Остановлен");
+        SetStatus(Color.FromRgb(196, 123, 116), Localization.Text("Message.RewindStopped"));
     }
 
     public void SetStatus(Color? color, string tip)
@@ -44,7 +44,7 @@ internal sealed class TrayIndicator : IDisposable
         if (!ShellNotifyIcon(_added ? 1u : 0u, ref updated))
         {
             DestroyIcon(icon);
-            throw new Win32Exception("Не удалось добавить индикатор Rewind в область уведомлений.");
+            throw new Win32Exception(Localization.Text("Message.CouldNotAddTheRewindIconToTheNotificationArea"));
         }
         _data = updated; _added = true; _color = color;
         if (old != 0) DestroyIcon(old);
