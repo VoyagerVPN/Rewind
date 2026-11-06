@@ -1,0 +1,21 @@
+<Window x:Class="Rewind.Preview.ReplayDurationWindow" x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Rewind · Длительность повтора" Width="364" SizeToContent="Height" WindowStyle="None"
+        ResizeMode="NoResize" ShowInTaskbar="False" ShowActivated="False" Focusable="False"
+        Topmost="True" AllowsTransparency="True" Background="Transparent" FontFamily="Segoe UI" UseLayoutRounding="True">
+    <Window.Resources>
+        <ResourceDictionary><ResourceDictionary.MergedDictionaries><ResourceDictionary Source="RewindTheme.xaml"/></ResourceDictionary.MergedDictionaries></ResourceDictionary>
+    </Window.Resources>
+    <Border Background="{StaticResource Raised}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="8" Padding="16,9">
+        <StackPanel>
+            <TextBlock x:Name="SelectedDuration" Foreground="{StaticResource Ink}" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+            <ScrollViewer x:Name="TimelineScroll" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled"
+                          Focusable="False" Margin="0,2,0,4">
+                <Canvas x:Name="Timeline" Height="35"/>
+            </ScrollViewer>
+            <TextBlock x:Name="DurationShortcuts" Text="F9 короче   ·   F11 длиннее   ·   C отменить" Foreground="{StaticResource Muted}"
+                       FontSize="11" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Border>
+</Window>

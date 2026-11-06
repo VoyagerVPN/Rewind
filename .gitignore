@@ -1,0 +1,17 @@
+/.cache/
+/.tgrep/
+/.codex/
+/.socraticode.json
+/.socraticodeignore
+/.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.pdb
+*.log
+.env
+.env.*
+
+/experiments/
+/tools/

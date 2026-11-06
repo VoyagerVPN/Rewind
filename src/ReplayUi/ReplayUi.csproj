@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup><InternalsVisibleTo Include="Rewind.CaptureLab" /></ItemGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <AssemblyName>Rewind</AssemblyName>
+    <Title>Rewind</Title><Product>Rewind</Product><Description>Мгновенные видеоповторы экрана</Description><Company></Company>
+    <Version>0.1.1</Version><InformationalVersion>0.1.1-dev.unstamped</InformationalVersion>
+    <ApplicationIcon>Assets/Rewind.ico</ApplicationIcon>
+  </PropertyGroup>
+  <Import Project="$(REWIND_BUILD_PROPS)" Condition="'$(REWIND_BUILD_PROPS)' != ''" />
+  <ItemGroup><Compile Include="../DiskBuffer/DiskReplayBuffer.cs" Link="DiskReplayBuffer.cs" /></ItemGroup>
+  <ItemGroup><Resource Include="Assets/Rewind.ico"/><Resource Include="Assets/Rewind.png"/></ItemGroup>
+  <ItemGroup><PackageReference Include="NAudio.Wasapi" Version="3.3.0" /></ItemGroup>
+  <ItemGroup><PackageReference Include="WPF-UI" Version="4.3.0" /></ItemGroup>
+  <ItemGroup><PackageReference Include="LibVLCSharp.WPF" Version="3.10.2" /><PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.24" /></ItemGroup>
+  <ItemGroup>
+    <Content Include="../../.cache/capture-worker/Rewind.CaptureWorker.exe" Link="capture/Rewind.CaptureWorker.exe" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../.cache/playback-lab/mpv/libmpv-2.dll" Link="mpv/libmpv-2.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../.cache/playback-lab/mpv/LICENSE.LGPL" Link="mpv/LICENSE.LGPL" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

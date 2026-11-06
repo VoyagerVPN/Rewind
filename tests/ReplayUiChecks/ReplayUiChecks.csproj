@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors><UseSharedCompilation>false</UseSharedCompilation>
+  </PropertyGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/AudioMix.cs" Link="AudioMix.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/PanelGeometry.cs" Link="PanelGeometry.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/CaptureSettings.cs" Link="CaptureSettings.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/ReplayIntervals.cs" Link="ReplayIntervals.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/DiskBuffer/DiskReplayBuffer.cs" Link="DiskReplayBuffer.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/HotkeySettings.cs" Link="HotkeySettings.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/AudioLevelEnvelope.cs" Link="AudioLevelEnvelope.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/ReplayFileName.cs" Link="ReplayFileName.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/ReplayNotificationText.cs" Link="ReplayNotificationText.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/StartupPreferences.cs" Link="StartupPreferences.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/AudioTimelineBuffer.cs" Link="AudioTimelineBuffer.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/AudioCaptureDiagnostics.cs" Link="AudioCaptureDiagnostics.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/AudioPacketTimeline.cs" Link="AudioPacketTimeline.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/CaptureApplication.cs" Link="CaptureApplication.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ReplayUi/FfmpegTools.cs" Link="FfmpegTools.cs" /></ItemGroup>
+</Project>
