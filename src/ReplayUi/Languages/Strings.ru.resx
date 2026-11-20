@@ -76,7 +76,7 @@
     <value>Устанавливаем Rewind…</value>
   </data>
   <data name="Setup.MissingFfmpeg" xml:space="preserve">
-    <value>WinGet завершился, но FFmpeg и FFprobe не найдены. Повторите установку.</value>
+    <value>Установите FFmpeg и FFprobe версии {0} или новее в одну папку и повторите попытку.</value>
   </data>
   <data name="Setup.Occupied" xml:space="preserve">
     <value>Rewind уже установлен, папка занята или запущена другая установка.</value>
@@ -1127,6 +1127,9 @@
   </data>
   <data name="Message.CouldNotStartFfmpeg" xml:space="preserve">
     <value>Не удалось запустить FFmpeg.</value>
+  </data>
+  <data name="Message.FfmpegVersionRequired" xml:space="preserve">
+    <value>Для Rewind нужны FFmpeg и FFprobe версии {0} или новее в одной папке. Установите или обновите пакет Gyan.FFmpeg.</value>
   </data>
   <data name="Message.InvalidMonitorProfile" xml:space="preserve">
     <value>Недопустимый профиль монитора.</value>

@@ -61,6 +61,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
     private DesktopReplaySession(CaptureSettings settings, IReadOnlyList<CaptureMonitor> monitors, uint? applicationProcessId,
         Action<string>? diagnosticWarning, Func<IReadOnlyList<CaptureMonitor>>? readMonitors)
     {
+        string ffmpeg = CaptureProcesses.Ffmpeg;
         _settings = settings;
         string id = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + "-" + Guid.NewGuid().ToString("N")[..8];
         _sessionRoot = Path.Combine(Path.GetFullPath(settings.StorageRoot), "Buffer", id);
@@ -79,12 +80,12 @@ public sealed class DesktopReplaySession : IAsyncDisposable
         _native = _tracks.Select((track, index) => new NativeCaptureBridge(track.Monitor, track.Profile, epoch,
             Path.Combine(_sessionRoot, $"native-{index}.log"), diagnosticWarning, readMonitors)).ToArray();
         var arguments = new List<string> { "-hide_banner", "-loglevel", "warning", "-nostats", "-stats_period", "0.25", "-progress", "pipe:1", "-copyts" };
-        if (_audio is not null) arguments.AddRange(["-thread_queue_size", "64", "-probesize", "32", "-analyzeduration", "1", "-f", "f32le", "-ar", "48000", "-ac", "6", "-channel_layout", "5.1", "-i", _audio.Path]);
+        if (_audio is not null) arguments.AddRange(["-probesize", "32", "-analyzeduration", "1", "-f", "f32le", "-ar", "48000", "-ac", "6", "-channel_layout", "5.1", "-i", _audio.Path]);
         var filters = new List<string>();
         foreach (var (track, index) in _tracks.Select((track, index) => (track, index)))
         {
             // Ноль включает автоматический анализ FFmpeg до 7 с, переполняя PCM при тихом видеопотоке.
-            arguments.AddRange(["-thread_queue_size", "256", "-probesize", "4096", "-analyzeduration", "1", "-fpsprobesize", "0", "-f", "mpegts", "-i", _native[index].Path]);
+            arguments.AddRange(["-probesize", "4096", "-analyzeduration", "1", "-fpsprobesize", "0", "-f", "mpegts", "-i", _native[index].Path]);
         }
         if (_audio is not null)
         {
@@ -112,7 +113,7 @@ public sealed class DesktopReplaySession : IAsyncDisposable
         else arguments.Add("-an");
         arguments.AddRange(ReplayExport.SegmentArguments(track.Root, track.Manifest, settings.HistorySeconds / 2 + 24));
         }
-        try { _capture = CaptureProcesses.Start(CaptureProcesses.Ffmpeg, arguments); }
+        try { _capture = CaptureProcesses.Start(ffmpeg, arguments); }
         catch { foreach (NativeCaptureBridge native in _native) native.DisposeAsync().AsTask().GetAwaiter().GetResult(); if (_audio is not null) _audio.DisposeAsync().AsTask().GetAwaiter().GetResult(); throw; }
         _outputReader = ReadProgressAsync();
         _errorReader = ReadErrorsAsync();

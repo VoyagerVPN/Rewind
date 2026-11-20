@@ -15,7 +15,7 @@
 
 ## FFmpeg и FFprobe
 
-Rewind запускает [FFmpeg](https://ffmpeg.org/) и FFprobe как отдельные процессы. Публичный пакет NSIS не содержит их бинарники. Если готовой пары нет, окно установки загружает [Gyan.FFmpeg](https://github.com/GyanD/codexffmpeg) через WinGet. [Условия FFmpeg](https://www.ffmpeg.org/legal.html)
+Rewind запускает [FFmpeg](https://ffmpeg.org/) и FFprobe версии 9.1 или новее как отдельные процессы. Пакет NSIS не содержит их бинарники. Если подходящей пары нет, окно установки загружает [Gyan.FFmpeg 9.1](https://github.com/GyanD/codexffmpeg/releases/tag/9.1) через WinGet. [Условия FFmpeg](https://www.ffmpeg.org/legal.html)
 
 ## libmpv
 

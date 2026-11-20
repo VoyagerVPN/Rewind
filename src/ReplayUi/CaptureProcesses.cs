@@ -5,7 +5,17 @@ namespace Rewind.Preview;
 
 internal static class CaptureProcesses
 {
-    private static readonly FfmpegTools Tools = FfmpegTools.Find(AppContext.BaseDirectory) ?? FfmpegTools.WinGetLinks(FfmpegTools.LocalAppData);
+    private static readonly object ToolsLock = new();
+    private static FfmpegTools? _tools;
+    private static FfmpegTools Tools
+    {
+        get
+        {
+            lock (ToolsLock)
+                return _tools ??= FfmpegTools.Find(AppContext.BaseDirectory)
+                    ?? throw new InvalidOperationException(Localization.Format("Message.FfmpegVersionRequired", FfmpegTools.MinimumVersion));
+        }
+    }
     public static string Ffmpeg => Tools.Ffmpeg;
     public static string Ffprobe => Tools.Ffprobe;
 

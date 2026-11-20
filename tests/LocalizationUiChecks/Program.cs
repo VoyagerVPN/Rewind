@@ -150,9 +150,9 @@ internal static class Program
     {
         string fixture = Path.Combine(root, preserveExisting ? "update" : "first-install");
         string install = Path.Combine(fixture, "program"), data = Path.Combine(fixture, "data"), replays = Path.Combine(fixture, "replays");
-        Directory.CreateDirectory(Path.Combine(install, "tools"));
-        File.WriteAllText(Path.Combine(install, "tools", "ffmpeg.exe"), "fixture");
-        File.WriteAllText(Path.Combine(install, "tools", "ffprobe.exe"), "fixture");
+        if (FfmpegTools.Find(install) is null)
+            throw new InvalidOperationException($"Setup checks require FFmpeg and FFprobe {FfmpegTools.MinimumVersion} or later via WinGet or PATH.");
+        Directory.CreateDirectory(fixture);
         if (preserveExisting) new LanguagePreferencesFile(Path.Combine(data, "language.json")).Save("ru");
         string defaults = Path.Combine(fixture, "defaults.txt");
         File.WriteAllLines(defaults, [install, data, replays]);

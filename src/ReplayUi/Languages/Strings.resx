@@ -76,7 +76,7 @@
     <value>Installing Rewind…</value>
   </data>
   <data name="Setup.MissingFfmpeg" xml:space="preserve">
-    <value>WinGet finished, but FFmpeg and FFprobe were not found. Try again.</value>
+    <value>Install FFmpeg and FFprobe {0} or later in the same folder, then try again.</value>
   </data>
   <data name="Setup.Occupied" xml:space="preserve">
     <value>Rewind is already installed, the folder is in use, or another setup is running.</value>
@@ -1127,6 +1127,9 @@
   </data>
   <data name="Message.CouldNotStartFfmpeg" xml:space="preserve">
     <value>Could not start FFmpeg.</value>
+  </data>
+  <data name="Message.FfmpegVersionRequired" xml:space="preserve">
+    <value>Rewind requires FFmpeg and FFprobe {0} or later in the same folder. Install or update the Gyan.FFmpeg package.</value>
   </data>
   <data name="Message.InvalidMonitorProfile" xml:space="preserve">
     <value>Invalid monitor profile.</value>

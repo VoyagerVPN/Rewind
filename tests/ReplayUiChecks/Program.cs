@@ -87,25 +87,43 @@ try
     Directory.CreateDirectory(tools);
     Directory.CreateDirectory(links);
     File.WriteAllText(Path.Combine(tools, "ffmpeg.exe"), "");
-    File.WriteAllText(Path.Combine(links, "ffprobe.exe"), "");
-
-    FfmpegTools? Find() => FfmpegTools.Find(app, ffmpegRoot, null);
+    string invalidProbe = Path.Combine(tools, "ffprobe.exe");
+    File.WriteAllText(invalidProbe, "");
+    if (FfmpegTools.Find(app, ffmpegRoot, null) is not null)
+        throw new InvalidOperationException("A pair that cannot report its versions must not satisfy setup.");
+    string bundledFfmpeg = Path.Combine(tools, "ffmpeg.exe");
+    string wingetFfmpeg = Path.Combine(links, "ffmpeg.exe");
+    string wingetFfprobe = Path.Combine(links, "ffprobe.exe");
+    File.WriteAllText(wingetFfprobe, "");
+    var versions = new Dictionary<string, string>
+    {
+        [bundledFfmpeg] = "ffmpeg version 9.0.1-full_build-www.gyan.dev",
+        [invalidProbe] = "ffprobe version 9.0.1-full_build-www.gyan.dev",
+        [wingetFfprobe] = "ffprobe version 9.1-full_build-www.gyan.dev",
+    };
+    FfmpegTools? Find() => FfmpegTools.Find(app, ffmpegRoot, null, versions.GetValueOrDefault);
     int installations = 0;
     async Task Install()
     {
         installations++;
-        await File.WriteAllTextAsync(Path.Combine(links, "ffmpeg.exe"), "");
+        versions[wingetFfmpeg] = "ffmpeg version 9.1-full_build-www.gyan.dev";
+        await File.WriteAllTextAsync(wingetFfmpeg, "");
     }
 
     if (Find() is not null || !await FfmpegTools.EnsureAsync(Find, Install) ||
         !await FfmpegTools.EnsureAsync(Find, Install) || installations != 1 ||
-        Find()?.Ffmpeg != Path.Combine(links, "ffmpeg.exe"))
-        throw new InvalidOperationException("Setup must install a complete pair once, then reuse it.");
+        Find()?.Ffmpeg != wingetFfmpeg)
+        throw new InvalidOperationException("Setup must skip the old bundled pair, install 9.1 once and reuse it.");
 
-    File.Delete(Path.Combine(links, "ffmpeg.exe"));
+    versions[wingetFfprobe] = "ffprobe version 9.0.2-full_build-www.gyan.dev";
     if (await FfmpegTools.EnsureAsync(Find, () => Task.CompletedTask))
-        throw new InvalidOperationException("A successful command without a complete pair must not satisfy setup.");
-    Console.WriteLine("PASS ffmpeg_setup_reuses_complete_pairs_and_verifies_install");
+        throw new InvalidOperationException("A successful command with an old FFprobe must not satisfy setup.");
+
+    versions[bundledFfmpeg] = "ffmpeg version 9.1.1-static";
+    versions[invalidProbe] = "ffprobe version 9.1.1-static";
+    if (Find()?.Ffmpeg != bundledFfmpeg)
+        throw new InvalidOperationException("A supported patch release in the app directory must take precedence.");
+    Console.WriteLine("PASS ffmpeg_setup_installs_and_reuses_supported_pairs");
 }
 finally { Directory.Delete(ffmpegRoot, true); }
 

@@ -107,9 +107,9 @@ public partial class SetupWindow : Window
         Progress.Visibility = Visibility.Visible;
         try
         {
-            if (!await FfmpegTools.EnsureAsync(() => FfmpegTools.Find(folders[0]), InstallFfmpegAsync))
+            if (!await FfmpegTools.EnsureAsync(() => FfmpegTools.Find(folders[0]), () => InstallFfmpegAsync(folders[0])))
             {
-                SetStatus("Setup.MissingFfmpeg");
+                SetStatus(() => Localization.Format("Setup.MissingFfmpeg", FfmpegTools.MinimumVersion));
                 return;
             }
             SetStatus("Setup.Installing");
@@ -163,7 +163,7 @@ public partial class SetupWindow : Window
         }
     }
 
-    private async Task InstallFfmpegAsync()
+    private async Task InstallFfmpegAsync(string applicationDirectory)
     {
         string winget = Path.Combine(FfmpegTools.LocalAppData, "Microsoft", "WindowsApps", "winget.exe");
         if (!File.Exists(winget))
@@ -172,6 +172,7 @@ public partial class SetupWindow : Window
         SetStatus("Setup.InstallingFfmpeg");
         var start = new ProcessStartInfo(winget) { UseShellExecute = false, CreateNoWindow = true };
         string[] arguments = ["install", "--id", "Gyan.FFmpeg", "--exact", "--source", "winget",
+            "--version", FfmpegTools.MinimumVersion.ToString(),
             "--scope", "user", "--silent", "--disable-interactivity",
             "--accept-source-agreements", "--accept-package-agreements", "--force"];
         foreach (string argument in arguments) start.ArgumentList.Add(argument);
@@ -189,7 +190,7 @@ public partial class SetupWindow : Window
             throw new SetupFailure("Setup.FfmpegTimeout");
         }
 
-        if (process.ExitCode != 0 && FfmpegTools.Find(InstallDirectory.Text.Trim()) is null)
+        if (process.ExitCode != 0 && await Task.Run(() => FfmpegTools.Find(applicationDirectory)) is null)
             throw new SetupFailure("Setup.FfmpegFailed", process.ExitCode);
     }
 

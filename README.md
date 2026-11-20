@@ -61,7 +61,8 @@ ShadowPlay is evaluated as part of the NVIDIA App. Action! offers a [30-day tria
 ## Requirements
 
 - Windows 11 x64, an NVIDIA GPU with NVENC, and enough disk space for the buffer and clips.
-- Setup includes the .NET 10 Desktop Runtime. Installing missing copies of FFmpeg and FFprobe requires WinGet and internet access.
+- Rewind requires FFmpeg and FFprobe 9.1 or later. Setup installs Gyan.FFmpeg 9.1 through WinGet if it cannot find a supported pair. This requires an internet connection.
+- Setup includes the .NET 10 Desktop Runtime.
 - If capture stalls in exclusive fullscreen, try windowed mode.
 
 ## Build from source
